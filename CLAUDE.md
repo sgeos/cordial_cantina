@@ -47,7 +47,36 @@ See `docs/README.md` for the documentation table of contents. See `docs/DOCUMENT
 | Trading strategy | `docs/strategy/README.md` |
 | Technical architecture | `docs/architecture/README.md` |
 | Blocking decisions | `docs/decisions/PRIORITY.md` |
+| Development process | `docs/process/README.md` |
+| Current milestone | `docs/process/MILESTONE.md` |
 | Git workflow | `docs/process/GIT_STRATEGY.md` |
+
+## Development Process
+
+See `docs/process/PROCESS_STRATEGY.md` for complete milestone-based development workflow.
+
+**Session startup protocol**:
+1. Read `docs/process/MILESTONE.md` for current sprint state
+2. Read `docs/process/REVERSE_PROMPT.md` for last AI communication
+3. Wait for human prompt before proceeding
+
+**After completing each task**:
+1. Update task status in `docs/process/MILESTONE.md`
+2. Overwrite `docs/process/REVERSE_PROMPT.md` with:
+   - Verification command and result
+   - Questions for human pilot
+   - Technical concerns/risks
+   - Intended next step
+3. Commit changes with conventional commit referencing the task
+4. If blocked or uncertain, document in REVERSE_PROMPT.md and **stop**
+
+**Working documents**:
+
+| File | Purpose |
+|------|---------|
+| `docs/process/MILESTONE.md` | Current sprint source of truth |
+| `docs/process/PROMPT.md` | Human → AI instruction staging |
+| `docs/process/REVERSE_PROMPT.md` | AI → Human communication |
 
 ## Git Workflow
 
@@ -64,6 +93,9 @@ See `docs/process/GIT_STRATEGY.md` for complete version control conventions.
 **Commit format**:
 ```
 <scope>: <imperative summary>
+
+[Milestone: <milestone-name>]
+[Task: <task-id>]
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```
@@ -137,7 +169,7 @@ Refer to `cordial_cantina/AGENTS.md` for detailed Phoenix and Elixir conventions
 
 ### OTP Supervision
 
-See `docs/SUPERVISION_TREE.md` for the complete supervision tree design.
+See `docs/architecture/SUPERVISION_TREE.md` for the complete supervision tree design.
 
 **Subsystem supervisors**:
 - `CordialCantina.Mnesia.Supervisor` - Mnesia table initialization
