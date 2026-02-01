@@ -8,27 +8,39 @@ This file is a staging area for complex human-to-AI instructions. The human pilo
 
 # Current Prompt
 
+## Comments
+
+Your expected workflow follows.
+- Parse prompt.
+- Execute tasks.
+- Overwrite REVERSE_PROMPT.md.
+- Commit all changes with an appropriate message.
+
+If commits are breaking, I will roll back.
+If this process is not codified, then please record it.
+Barring special instructions to deviate from standard procedure, follow this process.
+
+`scripts` is a fine place to put scripts.
+I have used `tools` in the past.
+Feel free to use the more conventional location.
+
 ## Objective
 
-Please draft the following files.
-- `docs/process/MILESTONE_HISTORY.md`: for archiving completed milestones.
-- **Documentation coverage check script**: to verify all markdown files are referenced in their parent README.md.
+Please add script execution to as a git pre-commit hook to enforce coverage locally.
 
 ## Context
 
-Reasonable reverse prompt suggestions.
+Reasonable reverse prompt suggestion.
 
 ## Constraints
 
-Script should use `#!/bin/sh` and be POSIX compliant.
-Ideally, rely on portable commands, but it is OK if commands or tool versions are OS-specific.
-I am developing on an M1 Mac.
+(no instructions)
 
 ## Success Criteria
 
-MILESTONE_HISTORY.md added, documentation coverage check script tested and working.
-Documentation update to reflect new file and coverage check script usage.
+Process codification verified.
+Pre-commit hook tested and working.
 
 ## Notes
 
-Consider which files should be listed in the top level docs/README.md.
+(covered in comments, above)

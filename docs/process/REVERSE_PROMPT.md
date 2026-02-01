@@ -9,107 +9,93 @@ This file is the AI-to-human communication channel. It is overwritten after each
 ## Last Updated
 
 **Date**: 2026-02-01
-**Task**: M3-T5 Documentation updates complete
-**Milestone**: Process Tooling
+**Task**: M4 Pre-commit Hook complete
+**Milestone**: Pre-commit Hook
 
 ---
 
 ## Verification
 
-### M3-T1: Create MILESTONE_HISTORY.md
-**Command**: `ls -la docs/process/MILESTONE_HISTORY.md`
-**Result**: PASS - File created with archived M1 and M2 milestones
+### M4-T1: Create pre-commit hook
+**Command**: `ls -la .git/hooks/pre-commit`
+**Result**: PASS - Hook created at `.git/hooks/pre-commit`
 
-### M3-T2: Create coverage check script
-**Command**: `ls -la scripts/check-doc-coverage.sh`
-**Result**: PASS - POSIX shell script created at `scripts/check-doc-coverage.sh`
+### M4-T2: Test pre-commit hook
+**Command**: `git commit` (with staged files)
+**Result**: PASS - Hook runs coverage check before commit
 
-### M3-T3: Test coverage check script
-**Command**: `./scripts/check-doc-coverage.sh`
-**Result**: PASS - Script initially detected 2 missing references:
-- `SPECIFICATION.md` not in `docs/README.md`
-- `MILESTONE_HISTORY.md` not in `docs/process/README.md`
+### M4-T3: Verify process codification
+**Command**: Manual review of PROCESS_STRATEGY.md
+**Result**: PASS - Workflow documented in "Task Completion Protocol" (lines 79-104) and "Workflow Example" (lines 132-180). The parse-execute-overwrite-commit sequence is codified.
 
-After fixes, script reports full coverage (45/45 files referenced).
+### M4-T4: Update REVERSE_PROMPT.md
+**Result**: This file
 
-### M3-T4: Update process/README.md
-**Command**: `grep MILESTONE_HISTORY docs/process/README.md`
-**Result**: PASS - MILESTONE_HISTORY.md added to Working Documents table
-
-### M3-T5: Update docs/README.md
-**Command**: `grep SPECIFICATION docs/README.md`
-**Result**: PASS - SPECIFICATION.md listed as deprecated in Meta Documentation
-
-### M3-T6: Commit all changes
-**Status**: PENDING - Awaiting human approval
+### M4-T5: Commit all changes
+**Status**: PENDING
 
 ---
 
 ## Files Created/Modified
 
 **Created**:
-- `docs/process/MILESTONE_HISTORY.md` - Archive of completed milestones
-- `scripts/check-doc-coverage.sh` - Documentation coverage check script
+- `.git/hooks/pre-commit` - Pre-commit hook running documentation coverage check
 
 **Modified**:
-- `docs/process/README.md` - Added MILESTONE_HISTORY.md reference
-- `docs/README.md` - Added SPECIFICATION.md (deprecated) reference
-- `docs/DOCUMENTATION_STRATEGY.md` - Added MILESTONE_HISTORY.md to directory tree
-- `docs/process/MILESTONE.md` - Updated task statuses
+- `docs/process/MILESTONE.md` - M4 milestone
+- `docs/process/MILESTONE_HISTORY.md` - Archived M3
+- `docs/process/REVERSE_PROMPT.md` - This file
 
 ---
 
-## Script Usage
+## Pre-commit Hook Usage
 
-The coverage check script verifies all markdown files are referenced in their parent README.md:
+The hook runs automatically on every `git commit`. To bypass (not recommended):
 
 ```sh
-# Run from repository root
-./scripts/check-doc-coverage.sh
-
-# Or specify a different docs directory
-./scripts/check-doc-coverage.sh ./docs
+git commit --no-verify
 ```
 
-**Exit codes**:
-- 0: All files referenced
-- 1: Missing references found
-- 2: Configuration error
+The hook:
+1. Locates `scripts/check-doc-coverage.sh`
+2. Runs coverage check on `docs/`
+3. Blocks commit if any markdown file is unreferenced
+4. Allows commit if all files are referenced
 
 ---
 
 ## Questions for Human Pilot
 
-1. **Commit approval**: Ready to commit changes. Please confirm or provide commit instructions.
+1. **Hook location**: The hook is in `.git/hooks/` which is not tracked by git. Should I create a `hooks/` directory in the repo with the hook source and add setup instructions?
 
-2. **Script location**: I placed the script in `scripts/check-doc-coverage.sh`. Is this the preferred location, or would you like it elsewhere?
-
-3. **Next milestone**: After commit, ready for next milestone. Options:
+2. **Next milestone**: Ready for next milestone. Options:
    - Option A: Resolve Phase 1 blocking decisions (P1-P7 in `decisions/PRIORITY.md`)
-   - Option B: Begin Phase 1 implementation (after resolving blocking decisions)
+   - Option B: Begin Phase 1 implementation
    - Option C: Other direction
 
 ---
 
 ## Technical Concerns / Risks
 
-None for this documentation and tooling task.
+**Hook portability**: Git hooks in `.git/hooks/` are local and not shared via clone. Contributors would need to manually install the hook or use a setup script. Consider:
+- Adding `hooks/pre-commit` to repo with install instructions
+- Using a git hook manager like `husky` or `lefthook` (adds dependencies)
 
 ---
 
 ## Suggestions for Improvement
 
-1. **CI integration**: Consider adding `./scripts/check-doc-coverage.sh` to CI pipeline to catch missing references before merge.
+1. **Shared hooks**: Move hook source to `hooks/pre-commit` in repo and add install script or Makefile target.
 
-2. **Pre-commit hook**: Could add as a git pre-commit hook to enforce coverage locally.
+2. **CI integration**: Also run coverage check in CI to catch issues from contributors who skip local hooks.
 
 ---
 
 ## Intended Next Step
 
-**Awaiting human direction** on commit and next milestone.
+**Awaiting human direction** on next milestone.
 
-All Process Tooling tasks (M3-T1 through M3-T5) are complete. M3-T6 (commit) awaits approval.
+All Pre-commit Hook tasks (M4-T1 through M4-T4) are complete. M4-T5 (commit) in progress.
 
 ---
 
@@ -117,7 +103,7 @@ All Process Tooling tasks (M3-T1 through M3-T5) are complete. M3-T6 (commit) awa
 
 If you are a new AI session reading this file:
 
-1. Read [MILESTONE.md](./MILESTONE.md) - Milestone "Process Tooling" nearly complete (pending commit)
-2. Read [PROMPT_BACKLOG.md](./PROMPT_BACKLOG.md) - 4 unresolved items from previous work
+1. Read [MILESTONE.md](./MILESTONE.md) - Milestone "Pre-commit Hook" (M4) complete
+2. Read [PROMPT_BACKLOG.md](./PROMPT_BACKLOG.md) - Unresolved items from previous work
 3. Check [decisions/PRIORITY.md](../decisions/PRIORITY.md) - 7 blocking items for Phase 1
 4. Wait for human prompt before proceeding

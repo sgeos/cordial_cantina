@@ -6,7 +6,7 @@ This file is the source of truth for the current development sprint.
 
 ---
 
-## Milestone: Process Tooling
+## Milestone: Pre-commit Hook
 
 **Status**: In-Progress
 
@@ -16,9 +16,8 @@ This file is the source of truth for the current development sprint.
 
 ## Success Criteria
 
-- [x] MILESTONE_HISTORY.md created for archiving completed milestones
-- [x] Documentation coverage check script created and tested
-- [x] Documentation updated to reflect new files and script usage
+- [x] Pre-commit hook installed to run documentation coverage check
+- [x] Process codification verified or updated
 - [ ] All changes committed
 
 ---
@@ -27,18 +26,17 @@ This file is the source of truth for the current development sprint.
 
 | ID | Task | Status | Verification |
 |----|------|--------|--------------|
-| M3-T1 | Create MILESTONE_HISTORY.md | Complete | File exists with archived M1, M2 |
-| M3-T2 | Create coverage check script | Complete | `scripts/check-doc-coverage.sh` executable |
-| M3-T3 | Test coverage check script | Complete | Script detected 2 missing refs, now 0 |
-| M3-T4 | Update process/README.md | Complete | MILESTONE_HISTORY.md added |
-| M3-T5 | Update docs/README.md if needed | Complete | SPECIFICATION.md (deprecated) listed |
-| M3-T6 | Commit all changes | Pending | `git log` shows commit |
+| M4-T1 | Create pre-commit hook | Complete | `.git/hooks/pre-commit` exists |
+| M4-T2 | Test pre-commit hook | Complete | Hook runs on commit |
+| M4-T3 | Verify process codification | Complete | PROCESS_STRATEGY.md lines 79-180 |
+| M4-T4 | Update REVERSE_PROMPT.md | Complete | File updated |
+| M4-T5 | Commit all changes | Pending | `git log` shows commit |
 
 ---
 
 ## Notes
 
-Prompted via PROMPT.md. Implements suggestions from REVERSE_PROMPT.md.
+Prompted via PROMPT.md. Implements pre-commit hook suggestion from M3 REVERSE_PROMPT.md.
 
 ---
 

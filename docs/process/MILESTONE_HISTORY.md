@@ -8,6 +8,31 @@ This file archives completed milestones. When a milestone is complete, move its 
 
 ## Completed Milestones
 
+### M3: Process Tooling
+
+**Status**: Complete
+**Period**: 2026-02-01
+
+**Success Criteria**:
+- [x] MILESTONE_HISTORY.md created for archiving completed milestones
+- [x] Documentation coverage check script created and tested
+- [x] Documentation updated to reflect new files and script usage
+- [x] All changes committed
+
+**Tasks Completed**:
+| ID | Task | Verification |
+|----|------|--------------|
+| M3-T1 | Create MILESTONE_HISTORY.md | File exists with archived M1, M2 |
+| M3-T2 | Create coverage check script | `scripts/check-doc-coverage.sh` executable |
+| M3-T3 | Test coverage check script | Script detected 2 missing refs, fixed to 0 |
+| M3-T4 | Update process/README.md | MILESTONE_HISTORY.md added |
+| M3-T5 | Update docs/README.md | SPECIFICATION.md (deprecated) listed |
+| M3-T6 | Commit all changes | Commit `394ccc7` |
+
+**Commit**: `394ccc7` - docs: add milestone history and documentation coverage script
+
+---
+
 ### M2: Process Refinement
 
 **Status**: Complete
