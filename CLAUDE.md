@@ -23,7 +23,31 @@ cordial_cantina/           # Root directory
 │   └── config/            # Environment-specific configuration
 ├── joltshark/             # Rust library for numerical computation (future NIFs)
 └── docs/
-    └── SPECIFICATION.md   # Comprehensive product specification
+    ├── SPECIFICATION.md   # Product specification
+    ├── SUPERVISION_TREE.md # OTP supervision design
+    ├── GIT_STRATEGY.md    # Version control conventions
+    ├── TBD_PRIORITY.md    # Blocking questions for Phase 1
+    ├── TBD_RESOLVED.md    # Resolved architectural decisions
+    └── TBD_BACKLOG.md     # Deferred questions by phase
+```
+
+## Git Workflow
+
+See `docs/GIT_STRATEGY.md` for complete version control conventions.
+
+**Key rules**:
+- Trunk-based development with short-lived feature branches (less than 24 hours)
+- Linear history enforced via rebase (no merge commits)
+- **Commit after completing each prompted request**
+- Run `mix precommit` before pushing
+
+**Branch naming**: `<scope>/<short-description>` where scope is one of: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`
+
+**Commit format**:
+```
+<scope>: <imperative summary>
+
+Co-Authored-By: Claude <noreply@anthropic.com>
 ```
 
 ## Common Commands
