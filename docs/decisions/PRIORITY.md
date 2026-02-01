@@ -1,4 +1,6 @@
-# TBD_PRIORITY.md
+# Priority Decisions
+
+> **Navigation**: [Decisions](./README.md) | [Documentation Root](../README.md)
 
 This document captures unresolved questions that must be disambiguated before Phase 1 (Foundation) can be implemented with confidence.
 
@@ -6,7 +8,7 @@ This document captures unresolved questions that must be disambiguated before Ph
 
 **Created**: 2026-02-01
 **Purpose**: Pre-Phase 1 disambiguation checklist
-**Related**: TBD_RESOLVED.md (resolved), TBD_BACKLOG.md (deferred)
+**Related**: [Resolved](./RESOLVED.md), [Backlog](./BACKLOG.md)
 
 ## Phase 1 Deliverables Reference
 

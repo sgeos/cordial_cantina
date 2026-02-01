@@ -1,4 +1,6 @@
-# TBD_RESOLVED.md
+# Resolved Decisions
+
+> **Navigation**: [Decisions](./README.md) | [Documentation Root](../README.md)
 
 This document records design decisions that have been fully resolved. Each entry includes the decision, rationale, and any residual sub-questions that remain open but do not block implementation.
 
@@ -6,7 +8,7 @@ This document records design decisions that have been fully resolved. Each entry
 
 **Created**: 2026-02-01
 **Purpose**: Archive of resolved architectural decisions
-**Related**: TBD_PRIORITY.md (blocking), TBD_BACKLOG.md (deferred)
+**Related**: [Priority](./PRIORITY.md), [Backlog](./BACKLOG.md)
 
 ---
 

@@ -1,4 +1,6 @@
-# TBD_BACKLOG.md
+# Backlog Decisions
+
+> **Navigation**: [Decisions](./README.md) | [Documentation Root](../README.md)
 
 This document records TBD items that do not require immediate resolution. Items are organized by the phase in which they become relevant.
 
@@ -6,7 +8,7 @@ This document records TBD items that do not require immediate resolution. Items 
 
 **Created**: 2026-02-01
 **Purpose**: Deferred decisions and non-blocking questions
-**Related**: TBD_PRIORITY.md (blocking), TBD_RESOLVED.md (resolved)
+**Related**: [Priority](./PRIORITY.md), [Resolved](./RESOLVED.md)
 
 ---
 

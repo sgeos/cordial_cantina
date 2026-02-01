@@ -22,18 +22,36 @@ cordial_cantina/           # Root directory
 │   ├── assets/            # Frontend (Tailwind CSS, TypeScript, esbuild)
 │   └── config/            # Environment-specific configuration
 ├── joltshark/             # Rust library for numerical computation (future NIFs)
-└── docs/
-    ├── SPECIFICATION.md   # Product specification
-    ├── SUPERVISION_TREE.md # OTP supervision design
-    ├── GIT_STRATEGY.md    # Version control conventions
-    ├── TBD_PRIORITY.md    # Blocking questions for Phase 1
-    ├── TBD_RESOLVED.md    # Resolved architectural decisions
-    └── TBD_BACKLOG.md     # Deferred questions by phase
+└── docs/                  # Documentation (see docs/README.md)
+    ├── overview/          # Product identity, summary, hypotheses
+    ├── strategy/          # Trading strategy specification
+    ├── physical_model/    # Riemannian manifold and physics
+    ├── integration/       # Solana, Raydium, external signals
+    ├── architecture/      # OTP, data storage, supervision
+    ├── requirements/      # Performance, security, reliability
+    ├── roadmap/           # Development phases
+    ├── decisions/         # Resolved, priority, and backlog TBDs
+    ├── process/           # Git strategy, development process
+    └── reference/         # Glossary, risks, research questions
 ```
+
+## Documentation
+
+See `docs/README.md` for the documentation table of contents. See `docs/DOCUMENTATION_STRATEGY.md` for navigation patterns.
+
+**Key principle**: Atomic files with one concept per file. Load only what you need for the current task.
+
+| If you need... | Start here |
+|----------------|------------|
+| Product overview | `docs/overview/README.md` |
+| Trading strategy | `docs/strategy/README.md` |
+| Technical architecture | `docs/architecture/README.md` |
+| Blocking decisions | `docs/decisions/PRIORITY.md` |
+| Git workflow | `docs/process/GIT_STRATEGY.md` |
 
 ## Git Workflow
 
-See `docs/GIT_STRATEGY.md` for complete version control conventions.
+See `docs/process/GIT_STRATEGY.md` for complete version control conventions.
 
 **Key rules**:
 - Trunk-based development with short-lived feature branches (less than 24 hours)

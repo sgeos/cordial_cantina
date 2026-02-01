@@ -1,4 +1,6 @@
-# GIT_STRATEGY.md
+# Git Strategy
+
+> **Navigation**: [Process](./README.md) | [Documentation Root](../README.md)
 
 This document codifies the git strategy for Cordial Cantina. The strategy is designed for trunk-based development with multiple concurrent human/AI-agent pairs.
 

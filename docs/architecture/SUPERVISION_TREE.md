@@ -1,4 +1,6 @@
-# SUPERVISION_TREE.md
+# Supervision Tree
+
+> **Navigation**: [Architecture](./README.md) | [Documentation Root](../README.md)
 
 This document describes the OTP supervision tree design for Cordial Cantina. It enumerates all known processes requiring supervision and documents open questions about restart strategies, intensity thresholds, and state recovery.
 
@@ -6,7 +8,7 @@ This document describes the OTP supervision tree design for Cordial Cantina. It 
 
 **Created**: 2026-02-01
 **Purpose**: Phase 1 supervision tree design
-**Related**: TBD_PRIORITY.md (P1), SPECIFICATION.md
+**Related**: [Priority TBDs](../decisions/PRIORITY.md) (P1)
 
 ---
 
