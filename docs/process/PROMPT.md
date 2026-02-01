@@ -6,49 +6,29 @@ This file is a staging area for complex human-to-AI instructions. The human pilo
 
 ---
 
-## Current Prompt
+# Current Prompt
 
-*No prompt currently staged.*
-
----
-
-## Usage
-
-1. Draft your complex instructions in this file
-2. Commit the file to preserve prompt history
-3. Prompt the AI: "Please execute the instructions in PROMPT.md"
-4. The AI will read and execute the instructions
-
----
-
-## Prompt History
-
-Prompt history is preserved in git. Use `git log -p docs/process/PROMPT.md` to view previous prompts.
-
----
-
-## Template
-
-When drafting a prompt, consider including:
-
-```markdown
 ## Objective
 
-[What should be accomplished]
+Please draft the following files.
+- `docs/process/MILESTONE_TEMPLATE.md`: for creating new milestones consistently.
+- `docs/process/PROMPT_BACKLOG.md`: so that the human pilot can record multiple AI-agent concerns that need to be addressed. Unless recorded, they will be lost when REVERSE_PROMPT.md is overwritten.
+
+Also, audit the documentation to make sure that all files present in the documentation filesystem are properly documented.
 
 ## Context
 
-[Background information the AI needs]
+Process needs more structure.
 
 ## Constraints
 
-[Limitations, requirements, or boundaries]
+(no instructions)
 
 ## Success Criteria
 
-[How to verify the task is complete]
+All files are present, documented, and properly committed.
 
 ## Notes
 
-[Additional guidance or preferences]
-```
+I copied `docs/process/PROMPT.md` to `docs/process/PROMPT_TEMPLATE.md`, but did not commit the change.
+The first version of the file seemed like it was worth preserving.

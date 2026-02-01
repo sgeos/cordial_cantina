@@ -24,6 +24,16 @@ These files maintain state across sessions and enable bi-directional communicati
 | [MILESTONE.md](./MILESTONE.md) | Shared | Current sprint source of truth |
 | [PROMPT.md](./PROMPT.md) | Human → AI | Complex instruction staging |
 | [REVERSE_PROMPT.md](./REVERSE_PROMPT.md) | AI → Human | Questions, concerns, next steps |
+| [PROMPT_BACKLOG.md](./PROMPT_BACKLOG.md) | Shared | Persistent record of unresolved concerns |
+
+---
+
+## Templates
+
+| Document | Purpose |
+|----------|---------|
+| [MILESTONE_TEMPLATE.md](./MILESTONE_TEMPLATE.md) | Template for creating new milestones |
+| [PROMPT_TEMPLATE.md](./PROMPT_TEMPLATE.md) | Template for structuring complex prompts |
 
 ---
 
@@ -31,8 +41,9 @@ These files maintain state across sessions and enable bi-directional communicati
 
 1. Read [MILESTONE.md](./MILESTONE.md) to understand current sprint state
 2. Read [REVERSE_PROMPT.md](./REVERSE_PROMPT.md) for last AI communication
-3. Check [PROCESS_STRATEGY.md](./PROCESS_STRATEGY.md) for workflow expectations
-4. Wait for human prompt before proceeding
+3. Read [PROMPT_BACKLOG.md](./PROMPT_BACKLOG.md) for unresolved concerns
+4. Check [PROCESS_STRATEGY.md](./PROCESS_STRATEGY.md) for workflow expectations
+5. Wait for human prompt before proceeding
 
 ---
 
@@ -43,6 +54,7 @@ Development follows **milestone sprints** (not time-based):
 - Tasks are tracked with completion status
 - Verification commands are documented
 - Bi-directional communication via REVERSE_PROMPT.md
+- Unresolved concerns persisted in PROMPT_BACKLOG.md
 
 See [Process Strategy](./PROCESS_STRATEGY.md) for complete documentation.
 

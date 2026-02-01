@@ -124,7 +124,14 @@ docs/
 │
 ├── process/                     # Development process
 │   ├── README.md
-│   └── GIT_STRATEGY.md
+│   ├── PROCESS_STRATEGY.md
+│   ├── GIT_STRATEGY.md
+│   ├── MILESTONE.md             # Current sprint (working document)
+│   ├── PROMPT.md                # Human → AI (working document)
+│   ├── REVERSE_PROMPT.md        # AI → Human (working document)
+│   ├── PROMPT_BACKLOG.md        # Persistent concerns
+│   ├── MILESTONE_TEMPLATE.md    # Template
+│   └── PROMPT_TEMPLATE.md       # Template
 │
 └── reference/                   # Reference material
     ├── README.md
@@ -173,7 +180,10 @@ This section is a **meta-prompt** for AI agents working with this documentation.
 | Current development phase | `roadmap/README.md` |
 | Unresolved decisions | `decisions/PRIORITY.md` |
 | Resolved decisions | `decisions/RESOLVED.md` |
+| **Current milestone/sprint** | `process/MILESTONE.md` |
+| **Development process** | `process/PROCESS_STRATEGY.md` |
 | Git workflow | `process/GIT_STRATEGY.md` |
+| Unresolved concerns | `process/PROMPT_BACKLOG.md` |
 | Terminology | `reference/GLOSSARY.md` |
 
 ### Verification Pattern
