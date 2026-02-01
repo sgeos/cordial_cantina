@@ -1,0 +1,51 @@
+# === Elixir / Phoenix Build Artifacts ===
+/_build/
+/deps/
+/rel/
+/cover/
+/doc/
+/.fetch
+/*.ez
+/*.beam
+/*.tar
+erl_crash.dump
+
+# === Assets & Frontend ===
+# Ignore built assets and node modules
+/priv/static/
+/priv/static/assets/
+/priv/static/cache_manifest.json
+/assets/node_modules/
+/node_modules/
+npm-debug.log
+
+# === Runtime, State & Temp ===
+/tmp/
+.mnesia/
+MnesiaCore.*
+
+# === Rust / Rustler (NIFs) ===
+# Prevents large Rust build artifacts from entering version control
+/native/*/target/
+
+# === Sensitive Files (The "Alpha" Protection) ===
+# Credentials, API keys, and private infrastructure configs
+/config/*.secret.exs
+/tools/*.sh
+/tools/*.xml
+/tools/docker/*.env
+/tools/docker/*.yml
+/tools/docker/*.yaml
+.env
+.env.*
+
+# === OS & Editor Junk ===
+.DS_Store
+.vscode/
+.elixir_ls/
+*.swp
+*~
+
+# Whitelist the templates/examples
+!*.example
+
