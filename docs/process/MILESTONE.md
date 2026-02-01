@@ -6,22 +6,20 @@ This file is the source of truth for the current development sprint.
 
 ---
 
-## Milestone: Process Refinement
+## Milestone: Process Tooling
 
-**Status**: Complete
+**Status**: In-Progress
 
 **Started**: 2026-02-01
-**Completed**: 2026-02-01
 
 ---
 
 ## Success Criteria
 
-- [x] MILESTONE_TEMPLATE.md created for consistent milestone creation
-- [x] PROMPT_BACKLOG.md created for tracking AI-agent concerns
-- [x] PROMPT_TEMPLATE.md committed (user-created)
-- [x] Documentation audit complete - all files properly documented
-- [x] All changes committed
+- [x] MILESTONE_HISTORY.md created for archiving completed milestones
+- [x] Documentation coverage check script created and tested
+- [x] Documentation updated to reflect new files and script usage
+- [ ] All changes committed
 
 ---
 
@@ -29,22 +27,18 @@ This file is the source of truth for the current development sprint.
 
 | ID | Task | Status | Verification |
 |----|------|--------|--------------|
-| M2-T1 | Create MILESTONE_TEMPLATE.md | Complete | `ls docs/process/MILESTONE_TEMPLATE.md` |
-| M2-T2 | Create PROMPT_BACKLOG.md | Complete | `ls docs/process/PROMPT_BACKLOG.md` |
-| M2-T3 | Update PROMPT_TEMPLATE.md header | Complete | Title updated to "Prompt Template" |
-| M2-T4 | Audit documentation filesystem | Complete | All 55 files accounted for |
-| M2-T5 | Update process/README.md | Complete | New files listed in ToC |
-| M2-T6 | Update DOCUMENTATION_STRATEGY.md | Complete | Directory structure and "Finding Information" updated |
-| M2-T7 | Commit all changes | Complete | See git log |
+| M3-T1 | Create MILESTONE_HISTORY.md | Complete | File exists with archived M1, M2 |
+| M3-T2 | Create coverage check script | Complete | `scripts/check-doc-coverage.sh` executable |
+| M3-T3 | Test coverage check script | Complete | Script detected 2 missing refs, now 0 |
+| M3-T4 | Update process/README.md | Complete | MILESTONE_HISTORY.md added |
+| M3-T5 | Update docs/README.md if needed | Complete | SPECIFICATION.md (deprecated) listed |
+| M3-T6 | Commit all changes | Pending | `git log` shows commit |
 
 ---
 
 ## Notes
 
-Prompted via PROMPT.md. This milestone added structure to the process workflow including:
-- Templates for consistent milestone and prompt creation
-- Backlog for persisting AI-agent concerns across sessions
-- Complete documentation audit ensuring all files are navigable
+Prompted via PROMPT.md. Implements suggestions from REVERSE_PROMPT.md.
 
 ---
 
@@ -53,4 +47,3 @@ Prompted via PROMPT.md. This milestone added structure to the process workflow i
 | Date | Change |
 |------|--------|
 | 2026-02-01 | Milestone created |
-| 2026-02-01 | All tasks completed |

@@ -28,6 +28,7 @@ This is the documentation root for Cordial Cantina, a concentrated liquidity mar
 ## Meta Documentation
 
 - [Documentation Strategy](./DOCUMENTATION_STRATEGY.md) - How this documentation is organized and how to use it
+- [SPECIFICATION.md](./SPECIFICATION.md) - **Deprecated** - Redirect to atomic files
 
 ---
 

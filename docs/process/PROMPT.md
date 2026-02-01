@@ -11,24 +11,24 @@ This file is a staging area for complex human-to-AI instructions. The human pilo
 ## Objective
 
 Please draft the following files.
-- `docs/process/MILESTONE_TEMPLATE.md`: for creating new milestones consistently.
-- `docs/process/PROMPT_BACKLOG.md`: so that the human pilot can record multiple AI-agent concerns that need to be addressed. Unless recorded, they will be lost when REVERSE_PROMPT.md is overwritten.
-
-Also, audit the documentation to make sure that all files present in the documentation filesystem are properly documented.
+- `docs/process/MILESTONE_HISTORY.md`: for archiving completed milestones.
+- **Documentation coverage check script**: to verify all markdown files are referenced in their parent README.md.
 
 ## Context
 
-Process needs more structure.
+Reasonable reverse prompt suggestions.
 
 ## Constraints
 
-(no instructions)
+Script should use `#!/bin/sh` and be POSIX compliant.
+Ideally, rely on portable commands, but it is OK if commands or tool versions are OS-specific.
+I am developing on an M1 Mac.
 
 ## Success Criteria
 
-All files are present, documented, and properly committed.
+MILESTONE_HISTORY.md added, documentation coverage check script tested and working.
+Documentation update to reflect new file and coverage check script usage.
 
 ## Notes
 
-I copied `docs/process/PROMPT.md` to `docs/process/PROMPT_TEMPLATE.md`, but did not commit the change.
-The first version of the file seemed like it was worth preserving.
+Consider which files should be listed in the top level docs/README.md.

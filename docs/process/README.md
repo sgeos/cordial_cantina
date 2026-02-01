@@ -22,6 +22,7 @@ These files maintain state across sessions and enable bi-directional communicati
 | Document | Direction | Purpose |
 |----------|-----------|---------|
 | [MILESTONE.md](./MILESTONE.md) | Shared | Current sprint source of truth |
+| [MILESTONE_HISTORY.md](./MILESTONE_HISTORY.md) | Shared | Archive of completed milestones |
 | [PROMPT.md](./PROMPT.md) | Human → AI | Complex instruction staging |
 | [REVERSE_PROMPT.md](./REVERSE_PROMPT.md) | AI → Human | Questions, concerns, next steps |
 | [PROMPT_BACKLOG.md](./PROMPT_BACKLOG.md) | Shared | Persistent record of unresolved concerns |

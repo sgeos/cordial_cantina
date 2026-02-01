@@ -127,6 +127,7 @@ docs/
 │   ├── PROCESS_STRATEGY.md
 │   ├── GIT_STRATEGY.md
 │   ├── MILESTONE.md             # Current sprint (working document)
+│   ├── MILESTONE_HISTORY.md     # Archived milestones
 │   ├── PROMPT.md                # Human → AI (working document)
 │   ├── REVERSE_PROMPT.md        # AI → Human (working document)
 │   ├── PROMPT_BACKLOG.md        # Persistent concerns
