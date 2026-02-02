@@ -12,82 +12,68 @@ This file is a staging area for complex human-to-AI instructions. The human pilo
 
 Process definition is incomplete.
 We are still working on the github-related processes.
-Bi-directional prompting and document based milestones are good enough for now.
+The macro-milestone will be complete after CI is passing and no other process TODOs remain.
+I am considering migrating to Github Issues if this can be arrange agentically using command line tools.
+Please comment on this in your reverse prompt.
 
-## Objective
+Is liveview giving any visual feedback at all? What URL should I be looking at?
 
-### docs/reference/MASTER_CLAUDE_MD_REFERENCE.md Integration
-
-I copied my `${HOME}/.claude/CLAUDE.md` file to:
-`docs/reference/MASTER_CLAUDE_MD_REFERENCE.md`
-Add a navigation header, and brief usage header above the body text in `docs/reference/MASTER_CLAUDE_MD_REFERENCE.md`.
-The header should note:
-- A) the human pilot should consider copying the body text to `${HOME}/.claude/CLAUDE.md`, and
-- B) as included in the knowledge graph, AI-agents do not need be concerned with this file.
-Use appropriate wording.
-
-### Add joltshark README.md
-
-Please draft a minimal joltshark README.md.
-A proper readme will be drafted later, so it should only include the basics.
+## Objectives
 
 ### Resolve CI Failure
 
-Rust CI failed on GitHub with the following error.
-
-```
-Current runner version: '2.331.0'
-Runner Image Provisioner
-Operating System
-Runner Image
-GITHUB_TOKEN Permissions
-Secret source: Actions
-Prepare workflow directory
-Prepare all required actions
-Getting action download info
-Error: Unable to resolve action dtolnay/rust-action, repository not found
-```
+Rust CI failed on GitHub.
+The failing step was: Run clippy
+See:
+https://github.com/sgeos/cordial_cantina/actions/runs/21589349101/job/62205275680
 
 Please resolve or give instructions for human pilot in you reverse prompt.
 
-### Resolve erl_crash.dump
+### Add CI Status Badge to tople level README.md
 
-There is a top level erl_crash.dump
-- Exclude files like this in `.gitignore`
-- Investigate and resolve issue that caused what appears to be a BEAM crash.
-- Delete the crash dump once the problem is resolved.
-- Report the problem in your reverse prompt.
+I am pretty sure this can be done before the first passing CI run.
 
-### Stub implemention
+### NIF Testing
 
-Related to the above, stub out a Phase 0 implementation of the Rust and Elixir subprojects.
-- Add a `nif` Rust subproject. Pull in joltshark (repo version) and rustler as dependencies. Stub out and expose a single `nop()` function that does nothing.
-- Review structure of existing structure and rework it if unsound.
-- Stub out anything obvious. There should be no functionality in the stubs. Skip anything components where there is too much ambiguity to proceed with confidence. Stub out Phoenix live view.
-- Build the nif and load it with Phoenix application. Call the `nop()` NIF function during startup.
+- Add an Elixir test that explicitly calls `CordialCantina.Nif.nop()` to verify NIF loading in  the test suite.
+- Add the NIF build to CI.
+- Add a test to the NIF stub so that `cargo test` is nominally meaningful.
+
+### LiveView real-time
+
+Add Phoenix PubSub for real-time updates. Push a visual indicator, like the datetime for manual verification.
+
+### Remove Mention of Orbital Market Maker
+
+The product name "Orbital Market Maker" was suggested by another LLM session.
+The product/service name is Cordial Cantina. Joltshark is the name of the portable, general-purpose financial library.
+Documentation should be updated to reflect name "Cordial Cantina".
+
+If I were to do this manually, I would use `grep` to search for files containing the word "orbital" (case insensitive).
+Then I would review each file.
+Note that only the incorrect Orbital Market Maker product/service name should be removed, not references to orbital mechanics as a physical technique.
+
+---
 
 ## Context
 
-`${HOME}/.claude/CLAUDE.md` inclusion suggestion was reasonable.
-CI failed. This warrants resolution.
-A crash dump is present. This warrants resolution.
-Project stubbing is a foundation for future work, and may help resolve issues.
+CI still failing.
+Reasonable reverse prompt suggestions.
+I want to be able to manually check LiveView setup on a running server.
+Documentation cleanup is low priority and non-block, but immediately obvious and trivial to fix.
 
 ## Constraints
 
-Retain existing joltshark logic. It will be revisited in the future.
-The Elixir project has no substatnital functionality.
+During documentation cleanup, retain mention of orbital mechanics as a physic concept.
 
 ## Success Criteria
 
-- `docs/reference/MASTER_CLAUDE_MD_REFERENCE.md` properly integrated into the knowledge graph with TOC updated.
-- Minimal joltshark `README.md` added and linked to by top level `README.md`.
-- CI failure resolved or instructions given for human pilot resolution.
-- Issue that caused erl_crash.dump resolved so that whatever caused this particular crash is resolved is will not recur.
-- Non-functional stubs add to projects to lay the groundwork for Phase 1.
-- nif subproject added. NIF and `nop()` function called without issue.
-- Phoenix project runs, and liveview can be viewed without issue. It is OK if there is no data for liveview to report in real time.
+CI passes on GitHub.
+NIF testing (Rust and Elixir) implemented and passing.
+NIF added to CI.
+Liveview PubSub implemented with visual feedback on live server.
+No mention of Orbital Market Maker product name.
 
 ## Notes
 
-(none)
+I want to know the URL/route to the page where LiveView updates are being pushing to confirm functionality.

@@ -63,8 +63,8 @@ impl<T: Scalar, const D: usize> Add for StateVector<T, D> {
 
     fn add(self, rhs: Self) -> Self::Output {
         let mut result = [T::zero(); D];
-        for i in 0..D {
-            result[i] = self.0[i] + rhs.0[i];
+        for (r, (a, b)) in result.iter_mut().zip(self.0.iter().zip(rhs.0.iter())) {
+            *r = *a + *b;
         }
         StateVector(result)
     }
@@ -75,8 +75,8 @@ impl<T: Scalar, const D: usize> Sub for StateVector<T, D> {
 
     fn sub(self, rhs: Self) -> Self::Output {
         let mut result = [T::zero(); D];
-        for i in 0..D {
-            result[i] = self.0[i] - rhs.0[i];
+        for (r, (a, b)) in result.iter_mut().zip(self.0.iter().zip(rhs.0.iter())) {
+            *r = *a - *b;
         }
         StateVector(result)
     }
@@ -112,10 +112,10 @@ pub fn update_grid<T: Scalar, const D: usize>(
     config: &GridConfig<T>,
     jolt_limit: T,
 ) -> GridCommand<T> {
-    if let Some(j) = state.jolt() {
-        if jolt_limit < j.abs() {
-            return GridCommand::Exit;
-        }
+    if let Some(j) = state.jolt()
+        && jolt_limit < j.abs()
+    {
+        return GridCommand::Exit;
     }
 
     if let Some(pos) = state.position() {

@@ -1,5 +1,7 @@
 # Cordial Cantina
 
+[![CI](https://github.com/sgeos/cordial_cantina/actions/workflows/ci.yml/badge.svg)](https://github.com/sgeos/cordial_cantina/actions/workflows/ci.yml)
+
 A concentrated liquidity market maker (CLMM) trading system for Solana blockchain.
 
 **Status**: Specification draft under active development

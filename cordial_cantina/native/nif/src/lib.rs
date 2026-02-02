@@ -19,3 +19,13 @@ fn nop() -> rustler::Atom {
 }
 
 rustler::init!("Elixir.CordialCantina.Nif");
+
+#[cfg(test)]
+mod tests {
+    /// Verify the crate compiles and joltshark is accessible.
+    #[test]
+    fn joltshark_accessible() {
+        // Verify joltshark types are accessible
+        let _: joltshark::GridCommand<f64> = joltshark::GridCommand::Hold;
+    }
+}

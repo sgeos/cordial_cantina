@@ -6,9 +6,9 @@
 
 ## Name
 
-**Orbital Market Maker** (working title)
+**Cordial Cantina**
 
-The name reflects the physical modeling approach using orbital mechanics concepts.
+A concentrated liquidity market maker (CLMM) trading system for Solana blockchain that applies physical modeling concepts from Riemannian geometry and classical mechanics.
 
 ---
 

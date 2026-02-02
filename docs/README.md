@@ -1,6 +1,6 @@
 # Cordial Cantina Documentation
 
-> **Project**: Orbital Market Maker (working title)
+> **Project**: Cordial Cantina
 > **Version**: 0.1.0-alpha
 > **Status**: Specification draft under active development
 

@@ -36,14 +36,22 @@ jobs:
           elixir-version: ${{ env.ELIXIR_VERSION }}
           otp-version: ${{ env.OTP_VERSION }}
 
+      - name: Set up Rust (for NIF)
+        uses: dtolnay/rust-toolchain@stable
+
       - name: Restore dependencies cache
         uses: actions/cache@v4
         with:
           path: |
             cordial_cantina/deps
             cordial_cantina/_build
-          key: ${{ runner.os }}-mix-${{ hashFiles('cordial_cantina/mix.lock') }}
-          restore-keys: ${{ runner.os }}-mix-
+            cordial_cantina/native/nif/target
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+          key: ${{ runner.os }}-mix-nif-${{ hashFiles('cordial_cantina/mix.lock', 'cordial_cantina/native/nif/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-mix-nif-
 
       - name: Install dependencies
         run: mix deps.get
