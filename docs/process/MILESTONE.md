@@ -8,7 +8,7 @@ This file is the source of truth for the current development sprint.
 
 ## Milestone: V0.0-M0-P8 Coding System and Cleanup
 
-**Status**: In Progress
+**Status**: Complete
 
 **Started**: 2026-02-02
 
@@ -18,12 +18,12 @@ This file is the source of truth for the current development sprint.
 
 ## Success Criteria
 
-- [ ] Mnesia GenServer strategy documented in knowledge graph
-- [ ] Vw-Mx-Py-Tz coding system documented in PROCESS_STRATEGY.md
-- [ ] Old Mx-Ty codes mapped to V0.0-M0-Px-Ty in MILESTONE_HISTORY.md
-- [ ] Deprecated SPECIFICATION.md removed
-- [ ] All references to SPECIFICATION.md removed from knowledge graph
-- [ ] All changes committed
+- [x] Mnesia GenServer strategy documented in knowledge graph
+- [x] Vw-Mx-Py-Tz coding system documented in PROCESS_STRATEGY.md
+- [x] Old Mx-Ty codes mapped to V0.0-M0-Px-Ty in MILESTONE_HISTORY.md
+- [x] Deprecated SPECIFICATION.md removed
+- [x] All references to SPECIFICATION.md removed from knowledge graph
+- [x] All changes committed
 
 ---
 
@@ -38,9 +38,9 @@ This file is the source of truth for the current development sprint.
 | V0.0-M0-P8-T5 | Update docs/README.md | Complete | Reference removed |
 | V0.0-M0-P8-T6 | Update PRIORITY.md reference | Complete | Link updated |
 | V0.0-M0-P8-T7 | Update MILESTONE_HISTORY.md with new coding | Complete | In previous turn |
-| V0.0-M0-P8-T8 | Write REVERSE_PROMPT.md | In Progress | This file |
-| V0.0-M0-P8-T9 | Verify mix precommit | Pending | `mix precommit` |
-| V0.0-M0-P8-T10 | Commit all changes | Pending | Commit hash |
+| V0.0-M0-P8-T8 | Write REVERSE_PROMPT.md | Complete | File updated |
+| V0.0-M0-P8-T9 | Verify mix precommit | Complete | 6 tests pass |
+| V0.0-M0-P8-T10 | Commit all changes | Complete | Commit `4e782bd` |
 
 ---
 
