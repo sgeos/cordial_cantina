@@ -62,6 +62,16 @@ jobs:
       - name: Run precommit checks
         run: mix precommit
 
+      - name: Run coverage report
+        run: mix coveralls.json
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: cordial_cantina/cover/excoveralls.json
+          fail_ci_if_error: false
+        continue-on-error: true
+
   rust:
     name: Rust
     runs-on: ubuntu-latest

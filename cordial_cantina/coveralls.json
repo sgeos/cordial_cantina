@@ -1,0 +1,24 @@
+{
+  "coverage_options": {
+    "minimum_coverage": 0,
+    "treat_no_relevant_lines_as_covered": true
+  },
+  "skip_files": [
+    "lib/cordial_cantina_web.ex",
+    "lib/cordial_cantina_web/components/core_components.ex",
+    "lib/cordial_cantina_web/components/layouts.ex",
+    "lib/cordial_cantina_web/telemetry.ex",
+    "lib/cordial_cantina_web/live/dashboard_live.ex",
+    "lib/cordial_cantina_web/router.ex",
+    "lib/cordial_cantina_web/endpoint.ex",
+    "lib/cordial_cantina_web/gettext.ex",
+    "lib/cordial_cantina_web/controllers/error_html.ex",
+    "lib/cordial_cantina_web/controllers/error_json.ex",
+    "lib/cordial_cantina_web/controllers/page_controller.ex",
+    "lib/cordial_cantina_web/controllers/page_html.ex",
+    "test/support"
+  ],
+  "terminal_options": {
+    "file_column_width": 60
+  }
+}

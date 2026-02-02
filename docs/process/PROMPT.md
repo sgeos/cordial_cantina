@@ -14,15 +14,19 @@ Still unable to verify CI fix.
 
 ## Objectives
 
-### V0.1-M1: Mnesia GenServer Implementation
+### V0.1-M2: Secrets Management Setup #3
 
-Mark V0.1-M1 as complete.
-Close GitHub Issue with appropriate message..
+Mark V0.1-M2 as complete.
+Close GitHub Issue with appropriate message.
 
-### V0.1-M2: Secrets Management Setup
+### V0.1-M3: Test Coverage Setup #4
 
-Please implement V0.1-M2: Secrets Management Setup.
-Details can be found in the GitHub issue.
+Please implement V0.1-M3.
+- Add excoveralls to mix.exs dependencies
+- Configure coveralls.json for coverage reporting
+- Add coverage check to CI pipeline
+- Set 80% coverage target for critical paths
+- Add Bypass for HTTP mocking
 
 ## Context
 
@@ -34,13 +38,10 @@ Moving on with the implementation.
 
 ## Success Criteria
 
-- V0.1-M1 issue closed with appropriate message.
-- Add .env and .env.example
-- Verify that .env is added to .gitignore
-- `config/runtime.exs` loads from environment
-- All tasks successfully implemented, tested and working.
-- No secrets in source control
-- .env.example defines required variables with benign values that do not leak secrets
+- V0.1-M2 issue #3 closed with appropriate message.
+- mix coveralls generates coverage report
+- CI reports coverage metrics
+- Bypass available for mocking external APIs
 
 ## Notes
 

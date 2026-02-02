@@ -11,7 +11,16 @@ defmodule CordialCantina.MixProject do
       aliases: aliases(),
       deps: deps(),
       compilers: [:phoenix_live_view] ++ Mix.compilers(),
-      listeners: [Phoenix.CodeReloader]
+      listeners: [Phoenix.CodeReloader],
+      # Test coverage configuration
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test,
+        "coveralls.json": :test
+      ]
     ]
   end
 
@@ -63,7 +72,10 @@ defmodule CordialCantina.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
-      {:rustler, "~> 0.34"}
+      {:rustler, "~> 0.34"},
+      # Test coverage and mocking
+      {:excoveralls, "~> 0.18", only: :test},
+      {:bypass, "~> 2.1", only: :test}
     ]
   end
 

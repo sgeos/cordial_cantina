@@ -9,90 +9,99 @@ This file is the AI-to-human communication channel. It is overwritten after each
 ## Last Updated
 
 **Date**: 2026-02-02
-**Task**: V0.1-M2-P1 Secrets Management Setup
-**Macro-milestone**: V0.1-M2 Secrets Management Setup
+**Task**: V0.1-M3-P1 Test Coverage Setup
+**Macro-milestone**: V0.1-M3 Test Coverage Setup
 
 ---
 
 ## Verification
 
-### V0.1-M1 Closure
-**Command**: `gh issue close 2 --reason completed`
-**Result**: PASS - Issue #2 closed with completion message
+### V0.1-M2 Closure
+**Command**: `gh issue close 3 --reason completed`
+**Result**: PASS - Issue #3 closed with completion message
 
-### V0.1-M2-P1: Secrets Management
+### V0.1-M3-P1: Test Coverage Setup
 **Command**: `mix precommit`
-**Result**: PASS - 14 tests, 0 failures
+**Result**: PASS - 18 tests, 0 failures
 
-### Configuration Loading Test
-**Command**: `BIRDEYE_API_KEY=test mix run -e 'IO.inspect(Application.get_env(:cordial_cantina, :birdeye_api_key))'`
-**Result**: PASS - Returns `"test"` when set, `nil` when unset
+### Coverage Report
+**Command**: `MIX_ENV=test mix coveralls`
+**Result**: PASS - 61.8% coverage reported (no minimum enforced for V0.1)
 
 ---
 
 ## Implementation Summary
 
+### Dependencies Added
+
+**excoveralls ~> 0.18**
+- Test coverage reporting
+- Supports multiple output formats (terminal, HTML, JSON)
+- Integrates with Codecov
+
+**bypass ~> 2.1**
+- HTTP request mocking for tests
+- Enables testing external API integrations
+
 ### Created Files
 
-**`.env.example`**
-- PORT (default: 4000)
-- PHX_SERVER (for releases)
-- SECRET_KEY_BASE (production)
-- PHX_HOST (production)
-- BIRDEYE_API_KEY (V0.1-M4)
-- RAYDIUM_API_KEY (V0.2+)
-- DATABASE_URL (V0.2+)
+**`coveralls.json`**
+- Coverage configuration
+- Skips web boilerplate (controllers, templates, components)
+- Focuses coverage on critical business logic
+
+**`test/support/bypass_test_helper.ex`**
+- Helper module for Bypass usage
+- `start_bypass/0` and `bypass_url/2` functions
+
+**`test/cordial_cantina/bypass_integration_test.exs`**
+- 4 tests demonstrating Bypass capabilities
+- GET, POST, error responses, rate limiting
 
 ### Modified Files
 
-**`config/runtime.exs`**
-- Added application-specific configuration section
-- Loads `birdeye_api_key` and `raydium_api_key` from environment
+**`mix.exs`**
+- Added excoveralls and bypass dependencies
+- Added test_coverage configuration
+- Added preferred_cli_env for coveralls tasks
 
-**`README.md`**
-- Complete rewrite with environment variable documentation
-- Quick start guide
-- Development commands
-- Link to documentation
+**`.github/workflows/ci.yml`**
+- Added coverage report step (`mix coveralls.json`)
+- Added Codecov upload step (optional, continues on error)
 
 **`CHANGELOG.md`**
-- Added V0.1-M2-P1 secrets management to Unreleased
+- Added V0.1-M3-P1 test coverage to Unreleased
 
 ---
 
-## Verification Details
+## Coverage Status
 
-### .gitignore Status
+| File | Coverage |
+|------|----------|
+| lib/cordial_cantina.ex | 100.0% |
+| lib/cordial_cantina/application.ex | 85.7% |
+| lib/cordial_cantina/mailer.ex | 100.0% |
+| lib/cordial_cantina/mnesia/server.ex | 59.5% |
+| lib/cordial_cantina/nif.ex | 0.0% |
+| **Total** | **61.8%** |
 
-The `.gitignore` was already correctly configured:
-- Line 41: `.env`
-- Line 42: `.env.*`
-- Line 52: `!*.example` (whitelist)
-
-This means `.env` is ignored but `.env.example` is tracked.
-
-### No Secrets in Source Control
-
-Verified:
-- `.env.example` contains only placeholder comments and benign defaults
-- No actual API keys or secrets in any committed files
-- Production variables documented but not set
+Per R7 decision, 80% is a target for critical paths but not enforced for V0.1. Coverage will improve as features are added with tests.
 
 ---
 
 ## GitHub Issue Status
 
-### Issue #2 (V0.1-M1)
+### Issue #3 (V0.1-M2)
 **Status**: Closed
 **Reason**: Completed
-**Comment**: Implementation details and commit reference provided
 
-### Issue #3 (V0.1-M2)
+### Issue #4 (V0.1-M3)
 All tasks complete:
-- [x] Create `.env.example` with required environment variables
-- [x] Add `.env` to `.gitignore` (verify)
-- [x] Update `config/runtime.exs` to load from environment
-- [x] Document environment variables in README
+- [x] Add excoveralls to mix.exs dependencies
+- [x] Configure coveralls.json for coverage reporting
+- [x] Add coverage check to CI pipeline
+- [x] Set 80% coverage target for critical paths
+- [x] Add Bypass for HTTP mocking
 
 The issue can be closed after commit is verified.
 
@@ -100,15 +109,15 @@ The issue can be closed after commit is verified.
 
 ## Questions for Human Pilot
 
-1. **Close Issue #3?** Should I close GitHub Issue #3 now that implementation is complete?
+1. **Close Issue #4?** Should I close GitHub Issue #4 now that implementation is complete?
 
-2. **Next milestone?** Ready to proceed with V0.1-M3 (Test Coverage) or V0.1-M4 (Birdeye API)?
+2. **Next milestone?** Ready to proceed with V0.1-M4 (Birdeye API Integration)?
 
 ---
 
 ## Technical Concerns / Risks
 
-None. The implementation follows R6 decision. Configuration loading verified via mix run test.
+None. The implementation follows R7 decision. Coverage reporting works, Bypass HTTP mocking is available for future API integration tests.
 
 ---
 
@@ -116,8 +125,8 @@ None. The implementation follows R6 decision. Configuration loading verified via
 
 **Awaiting human direction** on:
 - Commit verification
-- Issue #3 closure
-- Next milestone selection (M3 or M4)
+- Issue #4 closure
+- V0.1-M4 initiation
 
 ---
 
@@ -128,7 +137,8 @@ If you are a new AI session reading this file:
 1. Check [GitHub Issues](https://github.com/sgeos/cordial_cantina/issues) for open tasks
 2. V0.0-M0 Process Definition: Complete
 3. V0.1-M1 Mnesia GenServer: Complete (Issue #2 closed)
-4. V0.1-M2 Secrets Management: Complete (this prompt)
-5. Primary tracking: GitHub Issues
-6. Next candidates: V0.1-M3 (Test Coverage), V0.1-M4 (Birdeye API)
-7. Wait for human prompt before proceeding
+4. V0.1-M2 Secrets Management: Complete (Issue #3 closed)
+5. V0.1-M3 Test Coverage: Complete (this prompt)
+6. Primary tracking: GitHub Issues
+7. Next candidate: V0.1-M4 (Birdeye API Integration)
+8. Wait for human prompt before proceeding

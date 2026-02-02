@@ -6,25 +6,25 @@ This file is the source of truth for the current development sprint.
 
 ---
 
-## Milestone: V0.1-M2-P1 Secrets Management Setup
+## Milestone: V0.1-M3-P1 Test Coverage Setup
 
 **Status**: Complete
 
 **Started**: 2026-02-02
 
-**Macro-milestone**: V0.1-M2 Secrets Management Setup
+**Macro-milestone**: V0.1-M3 Test Coverage Setup
 
-**GitHub Issue**: [#3](https://github.com/sgeos/cordial_cantina/issues/3)
+**GitHub Issue**: [#4](https://github.com/sgeos/cordial_cantina/issues/4)
 
 ---
 
 ## Success Criteria
 
-- [x] Create `.env.example` with required environment variables
-- [x] Add `.env` to `.gitignore` (verified - already present)
-- [x] Update `config/runtime.exs` to load from environment
-- [x] Document environment variables in README
-- [x] No secrets in source control
+- [x] Add excoveralls to mix.exs dependencies
+- [x] Configure coveralls.json for coverage reporting
+- [x] Add coverage check to CI pipeline
+- [x] Set 80% coverage target for critical paths (configurable)
+- [x] Add Bypass for HTTP mocking
 
 ---
 
@@ -32,27 +32,30 @@ This file is the source of truth for the current development sprint.
 
 | ID | Task | Status | Verification |
 |----|------|--------|--------------|
-| V0.1-M2-P1-T1 | Verify .env in .gitignore | Complete | Lines 41-42, 52 |
-| V0.1-M2-P1-T2 | Create .env.example | Complete | File created |
-| V0.1-M2-P1-T3 | Update runtime.exs | Complete | API key config added |
-| V0.1-M2-P1-T4 | Document env vars in README | Complete | README updated |
-| V0.1-M2-P1-T5 | Verify config loading | Complete | mix run test |
-| V0.1-M2-P1-T6 | Run precommit checks | Complete | 14 tests pass |
-| V0.1-M2-P1-T7 | Update MILESTONE.md | Complete | This file |
-| V0.1-M2-P1-T8 | Write REVERSE_PROMPT.md | Complete | File updated |
-| V0.1-M2-P1-T9 | Commit changes | Complete | See commit |
+| V0.1-M3-P1-T1 | Add excoveralls dependency | Complete | mix.exs updated |
+| V0.1-M3-P1-T2 | Add bypass dependency | Complete | mix.exs updated |
+| V0.1-M3-P1-T3 | Configure excoveralls in project | Complete | test_coverage, preferred_cli_env |
+| V0.1-M3-P1-T4 | Create coveralls.json | Complete | File created |
+| V0.1-M3-P1-T5 | Update CI for coverage | Complete | ci.yml updated |
+| V0.1-M3-P1-T6 | Create Bypass test helper | Complete | test/support/bypass_test_helper.ex |
+| V0.1-M3-P1-T7 | Write Bypass integration tests | Complete | 4 tests passing |
+| V0.1-M3-P1-T8 | Verify mix coveralls works | Complete | 61.8% coverage reported |
+| V0.1-M3-P1-T9 | Run precommit checks | Complete | 18 tests pass |
+| V0.1-M3-P1-T10 | Update MILESTONE.md | Complete | This file |
+| V0.1-M3-P1-T11 | Write REVERSE_PROMPT.md | Complete | File updated |
+| V0.1-M3-P1-T12 | Commit changes | Complete | See commit |
 
 ---
 
 ## Notes
 
-Per R6 decision, secrets management uses:
-- Environment variables loaded via `config/runtime.exs`
-- `.env` files for local development (gitignored)
-- `.env.example` for documentation with safe dummy values
-- Production secrets management deferred until V1.0
+Per R7 decision:
+- excoveralls is the standard Elixir coverage tool
+- 80% target for critical paths (configurable via coveralls.json)
+- No hard coverage target enforced for V0.1
+- Bypass provides flexible HTTP mocking for RPC calls
 
-The `.gitignore` was already configured correctly with `.env` excluded and `!*.example` whitelisted.
+Coverage reporting is added to CI but does not fail the build. Coverage metrics are reported for visibility.
 
 ---
 

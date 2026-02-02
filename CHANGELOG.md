@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `CordialCantina.Mnesia.Server` GenServer for Mnesia initialization (V0.1-M1-P1)
 - Secrets management with `.env.example` and `runtime.exs` configuration (V0.1-M2-P1)
 - Environment variable documentation in README
+- Test coverage with excoveralls (V0.1-M3-P1)
+- HTTP mocking with Bypass for API integration tests
+- Coverage reporting in CI pipeline
 
 ### Fixed
 - CI pipeline: Added `mix compile` step before `mix precommit` (NIF requires compilation)
