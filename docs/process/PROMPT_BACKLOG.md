@@ -16,14 +16,18 @@ This file records AI-agent concerns, questions, and suggestions that need human 
 
 ## Unresolved Items
 
+### From Milestone: M5 Project Infrastructure (2026-02-01)
+
+| ID | Type | Item | Status |
+|----|------|------|--------|
+| B5 | Suggestion | Consider integration with project management/issue tracking system (GitHub Issues, Linear, etc.) to track features and fixes above repo level | Open |
+| B6 | Question | CLAUDE.md inclusion strategy - how to include user's master ~/.claude/CLAUDE.md for reference without AI-agent auto-loading | Open |
+
 ### From Milestone: Documentation Foundation (2026-02-01)
 
 | ID | Type | Item | Status |
 |----|------|------|--------|
-| B1 | Question | Should milestones use a prefix (M1, M2) or descriptive names only? | Open |
-| B2 | Question | What verification depth for code tasks? (Minimal/Standard/Full) | Open |
 | B3 | Suggestion | Consider adding CHANGELOG.md for milestone completion history | Open |
-| B4 | Suggestion | Consider CI integration for automated task verification | Deferred |
 
 ---
 
@@ -31,7 +35,9 @@ This file records AI-agent concerns, questions, and suggestions that need human 
 
 | ID | Type | Item | Resolution | Date |
 |----|------|------|------------|------|
-| - | - | (none yet) | - | - |
+| B1 | Question | Should milestones use a prefix (M1, M2) or descriptive names only? | Use prefix with unambiguous logical code (e.g., M5) | 2026-02-01 |
+| B2 | Question | What verification depth for code tasks? | Passing `mix precommit` | 2026-02-01 |
+| B4 | Suggestion | Consider CI integration for automated task verification | Implemented in M5 via GitHub Actions | 2026-02-01 |
 
 ---
 

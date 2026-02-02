@@ -1,0 +1,31 @@
+#!/bin/sh
+#
+# pre-commit hook
+#
+# Runs documentation coverage check before allowing commits.
+# Ensures all markdown files in docs/ are referenced in their parent README.md.
+#
+# Install: ./scripts/setup.sh
+# Or manually: ln -sf ../../hooks/pre-commit .git/hooks/pre-commit
+
+set -e
+
+# Get the repository root directory
+REPO_ROOT=$(git rev-parse --show-toplevel)
+
+# Run the documentation coverage check
+if [ -x "$REPO_ROOT/scripts/check-doc-coverage.sh" ]; then
+    echo "Running documentation coverage check..."
+    if ! "$REPO_ROOT/scripts/check-doc-coverage.sh" "$REPO_ROOT/docs"; then
+        echo ""
+        echo "Pre-commit hook failed: Documentation coverage incomplete."
+        echo "Please ensure all markdown files are referenced in their parent README.md."
+        exit 1
+    fi
+    echo "Documentation coverage check passed."
+else
+    echo "Warning: scripts/check-doc-coverage.sh not found or not executable."
+    echo "Skipping documentation coverage check."
+fi
+
+exit 0

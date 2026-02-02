@@ -8,6 +8,29 @@ This file archives completed milestones. When a milestone is complete, move its 
 
 ## Completed Milestones
 
+### M4: Pre-commit Hook
+
+**Status**: Complete
+**Period**: 2026-02-01
+
+**Success Criteria**:
+- [x] Pre-commit hook installed to run documentation coverage check
+- [x] Process codification verified or updated
+- [x] All changes committed
+
+**Tasks Completed**:
+| ID | Task | Verification |
+|----|------|--------------|
+| M4-T1 | Create pre-commit hook | `.git/hooks/pre-commit` exists |
+| M4-T2 | Test pre-commit hook | Hook runs on commit |
+| M4-T3 | Verify process codification | PROCESS_STRATEGY.md lines 79-180 |
+| M4-T4 | Update REVERSE_PROMPT.md | File updated |
+| M4-T5 | Commit all changes | Commit `d608b66` |
+
+**Commit**: `d608b66` - chore: add pre-commit hook for documentation coverage
+
+---
+
 ### M3: Process Tooling
 
 **Status**: Complete
