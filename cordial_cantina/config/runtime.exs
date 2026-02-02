@@ -7,6 +7,17 @@ import Config
 # any compile-time configuration in here, as it won't be applied.
 # The block below contains prod specific runtime configuration.
 
+# === Application Configuration ===
+# These settings apply to all environments
+
+# API Keys (loaded from environment, nil if not set)
+# Per R6: Secrets loaded from environment variables
+config :cordial_cantina,
+  birdeye_api_key: System.get_env("BIRDEYE_API_KEY"),
+  raydium_api_key: System.get_env("RAYDIUM_API_KEY")
+
+# === Phoenix Server Configuration ===
+
 # ## Using releases
 #
 # If you use `mix release`, you need to explicitly enable the server

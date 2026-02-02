@@ -9,24 +9,24 @@ This file is the AI-to-human communication channel. It is overwritten after each
 ## Last Updated
 
 **Date**: 2026-02-02
-**Task**: V0.1-M1-P1 Mnesia GenServer Implementation
-**Macro-milestone**: V0.1-M1 Mnesia GenServer Implementation
+**Task**: V0.1-M2-P1 Secrets Management Setup
+**Macro-milestone**: V0.1-M2 Secrets Management Setup
 
 ---
 
 ## Verification
 
-### V0.1-M1-P1-T1 through T8: Mnesia GenServer Implementation
-**Command**: `mix test test/cordial_cantina/mnesia/server_test.exs`
-**Result**: PASS - 8 tests, 0 failures
+### V0.1-M1 Closure
+**Command**: `gh issue close 2 --reason completed`
+**Result**: PASS - Issue #2 closed with completion message
 
-### Full Test Suite
-**Command**: `mix test`
+### V0.1-M2-P1: Secrets Management
+**Command**: `mix precommit`
 **Result**: PASS - 14 tests, 0 failures
 
-### Precommit Checks
-**Command**: `mix precommit`
-**Result**: PASS - All checks pass
+### Configuration Loading Test
+**Command**: `BIRDEYE_API_KEY=test mix run -e 'IO.inspect(Application.get_env(:cordial_cantina, :birdeye_api_key))'`
+**Result**: PASS - Returns `"test"` when set, `nil` when unset
 
 ---
 
@@ -34,57 +34,65 @@ This file is the AI-to-human communication channel. It is overwritten after each
 
 ### Created Files
 
-**`lib/cordial_cantina/mnesia/server.ex`**
-- GenServer for Mnesia initialization and schema management
-- `start_link/1` - Starts the server
-- `ready?/0` - Returns boolean indicating ready state
-- `await_ready/1` - Blocks until ready (uses PubSub)
-- `health_check/0` - Returns status map for readiness probes
-
-**`test/cordial_cantina/mnesia/server_test.exs`**
-- 8 tests covering ready?, await_ready, health_check, and initialization scenarios
+**`.env.example`**
+- PORT (default: 4000)
+- PHX_SERVER (for releases)
+- SECRET_KEY_BASE (production)
+- PHX_HOST (production)
+- BIRDEYE_API_KEY (V0.1-M4)
+- RAYDIUM_API_KEY (V0.2+)
+- DATABASE_URL (V0.2+)
 
 ### Modified Files
 
-**`mix.exs`**
-- Added `:mnesia` to `extra_applications`
+**`config/runtime.exs`**
+- Added application-specific configuration section
+- Loads `birdeye_api_key` and `raydium_api_key` from environment
 
-**`lib/cordial_cantina/application.ex`**
-- Added `CordialCantina.Mnesia.Server` to supervision tree (before dependent processes)
+**`README.md`**
+- Complete rewrite with environment variable documentation
+- Quick start guide
+- Development commands
+- Link to documentation
 
 **`CHANGELOG.md`**
-- Added V0.0-M0-P12 to development history
-- Added V0.1-M1-P1 Mnesia GenServer to Unreleased
+- Added V0.1-M2-P1 secrets management to Unreleased
 
 ---
 
-## Design Decisions
+## Verification Details
 
-### Why PubSub for await_ready?
+### .gitignore Status
 
-The `await_ready/1` function uses Phoenix.PubSub to allow dependent processes to block until Mnesia is ready. This was chosen over alternatives because:
+The `.gitignore` was already correctly configured:
+- Line 41: `.env`
+- Line 42: `.env.*`
+- Line 52: `!*.example` (whitelist)
 
-1. **PubSub is already available** in the application (Phoenix.PubSub)
-2. **Fire-and-forget broadcast** on ready means no need to track subscribers
-3. **Simple API** for callers (subscribe, receive, or timeout)
+This means `.env` is ignored but `.env.example` is tracked.
 
-### Why No Tables Yet?
+### No Secrets in Source Control
 
-Per R8 (Mnesia Schema Strategy), the schema is defined iteratively. Creating tables upfront without concrete requirements leads to rework. Tables will be added as features require them, likely starting with:
-- Market data tables (V0.2)
-- Position tracking tables (V0.3)
+Verified:
+- `.env.example` contains only placeholder comments and benign defaults
+- No actual API keys or secrets in any committed files
+- Production variables documented but not set
 
 ---
 
 ## GitHub Issue Status
 
-Issue #2 tasks are complete:
-- [x] Create `CordialCantina.Mnesia.Server` GenServer
-- [x] Initialize schema on first boot
-- [x] Join existing schema on subsequent boots
-- [x] Expose health check function for readiness probes
-- [x] Block dependent processes until schema is ready
-- [x] Add tests for initialization scenarios
+### Issue #2 (V0.1-M1)
+**Status**: Closed
+**Reason**: Completed
+**Comment**: Implementation details and commit reference provided
+
+### Issue #3 (V0.1-M2)
+All tasks complete:
+- [x] Create `.env.example` with required environment variables
+- [x] Add `.env` to `.gitignore` (verify)
+- [x] Update `config/runtime.exs` to load from environment
+- [x] Document environment variables in README
 
 The issue can be closed after commit is verified.
 
@@ -92,15 +100,15 @@ The issue can be closed after commit is verified.
 
 ## Questions for Human Pilot
 
-1. **Close Issue #2?** Should I close GitHub Issue #2 now that implementation is complete?
+1. **Close Issue #3?** Should I close GitHub Issue #3 now that implementation is complete?
 
-2. **Next milestone?** Ready to proceed with V0.1-M2 (Secrets Management) or V0.1-M3 (Test Coverage)?
+2. **Next milestone?** Ready to proceed with V0.1-M3 (Test Coverage) or V0.1-M4 (Birdeye API)?
 
 ---
 
 ## Technical Concerns / Risks
 
-None. The implementation follows R2 and R8 decisions. The GenServer handles both first boot and subsequent boot scenarios correctly. Tests verify all public API functions.
+None. The implementation follows R6 decision. Configuration loading verified via mix run test.
 
 ---
 
@@ -108,8 +116,8 @@ None. The implementation follows R2 and R8 decisions. The GenServer handles both
 
 **Awaiting human direction** on:
 - Commit verification
-- Issue #2 closure
-- Next milestone selection (M2 or M3)
+- Issue #3 closure
+- Next milestone selection (M3 or M4)
 
 ---
 
@@ -119,7 +127,8 @@ If you are a new AI session reading this file:
 
 1. Check [GitHub Issues](https://github.com/sgeos/cordial_cantina/issues) for open tasks
 2. V0.0-M0 Process Definition: Complete
-3. V0.1-M1-P1 Mnesia GenServer: Complete (this prompt)
-4. Primary tracking: GitHub Issues
-5. Next candidates: V0.1-M2 (Secrets), V0.1-M3 (Test Coverage)
-6. Wait for human prompt before proceeding
+3. V0.1-M1 Mnesia GenServer: Complete (Issue #2 closed)
+4. V0.1-M2 Secrets Management: Complete (this prompt)
+5. Primary tracking: GitHub Issues
+6. Next candidates: V0.1-M3 (Test Coverage), V0.1-M4 (Birdeye API)
+7. Wait for human prompt before proceeding

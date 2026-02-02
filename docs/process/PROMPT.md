@@ -10,24 +10,23 @@ This file is a staging area for complex human-to-AI instructions. The human pilo
 
 ## Comments
 
-The process has been established.
-The CI fix is queued, but did not get a runner.
-I am not going to worry above verifyiing CI if runners are not working.
+Still unable to verify CI fix.
 
 ## Objectives
 
-### V0.0-M0
-
-Mark V0.0-M0 as complete.
-
 ### V0.1-M1: Mnesia GenServer Implementation
 
-Please implement V0.1-M1: Mnesia GenServer Implementation.
+Mark V0.1-M1 as complete.
+Close GitHub Issue with appropriate message..
+
+### V0.1-M2: Secrets Management Setup
+
+Please implement V0.1-M2: Secrets Management Setup.
 Details can be found in the GitHub issue.
 
 ## Context
 
-Moving on to implementation now that the process is established and blockers are clear.
+Moving on with the implementation.
 
 ## Constraints
 
@@ -35,8 +34,13 @@ Moving on to implementation now that the process is established and blockers are
 
 ## Success Criteria
 
-- Mnesia Genserver implemented, tested and working.
+- V0.1-M1 issue closed with appropriate message.
+- Add .env and .env.example
+- Verify that .env is added to .gitignore
+- `config/runtime.exs` loads from environment
 - All tasks successfully implemented, tested and working.
+- No secrets in source control
+- .env.example defines required variables with benign values that do not leak secrets
 
 ## Notes
 

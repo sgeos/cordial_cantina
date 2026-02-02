@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - V0.1 Foundation milestone issues created in GitHub
 - `CordialCantina.Mnesia.Server` GenServer for Mnesia initialization (V0.1-M1-P1)
+- Secrets management with `.env.example` and `runtime.exs` configuration (V0.1-M2-P1)
+- Environment variable documentation in README
 
 ### Fixed
 - CI pipeline: Added `mix compile` step before `mix precommit` (NIF requires compilation)
