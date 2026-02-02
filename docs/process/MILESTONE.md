@@ -8,7 +8,7 @@ This file is the source of truth for the current development sprint.
 
 ## Milestone: V0.0-M0-P9 Phase 1 Blocker Decisions
 
-**Status**: In Progress
+**Status**: Complete
 
 **Started**: 2026-02-02
 
@@ -18,16 +18,16 @@ This file is the source of truth for the current development sprint.
 
 ## Success Criteria
 
-- [ ] P1 OTP Supervision decisions documented (P1.2, P1.3, P1.4)
-- [ ] P2 NIF Integration decisions documented
-- [ ] P3 Solana RPC decisions documented
-- [ ] P4 Secrets Management decisions documented
-- [ ] P5 Testing Framework decisions documented
-- [ ] P6 Mnesia Schema decisions documented
-- [ ] P7 Logging decisions documented
-- [ ] Knowledge graph updated (PRIORITY.md, RESOLVED.md)
-- [ ] Remaining blockers documented
-- [ ] All changes committed
+- [x] P1 OTP Supervision decisions documented (P1.2, P1.3, P1.4)
+- [x] P2 NIF Integration decisions documented
+- [x] P3 Solana RPC decisions documented
+- [x] P4 Secrets Management decisions documented
+- [x] P5 Testing Framework decisions documented
+- [x] P6 Mnesia Schema decisions documented
+- [x] P7 Logging decisions documented
+- [x] Knowledge graph updated (PRIORITY.md, RESOLVED.md)
+- [x] Remaining blockers documented
+- [x] All changes committed
 
 ---
 
@@ -35,12 +35,12 @@ This file is the source of truth for the current development sprint.
 
 | ID | Task | Status | Verification |
 |----|------|--------|--------------|
-| V0.0-M0-P9-T1 | Add R3-R9 to RESOLVED.md | Pending | Entries added |
-| V0.0-M0-P9-T2 | Update PRIORITY.md with resolution references | Pending | Links updated |
-| V0.0-M0-P9-T3 | Update Action Items checklist | Pending | Items checked |
-| V0.0-M0-P9-T4 | Write REVERSE_PROMPT.md | Pending | File updated |
-| V0.0-M0-P9-T5 | Verify mix precommit | Pending | Tests pass |
-| V0.0-M0-P9-T6 | Commit all changes | Pending | Commit hash |
+| V0.0-M0-P9-T1 | Add R3-R9 to RESOLVED.md | Complete | 7 entries added |
+| V0.0-M0-P9-T2 | Update PRIORITY.md with resolution references | Complete | Links updated |
+| V0.0-M0-P9-T3 | Update Action Items checklist | Complete | All items checked |
+| V0.0-M0-P9-T4 | Write REVERSE_PROMPT.md | Complete | File updated |
+| V0.0-M0-P9-T5 | Verify mix precommit | Complete | 6 tests pass |
+| V0.0-M0-P9-T6 | Commit all changes | Complete | Commit `a76ca4a` |
 
 ---
 

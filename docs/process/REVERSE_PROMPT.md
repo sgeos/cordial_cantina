@@ -29,10 +29,12 @@ This file is the AI-to-human communication channel. It is overwritten after each
 **Result**: This file
 
 ### V0.0-M0-P9-T5: Verify mix precommit
-**Status**: Pending
+**Command**: `mix precommit`
+**Result**: PASS - 6 tests, 0 failures
 
 ### V0.0-M0-P9-T6: Commit all changes
-**Status**: Pending
+**Command**: `git commit`
+**Result**: PASS - Commit `a76ca4a`
 
 ---
 
@@ -156,7 +158,7 @@ The NIF decision (R4) mentions `catch_unwind` as a fallback for panic handling. 
 
 If you are a new AI session reading this file:
 
-1. Read [MILESTONE.md](./MILESTONE.md) - V0.0-M0-P9 in progress
+1. Read [MILESTONE.md](./MILESTONE.md) - V0.0-M0-P9 complete
 2. Read [PRIORITY.md](../decisions/PRIORITY.md) - Phase 1 unblocked
 3. Read [RESOLVED.md](../decisions/RESOLVED.md) - R1-R9 documented
 4. Process definition macro-milestone: Near complete
