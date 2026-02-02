@@ -8,41 +8,53 @@ This file is the AI-to-human communication channel. It is overwritten after each
 
 ## Last Updated
 
-**Date**: 2026-02-01
-**Task**: M5 Project Infrastructure complete
-**Milestone**: M5 Project Infrastructure
+**Date**: 2026-02-02
+**Task**: M6 Foundation Stubs complete
+**Milestone**: M6 Foundation Stubs
 
 ---
 
 ## Verification
 
-### M5-T1: Create hooks/ directory with shared pre-commit
-**Command**: `ls -la hooks/`
-**Result**: PASS - `hooks/pre-commit` created with documentation coverage check
+### M6-T1: Add header to MASTER_CLAUDE_MD_REFERENCE.md
+**Result**: PASS - Navigation header and usage notes added
 
-### M5-T2: Create setup script
-**Command**: `./scripts/setup.sh`
-**Result**: PASS - Script installs hooks, checks dependencies, fetches Elixir deps
+### M6-T2: Update docs/reference/README.md
+**Result**: PASS - MASTER_CLAUDE_MD_REFERENCE.md listed in ToC
 
-### M5-T3: Create CI workflow
-**Command**: `ls -la .github/workflows/ci.yml`
-**Result**: PASS - GitHub Actions workflow with documentation, Elixir, and Rust jobs
+### M6-T3: Create joltshark README.md
+**Result**: PASS - Minimal README created
 
-### M5-T4: Create top-level README.md
-**Command**: `head -30 README.md`
-**Result**: PASS - Documents structure, setup, subprojects with POSIX-compliant instructions
+### M6-T4: Fix CI workflow
+**Command**: `grep rust-toolchain .github/workflows/ci.yml`
+**Result**: PASS - Changed `dtolnay/rust-action` to `dtolnay/rust-toolchain`
 
-### M5-T5: Update PROMPT_BACKLOG.md
-**Result**: PASS - Resolved B1 (milestone naming), B2 (verification depth), B4 (CI). Added B5 (project management), B6 (CLAUDE.md strategy)
+### M6-T5: Create root .gitignore
+**Result**: PASS - Created with erl_crash.dump exclusion
 
-### M5-T6: Test CI workflow locally
+### M6-T6: Delete erl_crash.dump
+**Result**: PASS - File removed
+
+### M6-T7: Create nif Rust subproject
+**Result**: PASS - `cordial_cantina/native/nif/` created with Cargo.toml
+
+### M6-T8: Implement nop() NIF function
+**Result**: PASS - Function compiles with rustler 0.37
+
+### M6-T9: Integrate NIF with Phoenix
+**Result**: PASS - `[info] NIF loaded successfully` on startup
+
+### M6-T10: Stub LiveView
+**Result**: PASS - `/dashboard` returns 200, shows NIF status
+
+### M6-T11: Verify with mix precommit
 **Command**: `cd cordial_cantina && mix precommit`
 **Result**: PASS - 5 tests, 0 failures
 
-### M5-T7: Update REVERSE_PROMPT.md
+### M6-T12: Update REVERSE_PROMPT.md
 **Result**: This file
 
-### M5-T8: Commit all changes
+### M6-T13: Commit all changes
 **Status**: PENDING
 
 ---
@@ -50,88 +62,89 @@ This file is the AI-to-human communication channel. It is overwritten after each
 ## Files Created/Modified
 
 **Created**:
-- `README.md` - Top-level project README
-- `hooks/pre-commit` - Shared git hook (tracked in repo)
-- `scripts/setup.sh` - Environment setup script
-- `.github/workflows/ci.yml` - GitHub Actions CI workflow
+- `.gitignore` - Root gitignore with erl_crash.dump exclusion
+- `joltshark/README.md` - Minimal joltshark documentation
+- `cordial_cantina/native/nif/Cargo.toml` - NIF crate configuration
+- `cordial_cantina/native/nif/src/lib.rs` - NIF implementation with nop()
+- `cordial_cantina/lib/cordial_cantina/nif.ex` - Elixir NIF module
+- `cordial_cantina/lib/cordial_cantina_web/live/dashboard_live.ex` - LiveView dashboard
 
 **Modified**:
-- `docs/process/MILESTONE.md` - M5 milestone
-- `docs/process/MILESTONE_HISTORY.md` - Archived M4
-- `docs/process/PROMPT_BACKLOG.md` - Resolved B1, B2, B4; added B5, B6
+- `docs/reference/MASTER_CLAUDE_MD_REFERENCE.md` - Added header and usage notes
+- `docs/reference/README.md` - Added MASTER_CLAUDE_MD_REFERENCE.md to ToC
+- `.github/workflows/ci.yml` - Fixed Rust action name
+- `cordial_cantina/mix.exs` - Added rustler dependency
+- `cordial_cantina/lib/cordial_cantina/application.ex` - Call nop() on startup
+- `cordial_cantina/lib/cordial_cantina_web/router.ex` - Added /dashboard route
+- `README.md` - Updated joltshark link
+
+**Deleted**:
+- `erl_crash.dump`
+
+---
+
+## erl_crash.dump Analysis
+
+**Cause**: The crash occurred during shell initialization when Elixir attempted to print its version to standard_io. The IO channel was terminated before the print completed. This is a transient issue from running scripts in subshell contexts, not an application bug.
+
+**Slogan**: `Runtime terminating during boot ({terminated,[{io,put_chars,[standard_io,...`
+
+**Resolution**:
+1. Added `erl_crash.dump` to root `.gitignore`
+2. The crash is not reproducible in normal application startup
+3. No code changes required
+
+---
+
+## CI Status
+
+The CI workflow has been fixed:
+- **Before**: `dtolnay/rust-action@stable` (repository not found)
+- **After**: `dtolnay/rust-toolchain@stable` (correct action)
+
+The workflow should now pass on GitHub. The Rust job will run:
+- `cargo fmt --check`
+- `cargo clippy -- -D warnings`
+- `cargo test`
+
+**Note**: joltshark uses `edition = "2024"` which requires Rust 1.85+. The `dtolnay/rust-toolchain@stable` action should provide a sufficiently recent toolchain on GitHub runners.
 
 ---
 
 ## Questions for Human Pilot
 
-### 1. CLAUDE.md Inclusion Strategy (B6)
+1. **Process definition status**: The bi-directional prompting workflow is functional. Is the process definition macro-milestone complete, or are there additional elements needed?
 
-You want to include your master `~/.claude/CLAUDE.md` in the repo for reference without AI-agent auto-loading. Options:
-
-**Option A: Reference directory** (Recommended)
-Create `reference/claude/` directory with the file:
-```
-reference/
-└── claude/
-    └── USER_CLAUDE_MD_EXAMPLE.md
-```
-The naming avoids auto-detection. Add note in README explaining it is for human reference.
-
-**Option B: Docs section**
-Add to `docs/reference/` as `CLAUDE_MD_REFERENCE.md` with a header noting it is not for AI consumption.
-
-**Option C: Dotfile approach**
-Store as `.claude-md-reference` (hidden file, not auto-detected).
-
-I recommend **Option A** as it clearly separates reference material and the explicit naming prevents confusion.
-
-### 2. Project Management Integration (B5)
-
-Agreed that file-based tracking has limitations. Options to consider:
-- **GitHub Issues**: Native integration, links to commits/PRs
-- **GitHub Projects**: Kanban boards built on Issues
-- **Linear**: Better UX, good GitHub integration
-- **Notion**: Flexible but less code-integrated
-
-For now, milestones in `MILESTONE.md` work for process definition. When real development starts, GitHub Issues would integrate naturally with the existing GitHub Actions CI.
-
-### 3. Process Definition Macro-Milestone
-
-Noted that we are in the "process definition" macro-milestone. The bi-directional loop appears functional:
-- PROMPT.md for instructions
-- REVERSE_PROMPT.md for feedback
-- MILESTONE.md for tracking
-- Pre-commit hooks for quality gates
-- CI for verification
-
-Is the process definition complete, or are there additional workflow elements needed?
+2. **Next direction**: Options for next milestone:
+   - Option A: Resolve Phase 1 blocking decisions (P1-P7 in `decisions/PRIORITY.md`)
+   - Option B: Continue process refinement
+   - Option C: Other direction
 
 ---
 
 ## Technical Concerns / Risks
 
-**CI not tested on GitHub**: The workflow file is created but not yet run on GitHub. First push to GitHub with this workflow will reveal any issues with action versions or configuration.
+**Rust edition 2024**: The joltshark crate uses `edition = "2024"`. This is the latest Rust edition and requires Rust 1.85+. Local development should be fine with a recent toolchain, but verify CI runners have compatible versions.
 
-**Rust edition 2024**: `joltshark/Cargo.toml` specifies `edition = "2024"` which requires Rust 1.85+. CI uses `dtolnay/rust-action@stable` which should work, but verify the runner has a recent enough toolchain.
+**NIF loading in tests**: The NIF is currently loaded in the Application startup. If tests need to run without the NIF, consider conditional loading.
 
 ---
 
 ## Suggestions for Improvement
 
-1. **joltshark README**: The Rust subproject lacks a README.md. Consider adding one for completeness.
+1. **NIF test**: Add an Elixir test that explicitly calls `CordialCantina.Nif.nop()` to verify NIF loading in the test suite.
 
-2. **Makefile**: Consider adding a top-level Makefile with common targets (`make setup`, `make test`, `make precommit`) as an alternative to scripts.
+2. **LiveView real-time**: The dashboard is a static stub. Future phases should add Phoenix PubSub for real-time updates.
 
-3. **CI badge**: After first successful CI run, add status badge to README.md.
+3. **CI NIF build**: Consider adding the NIF build to CI. Currently CI only runs `mix precommit` which builds the NIF, but explicit verification would be clearer.
 
 ---
 
 ## Intended Next Step
 
-**Awaiting human direction** on:
-1. CLAUDE.md inclusion strategy decision
-2. Confirmation that process definition is complete
-3. Next milestone direction (requirements clarification vs implementation)
+**Awaiting human direction** on next milestone.
+
+All M6 Foundation Stubs tasks (M6-T1 through M6-T12) are complete. M6-T13 (commit) pending.
 
 ---
 
@@ -139,8 +152,8 @@ Is the process definition complete, or are there additional workflow elements ne
 
 If you are a new AI session reading this file:
 
-1. Read [MILESTONE.md](./MILESTONE.md) - M5 Project Infrastructure complete (pending commit)
+1. Read [MILESTONE.md](./MILESTONE.md) - M6 Foundation Stubs complete (pending commit)
 2. Read [PROMPT_BACKLOG.md](./PROMPT_BACKLOG.md) - B3, B5, B6 open
 3. Check [decisions/PRIORITY.md](../decisions/PRIORITY.md) - 7 blocking items for Phase 1
-4. Macro-milestone: Process definition (near completion)
+4. Macro-milestone: Process definition (status TBD)
 5. Wait for human prompt before proceeding

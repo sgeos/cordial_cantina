@@ -1,0 +1,15 @@
+# Erlang crash dumps
+erl_crash.dump
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# Editor artifacts
+*.swp
+*~
+.idea/
+.vscode/
+
+# Rust build artifacts (top-level)
+/target/

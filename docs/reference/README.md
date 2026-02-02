@@ -13,6 +13,7 @@ This section provides reference material for Cordial Cantina.
 | [Glossary](./GLOSSARY.md) | Terminology definitions |
 | [Risks](./RISKS.md) | Risk register |
 | [Research Questions](./RESEARCH_QUESTIONS.md) | Open research questions |
+| [Master CLAUDE.md Reference](./MASTER_CLAUDE_MD_REFERENCE.md) | Human pilot's AI configuration reference |
 
 ---
 

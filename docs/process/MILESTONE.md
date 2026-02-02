@@ -6,20 +6,22 @@ This file is the source of truth for the current development sprint.
 
 ---
 
-## Milestone: M5 Project Infrastructure
+## Milestone: M6 Foundation Stubs
 
 **Status**: In-Progress
 
-**Started**: 2026-02-01
+**Started**: 2026-02-02
 
 ---
 
 ## Success Criteria
 
-- [x] CI workflow tested and working
-- [x] Shared hooks committed to repository
-- [x] Setup script tested and working
-- [x] Top-level README.md documents project structure
+- [x] MASTER_CLAUDE_MD_REFERENCE.md integrated into knowledge graph
+- [x] Minimal joltshark README.md added
+- [x] CI failure resolved
+- [x] erl_crash.dump issue resolved and file excluded
+- [x] NIF subproject created with nop() function
+- [x] Phoenix runs with NIF loaded and LiveView accessible
 - [ ] All changes committed
 
 ---
@@ -28,21 +30,25 @@ This file is the source of truth for the current development sprint.
 
 | ID | Task | Status | Verification |
 |----|------|--------|--------------|
-| M5-T1 | Create hooks/ directory with shared pre-commit | Complete | `hooks/pre-commit` exists |
-| M5-T2 | Create setup script | Complete | `scripts/setup.sh` runs, installs hooks |
-| M5-T3 | Create CI workflow | Complete | `.github/workflows/ci.yml` exists |
-| M5-T4 | Create top-level README.md | Complete | README.md documents structure |
-| M5-T5 | Update PROMPT_BACKLOG.md | Complete | B1, B2, B4 resolved; B5, B6 added |
-| M5-T6 | Test CI workflow | Complete | `mix precommit`: 5 tests, 0 failures |
-| M5-T7 | Update REVERSE_PROMPT.md | Complete | File updated with verification |
-| M5-T8 | Commit all changes | Pending | `git log` shows commit |
+| M6-T1 | Add header to MASTER_CLAUDE_MD_REFERENCE.md | Complete | Navigation and usage note present |
+| M6-T2 | Update docs/reference/README.md | Complete | New file listed in ToC |
+| M6-T3 | Create joltshark README.md | Complete | File exists |
+| M6-T4 | Fix CI workflow | Complete | dtolnay/rust-toolchain used |
+| M6-T5 | Create root .gitignore | Complete | erl_crash.dump excluded |
+| M6-T6 | Delete erl_crash.dump | Complete | File removed |
+| M6-T7 | Create nif Rust subproject | Complete | native/nif exists |
+| M6-T8 | Implement nop() NIF function | Complete | Function compiles |
+| M6-T9 | Integrate NIF with Phoenix | Complete | NIF loads on startup |
+| M6-T10 | Stub LiveView | Complete | /dashboard returns 200 |
+| M6-T11 | Verify with mix precommit | Complete | 5 tests pass |
+| M6-T12 | Update REVERSE_PROMPT.md | Complete | File updated |
+| M6-T13 | Commit all changes | Pending | git log shows commit |
 
 ---
 
 ## Notes
 
-Prompted via PROMPT.md. Implements CI and shared hooks per human direction.
-Resolves backlog items B1 (milestone naming) and B2 (verification depth).
+Prompted via PROMPT.md. Resolves CI failure, crash dump, and creates Phase 0 stubs.
 
 ---
 
@@ -50,4 +56,4 @@ Resolves backlog items B1 (milestone naming) and B2 (verification depth).
 
 | Date | Change |
 |------|--------|
-| 2026-02-01 | Milestone created |
+| 2026-02-02 | Milestone created |

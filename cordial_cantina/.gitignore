@@ -27,6 +27,7 @@ MnesiaCore.*
 # === Rust / Rustler (NIFs) ===
 # Prevents large Rust build artifacts from entering version control
 /native/*/target/
+/priv/native/
 
 # === Sensitive Files (The "Alpha" Protection) ===
 # Credentials, API keys, and private infrastructure configs

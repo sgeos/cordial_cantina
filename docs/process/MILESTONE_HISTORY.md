@@ -8,6 +8,34 @@ This file archives completed milestones. When a milestone is complete, move its 
 
 ## Completed Milestones
 
+### M5: Project Infrastructure
+
+**Status**: Complete
+**Period**: 2026-02-01
+
+**Success Criteria**:
+- [x] CI workflow tested and working
+- [x] Shared hooks committed to repository
+- [x] Setup script tested and working
+- [x] Top-level README.md documents project structure
+- [x] All changes committed
+
+**Tasks Completed**:
+| ID | Task | Verification |
+|----|------|--------------|
+| M5-T1 | Create hooks/ directory with shared pre-commit | `hooks/pre-commit` exists |
+| M5-T2 | Create setup script | `scripts/setup.sh` runs |
+| M5-T3 | Create CI workflow | `.github/workflows/ci.yml` exists |
+| M5-T4 | Create top-level README.md | README.md documents structure |
+| M5-T5 | Update PROMPT_BACKLOG.md | B1, B2, B4 resolved |
+| M5-T6 | Test CI workflow | `mix precommit`: 5 tests, 0 failures |
+| M5-T7 | Update REVERSE_PROMPT.md | File updated |
+| M5-T8 | Commit all changes | Commit `78139ee` |
+
+**Commit**: `78139ee` - feat: add CI, shared hooks, setup script, and project README
+
+---
+
 ### M4: Pre-commit Hook
 
 **Status**: Complete

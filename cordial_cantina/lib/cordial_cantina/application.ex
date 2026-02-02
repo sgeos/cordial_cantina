@@ -5,8 +5,14 @@ defmodule CordialCantina.Application do
 
   use Application
 
+  require Logger
+
   @impl true
   def start(_type, _args) do
+    # Verify NIF loaded successfully
+    :ok = CordialCantina.Nif.nop()
+    Logger.info("NIF loaded successfully")
+
     children = [
       CordialCantinaWeb.Telemetry,
       {DNSCluster, query: Application.get_env(:cordial_cantina, :dns_cluster_query) || :ignore},

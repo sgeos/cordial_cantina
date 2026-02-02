@@ -31,7 +31,7 @@ cordial_cantina/
 | Directory | Language | Description |
 |-----------|----------|-------------|
 | [cordial_cantina/](./cordial_cantina/README.md) | Elixir/Phoenix | Main application with OTP supervision tree |
-| [joltshark/](./joltshark/) | Rust | NIF library for numerical computation |
+| [joltshark/](./joltshark/README.md) | Rust | NIF library for numerical computation |
 
 ## Setup
 
