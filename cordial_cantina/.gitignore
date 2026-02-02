@@ -22,6 +22,7 @@ npm-debug.log
 # === Runtime, State & Temp ===
 /tmp/
 .mnesia/
+Mnesia.*/
 MnesiaCore.*
 
 # === Rust / Rustler (NIFs) ===

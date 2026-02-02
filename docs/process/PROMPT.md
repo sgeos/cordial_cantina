@@ -10,40 +10,24 @@ This file is a staging area for complex human-to-AI instructions. The human pilo
 
 ## Comments
 
-Is MILESTONE.md still relevant if we are using a GitHub Issues workflow?
-In theory, keeping PROMPT_TEMPLATE.md around would have been useful, but losing it is not a big deal as there is a lot of prompt history.
-
-Issues have broken links.
-V0.1-Mx series issues link to this file:
-- https://github.com/sgeos/cordial_cantina/issues/docs/decisions/RESOLVED.md
-
-The correct link is:
-- https://github.com/sgeos/cordial_cantina/tree/main/docs/decisions/RESOLVED.md
-
-Some point to anchors in the file.
-Getting these fixed is nice to have. As is, nothing is blocked.
-
-Also, comment on whether or not you feel the process is established and in order after these fixes.
+The process has been established.
+The CI fix is queued, but did not get a runner.
+I am not going to worry above verifyiing CI if runners are not working.
 
 ## Objectives
 
-### Resolve Broken CI
+### V0.0-M0
 
-See the following URL:
-https://github.com/sgeos/cordial_cantina/actions/runs/21602670339/job/62252449635
+Mark V0.0-M0 as complete.
 
-The "run precommit checks" is failing.
-Local server runs fine.
+### V0.1-M1: Mnesia GenServer Implementation
 
-### Fix Broken Links
-
-Fix the broken links in the issues if straightforward.
-If not straightforward, report as non-trivial with reasoning.
+Please implement V0.1-M1: Mnesia GenServer Implementation.
+Details can be found in the GitHub issue.
 
 ## Context
 
-I want CI in order before we move onto V0.1 development.
-It is a process issue at this point.
+Moving on to implementation now that the process is established and blockers are clear.
 
 ## Constraints
 
@@ -51,8 +35,8 @@ It is a process issue at this point.
 
 ## Success Criteria
 
-- CI passes.
-- Links in issues are resolved, or reported as non-trivial fix with reasoning.
+- Mnesia Genserver implemented, tested and working.
+- All tasks successfully implemented, tested and working.
 
 ## Notes
 

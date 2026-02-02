@@ -17,6 +17,8 @@ defmodule CordialCantina.Application do
       CordialCantinaWeb.Telemetry,
       {DNSCluster, query: Application.get_env(:cordial_cantina, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: CordialCantina.PubSub},
+      # Start Mnesia before dependent processes
+      CordialCantina.Mnesia.Server,
       # Start the Finch HTTP client
       {Finch, name: CordialCantina.Finch},
       # Start a worker by calling: CordialCantina.Worker.start_link(arg)

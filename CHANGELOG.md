@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - V0.1 Foundation milestone issues created in GitHub
+- `CordialCantina.Mnesia.Server` GenServer for Mnesia initialization (V0.1-M1-P1)
+
+### Fixed
+- CI pipeline: Added `mix compile` step before `mix precommit` (NIF requires compilation)
+- GitHub Issues #2-#5: Fixed broken links (relative to absolute URLs)
 
 ---
 
@@ -67,6 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | V0.0-M0-P9 | Phase 1 Blockers | R3-R9 decisions |
 | V0.0-M0-P10 | GitHub Issues | Project management migration |
 | V0.0-M0-P11 | Finalize Migration | CHANGELOG, cleanup |
+| V0.0-M0-P12 | CI Fix | Compile step, link repair |
 
 ---
 
