@@ -7,6 +7,7 @@ This document captures unresolved questions that must be disambiguated before Ph
 ## Document Status
 
 **Created**: 2026-02-01
+**Updated**: 2026-02-02
 **Purpose**: Pre-Phase 1 disambiguation checklist
 **Related**: [Resolved](./RESOLVED.md), [Backlog](./BACKLOG.md)
 
@@ -20,167 +21,46 @@ From [PHASE_1_FOUNDATION.md](../roadmap/PHASE_1_FOUNDATION.md), Phase 1 must del
 
 ---
 
-## Blocking Questions
+## Resolution Summary
 
-### P1. OTP Supervision Tree Design
+All Phase 1 blocking questions have been resolved. See [RESOLVED.md](./RESOLVED.md) for full details.
 
-**Status**: Draft complete, requires review
-
-**Document**: See `docs/SUPERVISION_TREE.md` for full supervision tree design.
-
-**Resolved**:
-- Complete supervision tree hierarchy with 7 subsystem supervisors
-- Restart strategies assigned to each supervisor
-- Restart intensity thresholds defined (default, low, moderate)
-- State recovery requirements identified per process
-- Recovery sources identified (Mnesia, PostgreSQL, on-chain, configuration)
-
-**Remaining questions** (from SUPERVISION_TREE.md):
-
-*Critical (must resolve before Phase 1)*:
-1. ~~Mnesia initialization: Task vs GenServer?~~ **RESOLVED**: GenServer strategy. See [R2 in Resolved](./RESOLVED.md#r2-mnesia-initialization-strategy).
-2. Mnesia clustering: How is schema synchronized across nodes?
-3. Position recovery: How is on-chain state queried and validated?
-4. Transaction monitoring: How are pending transactions persisted and recovered?
-
-*Important (should resolve before Phase 1)*:
-5. Market data warm-up: How long before signals are reliable? Should trading pause?
-6. Strategy safe mode: Should there be an observation-only mode after restart?
-7. Restart alerting: Should restart intensity breaches trigger alerts?
-
-**Blocking because**: Critical questions affect process implementation. Important questions affect operational safety.
+| Priority | Topic | Status | Resolution |
+|----------|-------|--------|------------|
+| P1 | OTP Supervision | **Resolved** | [R2](./RESOLVED.md#r2-mnesia-initialization-strategy), [R3](./RESOLVED.md#r3-otp-supervision-operational-model) |
+| P2 | Rust NIF Integration | **Resolved** | [R4](./RESOLVED.md#r4-rust-nif-integration-strategy) |
+| P3 | Solana RPC | **Resolved** | [R5](./RESOLVED.md#r5-solana-rpc-strategy) |
+| P4 | Secrets Management | **Resolved** | [R6](./RESOLVED.md#r6-secrets-management-strategy) |
+| P5 | Testing Framework | **Resolved** | [R7](./RESOLVED.md#r7-testing-framework-strategy) |
+| P6 | Mnesia Schema | **Resolved** | [R8](./RESOLVED.md#r8-mnesia-schema-strategy) |
+| P7 | Logging | **Resolved** | [R9](./RESOLVED.md#r9-logging-and-observability-strategy) |
 
 ---
 
-### P2. Rust NIF Integration Strategy
+## Remaining Open Questions
 
-**Status**: Requires architecture decision
+The following questions remain open but do not block Phase 1:
 
-**Questions**:
-1. Which NIF binding library: Rustler vs erlang-nif-sys vs hand-rolled?
-2. What is the NIF API boundary? Which functions cross the Elixir/Rust boundary?
-3. How are panics and errors handled to avoid crashing the BEAM VM?
-4. Should NIFs be synchronous (blocking schedulers) or use dirty schedulers?
-5. What is the memory ownership model for data passed between Elixir and Rust?
-6. How is the Rust library built and linked during Mix compilation?
+### From P1: OTP Supervision
 
-**Blocking because**: NIF crashes bring down the entire BEAM VM. The integration pattern must be established before building upon it.
+| Question | Status | Notes |
+|----------|--------|-------|
+| P1.5: Market data warm-up duration | Deferred | Determined during implementation |
+| P1.6: Strategy safe mode after restart | Deferred | Operational concern for V0.5+ |
+| P1.7: Restart intensity alerting | Deferred | Operational concern for V0.5+ |
 
-**Suggested resolution**:
-- Select Rustler as the binding library (mature, well-documented, handles safety)
-- Define explicit API contracts before implementation
-- Use dirty CPU schedulers for computation exceeding 1ms
-- Implement resource types for shared state
+### From P3: Solana RPC
 
----
+| Question | Status | Notes |
+|----------|--------|-------|
+| Is direct RPC needed or is Birdeye+Raydium sufficient? | Open | Answered during V0.1 implementation |
 
-### P3. Solana RPC Integration
+### From P6: Mnesia Schema
 
-**Status**: Requires vendor and failover decisions
-
-**Questions**:
-1. Which RPC provider(s) will be used? (Helius, QuickNode, Triton, self-hosted)
-2. What is the failover strategy when primary RPC is unavailable?
-3. What rate limits apply and how are they managed?
-4. Which RPC methods are required for read-only Phase 1 operations?
-5. How are WebSocket subscriptions managed for real-time updates?
-6. What is the retry policy for failed RPC calls?
-
-**Blocking because**: All blockchain interaction depends on RPC access. Provider selection affects rate limits, latency, and cost.
-
-**Suggested resolution**:
-- Primary: Helius (Solana-focused, good rate limits)
-- Fallback: QuickNode or self-hosted validator
-- Implement circuit breaker pattern for RPC calls
-
----
-
-### P4. Configuration and Secrets Management
-
-**Status**: Requires architecture decision
-
-**Questions**:
-1. How are RPC endpoint URLs and API keys provided to the application?
-2. Where are private keys stored during development vs production?
-3. How are environment-specific configurations managed (dev, test, staging, prod)?
-4. Should secrets be loaded at compile time or runtime?
-5. What is the key rotation procedure?
-
-**Blocking because**: Phase 1 requires RPC credentials. The pattern established now carries through to private key management in later phases.
-
-**Suggested resolution**:
-- Use `config/runtime.exs` for all secrets via environment variables
-- Development: `.env` files (gitignored)
-- Production: Platform secret management (Vault, AWS Secrets Manager, etc. TBD)
-- Private keys never in source code or environment variables in production
-
----
-
-### P5. Test Framework and Coverage Strategy
-
-**Status**: Requires tooling decisions
-
-**Questions**:
-1. What is the minimum code coverage target for Phase 1?
-2. Which coverage tool: excoveralls vs cover?
-3. How are Rust NIFs tested? Rust-side tests, Elixir-side integration tests, or both?
-4. How are Solana RPC calls mocked in tests?
-5. What is the CI pipeline configuration?
-
-**Blocking because**: Test infrastructure must be established before writing production code to ensure testability.
-
-**Suggested resolution**:
-- Use built-in `mix test --cover` with 80% line coverage target for critical paths
-- Rust: Unit tests via `cargo test`, integration tests via ExUnit
-- Mock RPC calls using Mox or Bypass
-- CI: GitHub Actions with Elixir, Rust, and PostgreSQL services
-
----
-
-### P6. Mnesia Schema Design
-
-**Status**: Partially resolved, requires table definitions
-
-**Resolved** (see TBD_RESOLVED.md R1):
-- Storage type: `ram_copies` only (data is ephemeral, PostgreSQL provides durability)
-- Fragmentation: Parameterized, configurable per table
-- Sliding window: Parameterized, business logic specific
-- Offload triggers: Business logic specific (time-based, threshold-based, or hybrid)
-
-**Remaining questions**:
-1. What tables are needed for Phase 1?
-2. What are the table types (set, ordered_set, bag) for each table?
-3. What are the key structures and indices for each table?
-4. How are tables distributed in a clustered deployment?
-5. What are the default parameter values for fragmentation and sliding windows?
-
-**Blocking because**: Table definitions must be established before writing code that depends on them.
-
-**Suggested resolution for Phase 1**:
-- `market_ticks`: ordered_set, ram_copies, keyed by {pair, timestamp}
-- `order_book_snapshots`: set, ram_copies, keyed by {pair, timestamp}
-- Schema versioning via application config, not Ecto-style migrations
-- Default sliding window: 1 hour (configurable)
-- Default fragmentation: single fragment initially (configurable)
-
----
-
-### P7. Logging and Observability Foundation
-
-**Status**: Requires tooling selection
-
-**Questions**:
-1. What structured logging format: JSON, logfmt, or Elixir default?
-2. What log aggregation system (if any) for development?
-3. What telemetry events should be emitted from Phase 1 components?
-4. How are logs correlated across distributed nodes?
-
-**Blocking because**: Debugging distributed OTP applications without proper logging is impractical. The pattern must be established early.
-
-**Suggested resolution**:
-- Use Logger with JSON formatter for structured output
-- Emit telemetry events for all RPC calls, NIF invocations, and supervision events
-- Add correlation IDs to log metadata
+| Question | Status | Notes |
+|----------|--------|-------|
+| Specific table definitions | Iterative | Emerge from implementation |
+| Default parameter values | Iterative | Tuned during implementation |
 
 ---
 
@@ -189,13 +69,15 @@ From [PHASE_1_FOUNDATION.md](../roadmap/PHASE_1_FOUNDATION.md), Phase 1 must del
 Before beginning Phase 1 implementation:
 
 1. [x] Draft OTP supervision tree diagram with restart strategies (see SUPERVISION_TREE.md)
-2. [ ] Review and finalize supervision tree critical questions
-3. [ ] Select Rust NIF binding library (recommend: Rustler)
-4. [ ] Select primary and fallback Solana RPC providers
-5. [ ] Define secrets management pattern for development
-6. [ ] Define Mnesia table schemas for market data
-7. [ ] Configure CI pipeline with Elixir, Rust, and test database
-8. [ ] Establish logging and telemetry conventions
+2. [x] Review and finalize supervision tree critical questions (see R2, R3)
+3. [x] Select Rust NIF binding library (Rustler - see R4)
+4. [x] Select primary and fallback Solana RPC providers (public RPC for V0.1 - see R5)
+5. [x] Define secrets management pattern for development (see R6)
+6. [x] Define Mnesia table schemas for market data (iterative approach - see R8)
+7. [x] Configure CI pipeline with Elixir, Rust, and test database (existing pipeline)
+8. [x] Establish logging and telemetry conventions (see R9)
+
+**Phase 1 is unblocked.**
 
 ---
 
@@ -207,3 +89,4 @@ Before beginning Phase 1 implementation:
 | 2026-02-01 | Claude | Reorganized: moved resolved items to TBD_RESOLVED.md, deferred items to TBD_BACKLOG.md |
 | 2026-02-01 | Claude | P1 updated: supervision tree drafted in SUPERVISION_TREE.md, remaining questions narrowed |
 | 2026-02-01 | Claude | P6 updated: Mnesia configuration resolved, remaining questions narrowed to table definitions |
+| 2026-02-02 | Claude | All P1-P7 blockers resolved. Phase 1 unblocked. |

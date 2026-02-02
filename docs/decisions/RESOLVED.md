@@ -123,6 +123,260 @@ The following remain open but do not block the initialization strategy:
 
 ---
 
+## R3. OTP Supervision Operational Model
+
+**Resolved**: 2026-02-02
+**Related**: P1 in PRIORITY.md
+
+### Decision
+
+**Clustering model**: Single-node operation with optional redundancy.
+
+| Aspect | Decision |
+|--------|----------|
+| Node topology | Single node by default |
+| Multi-node redundancy | 100% redundancy per node (each node is self-sufficient) |
+| Net split behavior | Nodes operate independently with available information |
+
+**Position recovery**: Third-party APIs for historical data.
+
+| Source | Purpose |
+|--------|---------|
+| Birdeye | Historical market data |
+| DEX Screener | Historical market data |
+| Local chain analysis | Deferred (non-trivial, not immediate priority) |
+
+**Transaction persistence**: PostgreSQL with API verification.
+
+| Aspect | Decision |
+|--------|----------|
+| Persistence layer | PostgreSQL |
+| Recovery procedure | Check both database and API response |
+| Ground truth sync | Re-verify past decisions (markets change during downtime) |
+
+### Rationale
+
+- Single-node simplifies initial development and debugging
+- 100% redundancy avoids complex distributed state coordination
+- Third-party APIs provide expedient historical data access
+- PostgreSQL persistence enables recovery across restarts
+- Re-verification handles market drift during downtime
+
+### Residual Sub-Questions
+
+- Specific Birdeye/DEX Screener API integration details (V0.2 scope)
+- Concrete recovery verification logic (implementation detail)
+
+---
+
+## R4. Rust NIF Integration Strategy
+
+**Resolved**: 2026-02-02
+**Related**: P2 in PRIORITY.md
+
+### Decision
+
+| Aspect | Decision |
+|--------|----------|
+| Binding library | Rustler |
+| API boundary | Defined iteratively during development |
+| Error handling | Return errors to BEAM; safe Rust trusted |
+| Panic handling | `catch_unwind` as fallback for untrusted code paths |
+| Scheduling | Synchronous by default; dirty schedulers for calls >1ms |
+| Memory model | BEAM owns passed-in memory (read-only, zero-copy); Rustler conventions for Rust-to-BEAM |
+| Build integration | Already working via Mix/Rustler |
+
+### Rationale
+
+- Rustler is mature, well-documented, and handles NIF safety concerns
+- Iterative API definition allows boundary to emerge from requirements
+- Safe Rust with no panic conditions can be trusted
+- Mathematical code is expected to be expressible in safe Rust
+- Dirty schedulers prevent scheduler blocking for expensive computations
+- Zero-copy reads minimize overhead for BEAM-owned data
+
+### Implementation Guidance
+
+- Prefer returning Result types from NIF functions
+- Structure code to avoid panics; use `catch_unwind` only when necessary
+- Profile NIF calls; move to dirty scheduler if >1ms observed
+- Use Rustler resource types for shared state across calls
+
+### Residual Sub-Questions
+
+- Specific API function signatures (emerge during implementation)
+- Profiling thresholds for dirty scheduler migration (runtime tuning)
+
+---
+
+## R5. Solana RPC Strategy
+
+**Resolved**: 2026-02-02
+**Related**: P3 in PRIORITY.md
+
+### Decision
+
+| Aspect | Decision |
+|--------|----------|
+| V0.1 provider | Public RPC endpoints |
+| Provider selection | Deferred until requirements clearer |
+| Historical data | Birdeye API |
+| Range management | Raydium API |
+
+### Open Question
+
+Is direct Solana RPC needed for V0.1, or is Birdeye + Raydium API sufficient?
+
+**Tentative answer**: Birdeye + Raydium may be sufficient for initial development. Direct RPC may be needed for:
+- Real-time transaction submission (V0.5+)
+- On-chain state verification
+- WebSocket subscriptions for live updates
+
+This question will be answered during V0.1 implementation.
+
+### Rationale
+
+- Public RPC sufficient for read-only development
+- Third-party APIs (Birdeye, Raydium) provide higher-level abstractions
+- Deferring provider selection avoids premature optimization
+- Requirements will crystallize during implementation
+
+---
+
+## R6. Secrets Management Strategy
+
+**Resolved**: 2026-02-02
+**Related**: P4 in PRIORITY.md
+
+### Decision
+
+| Environment | Strategy |
+|-------------|----------|
+| Development | `config/runtime.exs` with environment variables |
+| Local secrets | `.env` files (gitignored) |
+| Documentation | `.env.example` with safe dummy values |
+| Production | Deferred until V1.0 release |
+
+### Rationale
+
+- Environment variables are standard Elixir practice
+- `.env` files provide convenient local development
+- `.env.example` documents required variables without exposing secrets
+- Production secrets management (Vault, AWS Secrets Manager) adds complexity best deferred
+
+### Implementation Guidance
+
+1. Create `.env.example` with all required variables
+2. Add `.env` to `.gitignore`
+3. Load via `config/runtime.exs` using `System.get_env/1`
+4. Never commit actual secrets
+
+### Residual Sub-Questions
+
+- Production secrets platform selection (V0.6 scope)
+- Key rotation procedures (V0.6 scope)
+
+---
+
+## R7. Testing Framework Strategy
+
+**Resolved**: 2026-02-02
+**Related**: P5 in PRIORITY.md
+
+### Decision
+
+| Aspect | Decision |
+|--------|----------|
+| Coverage tool | excoveralls |
+| Coverage target | 80% for critical paths; no hard target for V0.1 |
+| Rust testing | `cargo test` for unit tests |
+| Elixir NIF testing | ExUnit integration tests (happy + error paths) |
+| RPC mocking | Bypass |
+| CI pipeline | GitHub Actions (existing, iterative improvements) |
+
+### Rationale
+
+- excoveralls is the standard Elixir coverage tool
+- 80% target for critical paths ensures core logic is tested
+- Dual testing (Rust + Elixir) catches issues at both levels
+- Bypass provides flexible HTTP mocking for RPC calls
+- Existing CI pipeline works; changes made as needed
+
+### Implementation Guidance
+
+- Add excoveralls to mix.exs dependencies
+- Configure coveralls.json for coverage reporting
+- Write Elixir integration tests for all NIF functions
+- Use Bypass to mock external API calls in tests
+
+---
+
+## R8. Mnesia Schema Strategy
+
+**Resolved**: 2026-02-02
+**Related**: P6 in PRIORITY.md
+
+### Decision
+
+**Approach**: Iterative schema definition.
+
+| Aspect | Decision |
+|--------|----------|
+| Schema evolution | Define minimal tables for first feature |
+| Table definitions | Emerge from implementation requirements |
+| Versioning | Application config (not Ecto-style migrations) |
+
+### Rationale
+
+- Upfront schema design without concrete requirements leads to rework
+- Iterative definition allows schema to match actual data needs
+- ram_copies mode (see R1) simplifies schema changes
+
+### Implementation Guidance
+
+When adding a Mnesia table:
+1. Define table in Mnesia GenServer initialization
+2. Document table structure in code comments
+3. Add table to schema version config
+4. Write tests for table operations
+
+### Residual Sub-Questions
+
+- Specific table definitions (emerge during V0.1-V0.2)
+- Default parameter values (tuned during implementation)
+
+---
+
+## R9. Logging and Observability Strategy
+
+**Resolved**: 2026-02-02
+**Related**: P7 in PRIORITY.md
+
+### Decision
+
+| Aspect | Decision |
+|--------|----------|
+| Logging library | Elixir Logger (built-in) |
+| Format | Default format initially; JSON when needed |
+| Telemetry | Emit events for RPC calls, NIF invocations, supervision events |
+| Correlation | Add correlation IDs to log metadata |
+
+### Rationale
+
+- Built-in Logger is sufficient for initial development
+- JSON formatting adds complexity; defer until log aggregation is needed
+- Telemetry events enable future observability integration
+- Correlation IDs support distributed tracing when needed
+
+### Implementation Guidance
+
+- Use Logger with metadata for context
+- Define telemetry events in a central module
+- Add correlation_id to process dictionary or metadata
+- Consider JSON formatter when deploying to log aggregation
+
+---
+
 ## Revision History
 
 | Date | Author | Changes |
@@ -130,3 +384,4 @@ The following remain open but do not block the initialization strategy:
 | 2026-02-01 | Claude | Initial draft with Database Architecture resolution |
 | 2026-02-01 | Claude | Added Mnesia configuration (ram_copies, parameterized fragmentation/windows), offload strategy, PostgreSQL configuration (datetime index, deferred partitioning) |
 | 2026-02-02 | Claude | Added R2: Mnesia initialization strategy (GenServer) |
+| 2026-02-02 | Claude | Added R3-R9: Phase 1 blocker decisions (OTP, NIF, RPC, secrets, testing, Mnesia schema, logging) |
