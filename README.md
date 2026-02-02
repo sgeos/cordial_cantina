@@ -42,6 +42,7 @@ cordial_cantina/
 - Elixir 1.15+ and Erlang/OTP 26+
 - Rust (stable toolchain)
 - PostgreSQL (for production)
+- [GitHub CLI (`gh`)](https://cli.github.com/) - for issue management and CI interaction
 
 ### Installation
 

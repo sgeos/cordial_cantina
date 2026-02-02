@@ -181,7 +181,7 @@ The following remain open but do not block the initialization strategy:
 | Binding library | Rustler |
 | API boundary | Defined iteratively during development |
 | Error handling | Return errors to BEAM; safe Rust trusted |
-| Panic handling | `catch_unwind` as fallback for untrusted code paths |
+| Panic handling | `catch_unwind` reserved for truly exceptional circumstances only |
 | Scheduling | Synchronous by default; dirty schedulers for calls >1ms |
 | Memory model | BEAM owns passed-in memory (read-only, zero-copy); Rustler conventions for Rust-to-BEAM |
 | Build integration | Already working via Mix/Rustler |
@@ -198,7 +198,8 @@ The following remain open but do not block the initialization strategy:
 ### Implementation Guidance
 
 - Prefer returning Result types from NIF functions
-- Structure code to avoid panics; use `catch_unwind` only when necessary
+- Structure code to avoid panics entirely; safe Rust should return errors, not panic
+- Reserve `catch_unwind` for truly exceptional circumstances only (e.g., FFI boundaries with untrusted C code)
 - Profile NIF calls; move to dirty scheduler if >1ms observed
 - Use Rustler resource types for shared state across calls
 

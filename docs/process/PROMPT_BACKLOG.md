@@ -16,18 +16,15 @@ This file records AI-agent concerns, questions, and suggestions that need human 
 
 ## Unresolved Items
 
-### From Milestone: M5 Project Infrastructure (2026-02-01)
+All items migrated to GitHub Issues. See [GitHub Issues](https://github.com/sgeos/cordial_cantina/issues).
 
-| ID | Type | Item | Status |
-|----|------|------|--------|
-| B5 | Suggestion | Consider integration with project management/issue tracking system (GitHub Issues, Linear, etc.) to track features and fixes above repo level | Open |
-| B6 | Question | CLAUDE.md inclusion strategy - how to include user's master ~/.claude/CLAUDE.md for reference without AI-agent auto-loading | Open |
+### Migrated Items
 
-### From Milestone: Documentation Foundation (2026-02-01)
-
-| ID | Type | Item | Status |
-|----|------|------|--------|
-| B3 | Suggestion | Consider adding CHANGELOG.md for milestone completion history | Open |
+| ID | GitHub Issue | Status |
+|----|--------------|--------|
+| B3 | [#6](https://github.com/sgeos/cordial_cantina/issues/6) | Migrated |
+| B5 | Resolved | GitHub Issues integration complete |
+| B6 | [#7](https://github.com/sgeos/cordial_cantina/issues/7) | Migrated |
 
 ---
 
@@ -38,6 +35,7 @@ This file records AI-agent concerns, questions, and suggestions that need human 
 | B1 | Question | Should milestones use a prefix (M1, M2) or descriptive names only? | Use prefix with unambiguous logical code (e.g., M5) | 2026-02-01 |
 | B2 | Question | What verification depth for code tasks? | Passing `mix precommit` | 2026-02-01 |
 | B4 | Suggestion | Consider CI integration for automated task verification | Implemented in M5 via GitHub Actions | 2026-02-01 |
+| B5 | Suggestion | Consider integration with project management/issue tracking | GitHub Issues integration in V0.0-M0-P10 | 2026-02-02 |
 
 ---
 

@@ -255,8 +255,58 @@ A new AI session should read MILESTONE.md first to understand current state.
 
 ---
 
+## GitHub Issues Integration
+
+Project management uses GitHub Issues for milestone and task tracking.
+
+### Labels
+
+| Label | Purpose |
+|-------|---------|
+| `V0.0`, `V0.1`, etc. | Version/phase categorization |
+| `type:task` | Implementation task |
+| `type:decision` | Decision required |
+| `type:suggestion` | Improvement suggestion |
+
+### Milestones
+
+GitHub Milestones track macro-milestones (e.g., "V0.1 Foundation").
+
+### Issue Naming Convention
+
+Issues follow the Vw-Mx coding pattern:
+- `V0.1-M1: Mnesia GenServer Implementation`
+- `V0.1-M2: Secrets Management Setup`
+
+### Workflow
+
+1. **Create issues** for planned work using `gh issue create`
+2. **Assign to milestones** for phase tracking
+3. **Reference issues** in commits using `#N` syntax
+4. **Close issues** when work is complete
+
+### Commands
+
+```sh
+# List open issues
+gh issue list
+
+# Create issue
+gh issue create --title "V0.1-M5: Feature" --label "V0.1,type:task" --milestone "V0.1 Foundation"
+
+# Close issue
+gh issue close N --reason completed
+```
+
+### Deprecation Note
+
+The markdown-based MILESTONE.md and PROMPT_BACKLOG.md files are retained for session continuity but GitHub Issues is the primary tracking mechanism for V0.1+.
+
+---
+
 ## Related Documents
 
 - [Git Strategy](./GIT_STRATEGY.md) - Version control conventions
 - [Roadmap](../roadmap/README.md) - Phase-level planning
 - [Decisions](../decisions/README.md) - Decision tracking
+- [GitHub Issues](https://github.com/sgeos/cordial_cantina/issues) - Issue tracker
