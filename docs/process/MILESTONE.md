@@ -6,21 +6,23 @@ This file is the source of truth for the current development sprint.
 
 ---
 
-## Milestone: M7 CI and LiveView
+## Milestone: V0.0-M0-P8 Coding System and Cleanup
 
-**Status**: In-Progress
+**Status**: In Progress
 
 **Started**: 2026-02-02
+
+**Macro-milestone**: V0.0-M0 Process Definition
 
 ---
 
 ## Success Criteria
 
-- [x] CI passes on GitHub (clippy fixed, awaiting push)
-- [x] NIF testing implemented (Rust and Elixir)
-- [x] NIF build added to CI
-- [x] LiveView PubSub with visual feedback
-- [x] No mention of Orbital Market Maker product name
+- [ ] Mnesia GenServer strategy documented in knowledge graph
+- [ ] Vw-Mx-Py-Tz coding system documented in PROCESS_STRATEGY.md
+- [ ] Old Mx-Ty codes mapped to V0.0-M0-Px-Ty in MILESTONE_HISTORY.md
+- [ ] Deprecated SPECIFICATION.md removed
+- [ ] All references to SPECIFICATION.md removed from knowledge graph
 - [ ] All changes committed
 
 ---
@@ -29,24 +31,22 @@ This file is the source of truth for the current development sprint.
 
 | ID | Task | Status | Verification |
 |----|------|--------|--------------|
-| M7-T1 | Fix joltshark clippy errors | Complete | `cargo clippy` passes |
-| M7-T2 | Add CI status badge to README | Complete | Badge added |
-| M7-T3 | Add Elixir NIF test | Complete | nif_test.exs created |
-| M7-T4 | Add Rust NIF test | Complete | `cargo test` passes |
-| M7-T5 | Add NIF build to CI workflow | Complete | Rust toolchain added |
-| M7-T6 | Add LiveView PubSub with datetime | Complete | Real-time tick updates |
-| M7-T7 | Remove Orbital Market Maker references | Complete | Product name removed |
-| M7-T8 | Verify mix precommit | Complete | 6 tests pass |
-| M7-T9 | Update REVERSE_PROMPT.md | Complete | File updated |
-| M7-T10 | Commit all changes | Pending | git log shows commit |
+| V0.0-M0-P8-T1 | Update PRIORITY.md P1.1 for Mnesia GenServer | Complete | Reference added |
+| V0.0-M0-P8-T2 | Add R2 to RESOLVED.md for Mnesia GenServer | Complete | R2 added |
+| V0.0-M0-P8-T3 | Add Vw-Mx-Py-Tz to PROCESS_STRATEGY.md | Complete | Section added |
+| V0.0-M0-P8-T4 | Delete SPECIFICATION.md | Complete | File removed |
+| V0.0-M0-P8-T5 | Update docs/README.md | Complete | Reference removed |
+| V0.0-M0-P8-T6 | Update PRIORITY.md reference | Complete | Link updated |
+| V0.0-M0-P8-T7 | Update MILESTONE_HISTORY.md with new coding | Complete | In previous turn |
+| V0.0-M0-P8-T8 | Write REVERSE_PROMPT.md | In Progress | This file |
+| V0.0-M0-P8-T9 | Verify mix precommit | Pending | `mix precommit` |
+| V0.0-M0-P8-T10 | Commit all changes | Pending | Commit hash |
 
 ---
 
 ## Notes
 
-Prompted via PROMPT.md. Resolves CI clippy failure, adds NIF testing, implements LiveView real-time updates.
-
-LiveView dashboard accessible at: http://localhost:4000/dashboard
+Prompted via PROMPT.md. Implements new Vw-Mx-Py-Tz coding system for GitHub Issues migration preparation. Documents Mnesia GenServer decision.
 
 ---
 
@@ -54,4 +54,4 @@ LiveView dashboard accessible at: http://localhost:4000/dashboard
 
 | Date | Change |
 |------|--------|
-| 2026-02-02 | Milestone created |
+| 2026-02-02 | Milestone created with V0.0-M0-P8 coding |

@@ -104,6 +104,48 @@ If verification fails, the task is **not** complete.
 
 ---
 
+## Work Item Coding System
+
+All work items use the **Vw-Mx-Py-Tz** coding system for traceability across milestones, prompts, and tasks.
+
+### Format
+
+`Vw-Mx-Py-Tz`
+
+| Component | Meaning | Example |
+|-----------|---------|---------|
+| Vw | Version (Phase) | V0.0 = Phase 0, V0.1 = Phase 1 |
+| Mx | Milestone within version | M0 = Process definition |
+| Py | Prompt within milestone | P7 = 7th prompt |
+| Tz | Task within prompt | T3 = 3rd task |
+
+### Version Mapping
+
+| Phase | Version |
+|-------|---------|
+| Phase 0 (Process Definition) | V0.0 |
+| Phase 1 (Foundation) | V0.1 |
+| Phase 2 (Market Data) | V0.2 |
+| Phase 3 (Physical Model) | V0.3 |
+| Phase 4 (Strategy) | V0.4 |
+| Phase 5 (Integration) | V0.5 |
+| Phase 6 (Production) | V0.6 |
+
+### Examples
+
+- `V0.0-M0-P8-T3` = Phase 0, Milestone 0, Prompt 8, Task 3
+- `V0.1-M2-P1-T1` = Phase 1, Milestone 2, Prompt 1, Task 1
+- `V0.3-M1-P5` = Phase 3, Milestone 1, Prompt 5 (no specific task)
+
+### Usage
+
+- **MILESTONE.md**: Tasks use full Vw-Mx-Py-Tz format
+- **MILESTONE_HISTORY.md**: Archived prompts include full coding
+- **Git commits**: Reference task codes in commit messages
+- **GitHub Issues**: Issue titles include Vw-Mx-Py or Vw-Mx-Py-Tz codes
+
+---
+
 ## Commit Convention
 
 Commits during milestone work should reference the milestone and task:
@@ -121,8 +163,8 @@ Example:
 ```
 feat: implement Mnesia table initialization
 
-[Milestone: Phase 1 Foundation]
-[Task: M1-T3 Mnesia schema]
+[Milestone: V0.1-M2 Database Schema]
+[Task: V0.1-M2-P3-T1]
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```

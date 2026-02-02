@@ -84,7 +84,42 @@ The following remain open but do not block the architectural decision:
 - Concrete default values for fragmentation and sliding window parameters
 - PostgreSQL schema design for historical tables
 
-These sub-questions are tracked in TBD_PRIORITY.md under "Mnesia Schema Design."
+These sub-questions are tracked in PRIORITY.md under "Mnesia Schema Design."
+
+---
+
+## R2. Mnesia Initialization Strategy
+
+**Resolved**: 2026-02-02
+**Related**: P1 in PRIORITY.md, R1 above
+
+### Decision
+
+**Strategy**: GenServer
+
+Mnesia initialization will use a dedicated GenServer rather than a Task.
+
+### Rationale
+
+- GenServer provides supervision integration with restart semantics
+- GenServer can maintain state about schema status and initialization progress
+- GenServer enables health check queries from other processes
+- GenServer supports graceful handling of first boot vs subsequent boot scenarios
+- A Task is fire-and-forget and lacks the stateful coordination needed for schema management
+
+### Implementation Guidance
+
+The Mnesia GenServer should:
+1. Initialize schema on first boot, join existing schema on subsequent boots
+2. Expose health check function for readiness probes
+3. Block dependent processes via Registry or PubSub until schema is ready
+4. Handle node joins and schema synchronization in clustered deployments
+
+### Residual Sub-Questions
+
+The following remain open but do not block the initialization strategy:
+- Specific table definitions (tracked in PRIORITY.md P6)
+- Clustering synchronization details (tracked in PRIORITY.md P1.2)
 
 ---
 
@@ -94,3 +129,4 @@ These sub-questions are tracked in TBD_PRIORITY.md under "Mnesia Schema Design."
 |------|--------|---------|
 | 2026-02-01 | Claude | Initial draft with Database Architecture resolution |
 | 2026-02-01 | Claude | Added Mnesia configuration (ram_copies, parameterized fragmentation/windows), offload strategy, PostgreSQL configuration (datetime index, deferred partitioning) |
+| 2026-02-02 | Claude | Added R2: Mnesia initialization strategy (GenServer) |

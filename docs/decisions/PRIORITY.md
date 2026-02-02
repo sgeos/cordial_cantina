@@ -12,7 +12,7 @@ This document captures unresolved questions that must be disambiguated before Ph
 
 ## Phase 1 Deliverables Reference
 
-From SPECIFICATION.md, Phase 1 must deliver:
+From [PHASE_1_FOUNDATION.md](../roadmap/PHASE_1_FOUNDATION.md), Phase 1 must deliver:
 1. Core Elixir application structure with OTP supervision
 2. Rust NIF scaffolding for numerical computation
 3. Basic Solana blockchain interaction (read-only)
@@ -38,7 +38,7 @@ From SPECIFICATION.md, Phase 1 must deliver:
 **Remaining questions** (from SUPERVISION_TREE.md):
 
 *Critical (must resolve before Phase 1)*:
-1. Mnesia initialization: Task vs GenServer? First boot vs subsequent boot handling?
+1. ~~Mnesia initialization: Task vs GenServer?~~ **RESOLVED**: GenServer strategy. See [R2 in Resolved](./RESOLVED.md#r2-mnesia-initialization-strategy).
 2. Mnesia clustering: How is schema synchronized across nodes?
 3. Position recovery: How is on-chain state queried and validated?
 4. Transaction monitoring: How are pending transactions persisted and recovered?

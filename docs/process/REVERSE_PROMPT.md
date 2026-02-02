@@ -9,150 +9,155 @@ This file is the AI-to-human communication channel. It is overwritten after each
 ## Last Updated
 
 **Date**: 2026-02-02
-**Task**: M7 CI and LiveView complete
-**Milestone**: M7 CI and LiveView
+**Task**: V0.0-M0-P8 Coding System and Cleanup
+**Milestone**: V0.0-M0 Process Definition
 
 ---
 
 ## Verification
 
-### M7-T1: Fix joltshark clippy errors
-**Command**: `cd joltshark && cargo clippy -- -D warnings`
-**Result**: PASS - Fixed 3 clippy lints (needless_range_loop x2, collapsible_if)
+### V0.0-M0-P8-T1: Update PRIORITY.md P1.1 for Mnesia GenServer
+**Result**: PASS - P1 critical question 1 marked resolved with link to R2
 
-### M7-T2: Add CI status badge to README
-**Result**: PASS - Badge added to top of README.md
+### V0.0-M0-P8-T2: Add R2 to RESOLVED.md
+**Result**: PASS - R2 Mnesia Initialization Strategy added with rationale
 
-### M7-T3: Add Elixir NIF test
-**Command**: `mix test test/cordial_cantina/nif_test.exs`
-**Result**: PASS - Test verifies nop() returns :ok
+### V0.0-M0-P8-T3: Add Vw-Mx-Py-Tz to PROCESS_STRATEGY.md
+**Result**: PASS - Complete coding system section added with version mapping
 
-### M7-T4: Add Rust NIF test
-**Command**: `cd cordial_cantina/native/nif && cargo test`
-**Result**: PASS - Test verifies joltshark is accessible
+### V0.0-M0-P8-T4: Delete SPECIFICATION.md
+**Result**: PASS - File removed from docs/
 
-### M7-T5: Add NIF build to CI workflow
-**Result**: PASS - Added Rust toolchain setup to Elixir job
+### V0.0-M0-P8-T5: Update docs/README.md
+**Result**: PASS - SPECIFICATION.md reference removed from Meta Documentation
 
-### M7-T6: Add LiveView PubSub with datetime
-**Result**: PASS - Dashboard shows real-time UTC time and tick count
+### V0.0-M0-P8-T6: Update PRIORITY.md reference
+**Result**: PASS - Changed "From SPECIFICATION.md" to link to PHASE_1_FOUNDATION.md
 
-### M7-T7: Remove Orbital Market Maker references
-**Result**: PASS - Product name removed from 3 docs files, physics concepts retained
+### V0.0-M0-P8-T7: Update MILESTONE_HISTORY.md
+**Result**: PASS - Completed in previous turn with new Vw-Mx-Py-Tz coding
 
-### M7-T8: Verify mix precommit
-**Command**: `mix precommit`
-**Result**: PASS - 6 tests, 0 failures
-
-### M7-T9: Update REVERSE_PROMPT.md
+### V0.0-M0-P8-T8: Write REVERSE_PROMPT.md
 **Result**: This file
 
-### M7-T10: Commit all changes
-**Status**: PENDING
+### V0.0-M0-P8-T9: Verify mix precommit
+**Status**: Pending
 
----
-
-## LiveView Dashboard
-
-**URL**: http://localhost:4000/dashboard
-
-The dashboard displays:
-- **NIF Status**: Shows :ok when NIF is loaded (green text)
-- **Phase**: 0 (Foundation)
-- **Server Time (UTC)**: Real-time clock updated every second via PubSub
-- **Tick Count**: Increments every second to verify live updates
-
-To test:
-```sh
-cd cordial_cantina
-mix phx.server
-# Open http://localhost:4000/dashboard in browser
-# Time and tick count should update every second
-```
+### V0.0-M0-P8-T10: Commit all changes
+**Status**: Pending
 
 ---
 
 ## Files Created/Modified
 
-**Created**:
-- `cordial_cantina/test/cordial_cantina/nif_test.exs` - Elixir NIF test
+**Deleted**:
+- `docs/SPECIFICATION.md` - Deprecated redirect file removed
 
 **Modified**:
-- `joltshark/src/lib.rs` - Fixed 3 clippy lints
-- `README.md` - Added CI status badge
-- `.github/workflows/ci.yml` - Added Rust toolchain for NIF build
-- `cordial_cantina/native/nif/src/lib.rs` - Added Rust test
-- `cordial_cantina/lib/cordial_cantina_web/live/dashboard_live.ex` - Added PubSub real-time updates
-- `docs/README.md` - Removed Orbital Market Maker working title
-- `docs/overview/README.md` - Removed working title reference
-- `docs/overview/PRODUCT_IDENTITY.md` - Updated name section
+- `docs/decisions/PRIORITY.md` - P1.1 marked resolved, SPECIFICATION.md reference updated
+- `docs/decisions/RESOLVED.md` - R2 Mnesia GenServer strategy added
+- `docs/process/PROCESS_STRATEGY.md` - Vw-Mx-Py-Tz coding system added
+- `docs/README.md` - SPECIFICATION.md reference removed
+- `docs/process/MILESTONE.md` - Updated to V0.0-M0-P8 format
+- `docs/process/MILESTONE_HISTORY.md` - Updated coding in previous turn
 
 ---
 
-## GitHub Issues Integration
+## Phase 1 Blocker Analysis
 
-Regarding migration to GitHub Issues:
+As requested, here is an analysis of Phase 1 blockers from PRIORITY.md:
 
-**Feasibility**: The `gh` CLI tool supports full GitHub Issues management:
-```sh
-# Create issue
-gh issue create --title "Title" --body "Body"
+### Blockers Already Resolved or Partially Addressed
 
-# List issues
-gh issue list
+| Priority | Topic | Status | Notes |
+|----------|-------|--------|-------|
+| P1.1 | Mnesia GenServer vs Task | **Resolved** | GenServer strategy documented in R2 |
+| P2 | Rust NIF binding library | **Partially resolved** | Rustler already in use in native/nif |
+| P5 | Test framework | **Partially resolved** | CI pipeline exists, ExUnit + cargo test working |
 
-# View issue
-gh issue view 123
+### Blockers Requiring Decisions
 
-# Close issue
-gh issue close 123
-```
+| Priority | Topic | Suggested Resolution |
+|----------|-------|----------------------|
+| P1.2-P1.4 | Supervision critical questions | Document clustering, recovery, and transaction monitoring patterns. These can be iteratively refined during implementation. |
+| P3 | Solana RPC provider | **Recommend deferring**: Phase 1 can use public RPC for read-only development. Provider selection can wait until production requirements are clearer. |
+| P4 | Secrets management | **Simple path**: Use `config/runtime.exs` with environment variables for development. Production secrets management is a Phase 5/6 concern. |
+| P6 | Mnesia table schemas | **Iterative approach**: Define minimal tables needed for first feature. Schema evolves with requirements. |
+| P7 | Logging conventions | **Simple path**: Use Logger with default format. JSON structured logging can be added when observability requirements crystallize. |
 
-**Recommendation**: GitHub Issues would integrate well with the existing workflow:
-- Issues can reference commits and PRs
-- Labels can map to milestone phases (P1, P2, etc.)
-- Milestones in GitHub can track sprint progress
-- The current file-based MILESTONE.md could transition to GitHub Milestones
+### Recommendation
+
+The following would enable Phase 1 to begin with minimal blocking:
+
+1. **Accept suggested resolutions** for P3, P4, and P7 as simple starting points
+2. **Defer P6** until first feature requires specific tables
+3. **Document P1.2-P1.4** as implementation discovers concrete requirements
+
+No blockers are truly critical for starting Phase 1. The existing NIF foundation and CI pipeline provide a working starting point.
+
+---
+
+## GitHub Issues Migration Readiness
+
+### Readiness Assessment: Ready
+
+The codebase is prepared for GitHub Issues integration:
+
+**In place**:
+- Vw-Mx-Py-Tz coding system for issue titles and references
+- `gh` CLI installed and available
+- Clear milestone structure in MILESTONE_HISTORY.md
 
 **Migration approach**:
-1. Create GitHub labels for task types and phases
-2. Create GitHub milestones for macro-milestones
-3. Move PROMPT_BACKLOG.md items to Issues
-4. Optionally keep MILESTONE.md as a local reference
 
-This could be done agentically via `gh` commands in future milestones.
+```sh
+# Create labels for versions and types
+gh label create "V0.0" --description "Phase 0: Process Definition"
+gh label create "V0.1" --description "Phase 1: Foundation"
+gh label create "type:task" --description "Implementation task"
+gh label create "type:decision" --description "Decision required"
+
+# Create GitHub Milestones
+gh api repos/:owner/:repo/milestones -f title="V0.1 Foundation" -f description="Phase 1 deliverables"
+
+# Create issue from PROMPT_BACKLOG item
+gh issue create --title "B5: Project management integration" --body "Consider integration with issue tracking" --label "type:suggestion"
+```
+
+**Recommendation**: Migrate to GitHub Issues in next prompt (V0.0-M0-P9) as the capstone of V0.0-M0 Process Definition macro-milestone.
 
 ---
 
 ## Questions for Human Pilot
 
-1. **CI status**: The clippy fixes should allow CI to pass. Push to verify?
+1. **Phase 1 blockers**: Are the suggested simple resolutions acceptable? Should any be addressed more formally before proceeding?
 
-2. **GitHub Issues**: Would you like to migrate to GitHub Issues in a future milestone? The `gh` CLI enables agentic management.
+2. **GitHub Issues migration**: Ready to create issues for PROMPT_BACKLOG items and set up labels/milestones?
 
-3. **Process definition**: Is the process definition macro-milestone now complete with CI passing?
+3. **V0.0-M0 completion**: With coding system in place and GitHub Issues ready, is the Process Definition macro-milestone approaching completion?
 
 ---
 
 ## Technical Concerns / Risks
 
-**LiveView tick implementation**: The current implementation has each connected client scheduling its own ticks. For many clients, this could be optimized with a single GenServer broadcasting ticks. Acceptable for stub phase.
+None identified for this prompt.
 
 ---
 
 ## Suggestions for Improvement
 
-1. **Centralized tick server**: Move tick scheduling to a GenServer for efficiency with many clients.
+1. **PROMPT_BACKLOG cleanup**: B5 can be resolved if GitHub Issues migration proceeds. B6 about CLAUDE.md may be a non-issue in practice.
 
-2. **Dashboard expansion**: Add more system metrics (memory, process count, etc.) in future phases.
+2. **Phase 1 kickoff**: Consider creating a V0.1-M1 milestone outline once GitHub Issues are set up.
 
 ---
 
 ## Intended Next Step
 
-**Awaiting human direction** on commit and next milestone.
-
-All M7 tasks (M7-T1 through M7-T9) are complete. M7-T10 (commit) pending.
+**Awaiting human direction** on:
+- Verification via `mix precommit`
+- Commit
+- Next prompt (suggest V0.0-M0-P9 GitHub Issues migration)
 
 ---
 
@@ -160,8 +165,9 @@ All M7 tasks (M7-T1 through M7-T9) are complete. M7-T10 (commit) pending.
 
 If you are a new AI session reading this file:
 
-1. Read [MILESTONE.md](./MILESTONE.md) - M7 CI and LiveView complete (pending commit)
+1. Read [MILESTONE.md](./MILESTONE.md) - V0.0-M0-P8 in progress
 2. Read [PROMPT_BACKLOG.md](./PROMPT_BACKLOG.md) - B3, B5, B6 open
 3. LiveView dashboard: http://localhost:4000/dashboard
-4. Process definition macro-milestone: Near complete (pending CI verification)
-5. Wait for human prompt before proceeding
+4. Process definition macro-milestone: Near complete
+5. Coding system: Vw-Mx-Py-Tz (see PROCESS_STRATEGY.md)
+6. Wait for human prompt before proceeding
