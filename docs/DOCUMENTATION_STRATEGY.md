@@ -126,13 +126,9 @@ docs/
 │   ├── README.md
 │   ├── PROCESS_STRATEGY.md
 │   ├── GIT_STRATEGY.md
-│   ├── MILESTONE.md             # Current sprint (working document)
-│   ├── MILESTONE_HISTORY.md     # Archived milestones
-│   ├── PROMPT.md                # Human → AI (working document)
-│   ├── REVERSE_PROMPT.md        # AI → Human (working document)
-│   ├── PROMPT_BACKLOG.md        # Persistent concerns
-│   ├── MILESTONE_TEMPLATE.md    # Template
-│   └── PROMPT_TEMPLATE.md       # Template
+│   ├── MILESTONE.md             # Current sprint (session working document)
+│   ├── PROMPT.md                # Human → AI (session working document)
+│   └── REVERSE_PROMPT.md        # AI → Human (session working document)
 │
 └── reference/                   # Reference material
     ├── README.md
@@ -184,7 +180,7 @@ This section is a **meta-prompt** for AI agents working with this documentation.
 | **Current milestone/sprint** | `process/MILESTONE.md` |
 | **Development process** | `process/PROCESS_STRATEGY.md` |
 | Git workflow | `process/GIT_STRATEGY.md` |
-| Unresolved concerns | `process/PROMPT_BACKLOG.md` |
+| Unresolved concerns | [GitHub Issues](https://github.com/sgeos/cordial_cantina/issues) |
 | Terminology | `reference/GLOSSARY.md` |
 
 ### Verification Pattern

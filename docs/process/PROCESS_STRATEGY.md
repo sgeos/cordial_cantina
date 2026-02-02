@@ -298,9 +298,12 @@ gh issue create --title "V0.1-M5: Feature" --label "V0.1,type:task" --milestone 
 gh issue close N --reason completed
 ```
 
-### Deprecation Note
+### Session Documents
 
-The markdown-based MILESTONE.md and PROMPT_BACKLOG.md files are retained for session continuity but GitHub Issues is the primary tracking mechanism for V0.1+.
+MILESTONE.md, PROMPT.md, and REVERSE_PROMPT.md are retained for AI session continuity. These working documents enable bi-directional communication within a session but are not the primary tracking mechanism.
+
+**Primary tracking**: GitHub Issues
+**Release history**: [CHANGELOG.md](../../CHANGELOG.md)
 
 ---
 

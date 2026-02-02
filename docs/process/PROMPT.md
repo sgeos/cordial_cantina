@@ -10,66 +10,48 @@ This file is a staging area for complex human-to-AI instructions. The human pilo
 
 ## Comments
 
-Re: NIF
-Yes, reserve `catch_unwind` for truly exceptional circumstances.
-Please document this point if undocumented.
+We will close the Process Definition macro-milestone and move to V0.1 implementation once issues are in order.
 
-We will proceed to migrating to GitHub Issues, and then we will review the process state.
-Please comment on the following.
-
-- Does integration with GitHub Projects make sense?
-- Does Linear or Notion integration have clear advantages for agentic workflow?
-
-Once GitHub/project management integration is done, we will close the Process Definition macro-milestone and begin V0.1 Foundation.
-
-Birdeye + Raydium confirmed as initial strategy.
-Does DEX Screener have a free API that could be worth leveraging?
-Is there an obvious API for tracking the BTC price, and TradFi trading metrics (price of oil, futures, etc)?
+CI is broken, but we can address that next prompt.
 
 ## Objectives
 
-Migrate to markdown-based objective management GitHub Issues.
+### New Issue: GitHub Projects Integration
 
-- Move completed historal objectives to something like "V0.0 Historical Summary" and mark as complete.
-- Create issues for identified V0.0 and V0.1 milestones.
-- Hold off on V0.2 to V0.6 milestone definition.
+Create an issue that addresses "GitHub Projects Integration."
+This issue should mention consideration of GitHub Projects in the future, with pros and cons.
+It should also mention that Linear and Notion were considered but rejected.
+Rejection logic should be listed.
 
-You mentioned the following migration approach. It is acceptable.
+### Resolve Issue: B6: CLAUDE.md inclusion strategy
 
-```sh
-# Create labels for versions and types
-gh label create "V0.0" --description "Phase 0: Process Definition"
-gh label create "V0.1" --description "Phase 1: Foundation"
-gh label create "type:task" --description "Implementation task"
-gh label create "type:decision" --description "Decision required"
+Present strategy is acceptable barring a strong counter argument.
+Please refute and offer a better alternative, or resolve.
 
-# Create GitHub Milestones
-gh api repos/:owner/:repo/milestones -f title="V0.1 Foundation" -f description="Phase 1 deliverables"
+### Issue: B3: Add CHANGELOG.md for milestone completion history
 
-# Create issue from PROMPT_BACKLOG item
-gh issue create --title "B5: Project management integration" --body "Consider integration with issue           tracking" --label "type:suggestion"
- ```
-
-Make sure the GitHub Issues-based process replaces the markdown based process in the knowledge graph.
-
-Document that `gh` must be installed in the top level README.md.
-Check that `gh` and `git` are installed with the setup script.
-Have the setup script print a message that asks the user to review and consider installing:
-`docs/reference/MASTER_CLAUDE_MD_REFERENCE.md`
+Accept suggestion. Add CHANGELOG.md to provide a user-facing summary of releases.
+Construct from existing but depreciated markdown based project management files.
+Subsequently remove depreciated markdown based project management files.
+Document process changes:
+- GitHub Issues as opposed markdown based project management.
+- CHANGELOG.md provides a user-facing summary of releases.
 
 ## Context
 
-Markdown-based project management is clunky.
+In addition to migrating to GitHub issues, we need to make sure the new system is in order.
 
 ## Constraints
 
-Preserve and depreciate existing markdown files for now.
+(no instructions)
 
 ## Success Criteria
 
-- V0.0 Historical Summary tasks add and marked as complete.
-- V0.0 Outstanding milestones added.
-- V0.1 Outstanding milestones added.
+- GitHub Projects Integration and related analysis documented in new issue.
+- "B6: CLAUDE.md inclusion strategy" issue updated. Refute current strategy or close noting logic.
+- CHANGELOG.md added to appropriate place in knowledge graph.
+- Markdown based project management files removed from project and knowledge graph.
+- Knowledge graph process updated to reflect new GitHub Issues approach and remove old markdown based approach.
 
 ## Notes
 
