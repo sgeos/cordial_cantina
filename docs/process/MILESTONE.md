@@ -6,7 +6,7 @@ This file is the source of truth for the current development sprint.
 
 ---
 
-## Milestone: V0.0-M0-P11 Finalize GitHub Issues Migration
+## Milestone: V0.0-M0-P12 CI Fix and Link Repair
 
 **Status**: Complete
 
@@ -18,12 +18,10 @@ This file is the source of truth for the current development sprint.
 
 ## Success Criteria
 
-- [x] GitHub Projects Integration issue created with analysis
-- [x] B6 CLAUDE.md strategy issue resolved
-- [x] CHANGELOG.md created from milestone history
-- [x] Deprecated markdown project management files removed
-- [x] Knowledge graph updated for GitHub Issues approach
-- [x] All changes committed
+- [x] CI passes (compile step added before precommit)
+- [x] Links in issues #2-#5 fixed with absolute URLs
+- [x] Commentary on MILESTONE.md relevance provided
+- [x] Commentary on process establishment provided
 
 ---
 
@@ -31,21 +29,22 @@ This file is the source of truth for the current development sprint.
 
 | ID | Task | Status | Verification |
 |----|------|--------|--------------|
-| V0.0-M0-P11-T1 | Create GitHub Projects Integration issue | Complete | Issue #8 |
-| V0.0-M0-P11-T2 | Resolve B6 CLAUDE.md strategy issue | Complete | Issue #7 closed |
-| V0.0-M0-P11-T3 | Create CHANGELOG.md | Complete | File created |
-| V0.0-M0-P11-T4 | Remove deprecated markdown files | Complete | 4 files removed |
-| V0.0-M0-P11-T5 | Update PROCESS_STRATEGY.md | Complete | Session docs section |
-| V0.0-M0-P11-T6 | Update DOCUMENTATION_STRATEGY.md | Complete | Structure updated |
-| V0.0-M0-P11-T7 | Update process/README.md | Complete | ToC updated |
-| V0.0-M0-P11-T8 | Write REVERSE_PROMPT.md | Complete | File updated |
-| V0.0-M0-P11-T9 | Verify and commit | Complete | Commit `0c7b8ea` |
+| V0.0-M0-P12-T1 | Fix CI by adding compile step | Complete | ci.yml line 59-60 |
+| V0.0-M0-P12-T2 | Fix broken links in issue #2 | Complete | gh issue edit |
+| V0.0-M0-P12-T3 | Fix broken links in issue #3 | Complete | gh issue edit |
+| V0.0-M0-P12-T4 | Fix broken links in issue #4 | Complete | gh issue edit |
+| V0.0-M0-P12-T5 | Fix broken links in issue #5 | Complete | gh issue edit |
+| V0.0-M0-P12-T6 | Update MILESTONE.md | Complete | This file |
+| V0.0-M0-P12-T7 | Write REVERSE_PROMPT.md | Complete | File updated |
+| V0.0-M0-P12-T8 | Commit changes | Complete | See commit |
 
 ---
 
 ## Notes
 
-Prompted via PROMPT.md. Finalizes migration from markdown-based to GitHub Issues-based project management.
+CI was failing because `mix precommit` ran before the NIF was compiled. The NIF requires `mix compile` to build the Rust shared library. Added explicit compile step to ci.yml.
+
+GitHub Issues use relative links which GitHub interprets relative to the issue URL, not the repository root. Fixed by converting to absolute URLs using `https://github.com/sgeos/cordial_cantina/blob/main/...` format.
 
 ---
 
@@ -53,4 +52,4 @@ Prompted via PROMPT.md. Finalizes migration from markdown-based to GitHub Issues
 
 | Date | Change |
 |------|--------|
-| 2026-02-02 | Milestone created |
+| 2026-02-02 | Milestone created and completed |

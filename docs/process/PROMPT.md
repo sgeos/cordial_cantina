@@ -10,36 +10,40 @@ This file is a staging area for complex human-to-AI instructions. The human pilo
 
 ## Comments
 
-We will close the Process Definition macro-milestone and move to V0.1 implementation once issues are in order.
+Is MILESTONE.md still relevant if we are using a GitHub Issues workflow?
+In theory, keeping PROMPT_TEMPLATE.md around would have been useful, but losing it is not a big deal as there is a lot of prompt history.
 
-CI is broken, but we can address that next prompt.
+Issues have broken links.
+V0.1-Mx series issues link to this file:
+- https://github.com/sgeos/cordial_cantina/issues/docs/decisions/RESOLVED.md
+
+The correct link is:
+- https://github.com/sgeos/cordial_cantina/tree/main/docs/decisions/RESOLVED.md
+
+Some point to anchors in the file.
+Getting these fixed is nice to have. As is, nothing is blocked.
+
+Also, comment on whether or not you feel the process is established and in order after these fixes.
 
 ## Objectives
 
-### New Issue: GitHub Projects Integration
+### Resolve Broken CI
 
-Create an issue that addresses "GitHub Projects Integration."
-This issue should mention consideration of GitHub Projects in the future, with pros and cons.
-It should also mention that Linear and Notion were considered but rejected.
-Rejection logic should be listed.
+See the following URL:
+https://github.com/sgeos/cordial_cantina/actions/runs/21602670339/job/62252449635
 
-### Resolve Issue: B6: CLAUDE.md inclusion strategy
+The "run precommit checks" is failing.
+Local server runs fine.
 
-Present strategy is acceptable barring a strong counter argument.
-Please refute and offer a better alternative, or resolve.
+### Fix Broken Links
 
-### Issue: B3: Add CHANGELOG.md for milestone completion history
-
-Accept suggestion. Add CHANGELOG.md to provide a user-facing summary of releases.
-Construct from existing but depreciated markdown based project management files.
-Subsequently remove depreciated markdown based project management files.
-Document process changes:
-- GitHub Issues as opposed markdown based project management.
-- CHANGELOG.md provides a user-facing summary of releases.
+Fix the broken links in the issues if straightforward.
+If not straightforward, report as non-trivial with reasoning.
 
 ## Context
 
-In addition to migrating to GitHub issues, we need to make sure the new system is in order.
+I want CI in order before we move onto V0.1 development.
+It is a process issue at this point.
 
 ## Constraints
 
@@ -47,11 +51,8 @@ In addition to migrating to GitHub issues, we need to make sure the new system i
 
 ## Success Criteria
 
-- GitHub Projects Integration and related analysis documented in new issue.
-- "B6: CLAUDE.md inclusion strategy" issue updated. Refute current strategy or close noting logic.
-- CHANGELOG.md added to appropriate place in knowledge graph.
-- Markdown based project management files removed from project and knowledge graph.
-- Knowledge graph process updated to reflect new GitHub Issues approach and remove old markdown based approach.
+- CI passes.
+- Links in issues are resolved, or reported as non-trivial fix with reasoning.
 
 ## Notes
 
