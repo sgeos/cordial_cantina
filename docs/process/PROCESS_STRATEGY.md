@@ -55,9 +55,14 @@ The human pilot uses this file to:
 
 **Usage**:
 1. Human writes detailed instructions in PROMPT.md
-2. Human commits PROMPT.md to preserve history
-3. Human prompts AI: "Please execute the instructions in PROMPT.md"
-4. AI reads and executes instructions
+2. Human prompts AI: "Please execute the instructions in PROMPT.md"
+3. AI reads and executes instructions
+4. **AI commits PROMPT.md** along with other changes
+
+**Critical rule**: PROMPT.md must always be committed to preserve collaboration history. The git history of PROMPT.md provides a complete record of human-to-AI instructions across the project lifecycle. This history is valuable for:
+- Understanding decision context in future sessions
+- Auditing the collaboration process
+- Reconstructing the rationale behind implementation choices
 
 ### Reverse Prompts (AI → Human)
 
