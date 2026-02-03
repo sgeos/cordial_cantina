@@ -9,150 +9,148 @@ This file is the AI-to-human communication channel. It is overwritten after each
 ## Last Updated
 
 **Date**: 2026-02-02
-**Task**: V0.1-M4-P1 Birdeye API Integration
-**Macro-milestone**: V0.1-M4 Birdeye API Integration
+**Task**: V0.1 Release Wrap-up
+**Macro-milestone**: V0.1 Foundation Release
 
 ---
 
 ## Verification
 
-### V0.1-M3 Closure
-**Command**: `gh issue close 4 --reason completed`
-**Result**: PASS - Issue #4 closed with completion message
+### V0.1-M4 Closure
+**Command**: `gh issue close 5 --reason completed`
+**Result**: PASS - Issue #5 closed
 
-### V0.1-M4-P1: Birdeye API Integration
-**Command**: `mix precommit`
+### Tags Created
+**Command**: `git tag -l`
+**Result**: v0.0.0, v0.1.0
+
+### V0.2 Preparation
+- Label created: V0.2 (Phase 2: Market Data)
+- Milestone created: V0.2 Market Data
+
+### Clean Build
+**Command**: `rm -rf _build && mix compile --force && mix precommit`
 **Result**: PASS - 36 tests, 0 failures
 
-### CI Fix Verification
-**Command**: `rm -rf _build && mix compile --force && mix precommit`
-**Result**: PASS - Clean build and all tests pass
+---
+
+## V0.2 Blockers Report
+
+### Overview
+
+V0.2 (Market Data) requires real-time market data ingestion and persistence. Based on analysis of Phase 2 roadmap and backlog decisions:
+
+### Blocking Decisions
+
+| Decision | Topic | Status | Notes |
+|----------|-------|--------|-------|
+| B3 | Message Queue Selection | **Open** | Is Broadway/GenStage sufficient or need RabbitMQ/Kafka? |
+| B4 | Historical Data Sources | **Partially Resolved** | Birdeye implemented; need to evaluate additional sources |
+
+### Technical Prerequisites
+
+| Prerequisite | Status | Notes |
+|--------------|--------|-------|
+| Mnesia tables for market data | Pending | Schema definitions needed |
+| PostgreSQL setup | Pending | For time-series offload |
+| WebSocket support | Pending | For real-time price feeds |
+
+### Recommendations
+
+1. **Define Mnesia market data schema** - Create specific tables for price feeds and order books per R8 iterative approach.
+
+2. **Add PostgreSQL/Ecto** - Required for time-series persistence and offload from Mnesia.
+
+3. **Evaluate GenStage vs Broadway** - For high-throughput data ingestion. GenStage is likely sufficient for initial implementation.
+
+4. **Add WebSocket client** - Birdeye supports WebSocket for real-time data. Consider adding gun or mint_web_socket.
+
+5. **Define signal validation rules** - What constitutes anomalous data? Needs specification.
+
+### Suggested V0.2 Milestones
+
+| Milestone | Description |
+|-----------|-------------|
+| V0.2-M1 | PostgreSQL/Ecto setup |
+| V0.2-M2 | Mnesia market data tables |
+| V0.2-M3 | Real-time price feed ingestion |
+| V0.2-M4 | Order book snapshots |
+| V0.2-M5 | Signal validation |
+| V0.2-M6 | Mnesia to PostgreSQL offload |
 
 ---
 
 ## Implementation Summary
 
-### Created Files
-
-**`lib/cordial_cantina/integration/birdeye.ex`**
-- `fetch_ohlcv/5` - Fetches OHLCV data from Birdeye API
-- Supports all 15 interval types (1m to 1M)
-- Accepts DateTime or Unix timestamps
-- Returns structured OHLCV data maps
-
-**`lib/cordial_cantina/integration/rate_limiter.ex`**
-- GenServer for rate limiting API calls
-- `acquire/1` - Blocks until rate limit allows
-- `register_endpoint/2` - Adds endpoints for round-robin
-- `next_endpoint/1` - Gets next endpoint in rotation
-
-**`test/cordial_cantina/integration/birdeye_test.exs`**
-- 10 tests covering success, errors, validation
-
-**`test/cordial_cantina/integration/rate_limiter_test.exs`**
-- 8 tests covering acquire, timeout, round-robin
-
-### Modified Files
+### CI Updates
 
 **`.github/workflows/ci.yml`**
-- Changed `mix compile` to `mix compile --force`
-- Ensures NIF is built fresh with restored cache
+- Added cargo-tarpaulin installation
+- Added Rust coverage reporting
+- Added Codecov upload for Rust coverage
 
-**`CHANGELOG.md`**
-- Added V0.1-M4-P1 Birdeye integration
-- Added CI fix note
+### GitHub Prep
 
----
+- **V0.2 label** created with "Phase 2: Market Data" description
+- **V0.2 milestone** created with description
 
-## Birdeye API Details
+### Tags
 
-| Aspect | Value |
-|--------|-------|
-| Base URL | `https://public-api.birdeye.so` |
-| OHLCV Endpoint | `/defi/ohlcv` |
-| Auth Header | `X-API-KEY` |
-| Chain Header | `x-chain` (default: solana) |
-| Rate Limit | ~60 req/min (free tier) |
-
-### Supported Intervals
-1m, 3m, 5m, 15m, 30m, 1H, 2H, 4H, 6H, 8H, 12H, 1D, 3D, 1W, 1M
-
-### Error Handling
-- 429 -> `{:error, :rate_limited}`
-- 401 -> `{:error, :unauthorized}`
-- 404 -> `{:error, :not_found}`
-- 5xx -> `{:error, {:http_error, status, body}}`
+- **v0.0.0** - V0.0 Process Definition (commit 8f299c1)
+- **v0.1.0** - V0.1 Foundation (commit b30e651)
 
 ---
 
-## Rust Test Coverage Question
+## GitHub Status
 
-Regarding your question about Rust test coverage tools:
+### Closed Issues (V0.1)
+| Issue | Title | Status |
+|-------|-------|--------|
+| #1 | V0.0-M0: Process Definition | Closed |
+| #2 | V0.1-M1: Mnesia GenServer | Closed |
+| #3 | V0.1-M2: Secrets Management | Closed |
+| #4 | V0.1-M3: Test Coverage | Closed |
+| #5 | V0.1-M4: Birdeye API | Closed |
+| #6 | B3: Add CHANGELOG.md | Closed |
+| #7 | B6: CLAUDE.md strategy | Closed |
 
-**Recommended Tools:**
+### Open Issues
+| Issue | Title | Label |
+|-------|-------|-------|
+| #8 | GitHub Projects Integration | type:decision |
 
-1. **cargo-tarpaulin** - Most popular, works well for simple projects
-   ```sh
-   cargo install cargo-tarpaulin
-   cargo tarpaulin --out Html
-   ```
-
-2. **grcov** - Mozilla's tool, more comprehensive
-   ```sh
-   cargo install grcov
-   RUSTFLAGS="-C instrument-coverage" cargo build
-   ```
-
-3. **llvm-cov** - Uses LLVM's native coverage
-   ```sh
-   cargo +nightly llvm-cov --html
-   ```
-
-For the NIF and joltshark, cargo-tarpaulin is the simplest option. It can be added to CI similarly to how excoveralls is used for Elixir.
-
----
-
-## GitHub Issue Status
-
-### Issue #4 (V0.1-M3)
-**Status**: Closed
-**Reason**: Completed
-
-### Issue #5 (V0.1-M4)
-All tasks complete:
-- [x] Research Birdeye API endpoints and authentication
-- [x] Create CordialCantina.Integration.Birdeye module
-- [x] Implement OHLCV data fetching
-- [x] Add rate limiting and error handling
-- [x] Write tests with Bypass mocks
-
-The issue can be closed after commit is verified.
+### Milestones
+| Milestone | Status |
+|-----------|--------|
+| V0.1 Foundation | 4/4 issues closed |
+| V0.2 Market Data | 0 issues (new) |
 
 ---
 
 ## Questions for Human Pilot
 
-1. **Close Issue #5?** Should I close GitHub Issue #5 now that implementation is complete?
+1. **Push tags?** Should I push the v0.0.0 and v0.1.0 tags to remote?
 
-2. **Add Rust coverage?** Should I add cargo-tarpaulin to the Rust CI job for coverage reporting?
+2. **Create V0.2 issues?** Should I create GitHub issues for the suggested V0.2 milestones?
 
-3. **V0.1 complete?** V0.1-M1 through M4 are all complete. Ready to tag V0.1 release?
+3. **PostgreSQL setup?** Ready to begin V0.2-M1 with Ecto/PostgreSQL integration?
 
 ---
 
 ## Technical Concerns / Risks
 
-None. The implementation follows R5 and R7 decisions. Rate limiting is implemented conservatively to stay within free tier limits.
+**V0.2 Complexity**: Phase 2 introduces significant new infrastructure (PostgreSQL, real-time feeds, data validation). Consider breaking into smaller milestones.
+
+**WebSocket Selection**: Multiple options exist (gun, mint_web_socket, websockex). Need to evaluate based on Birdeye API requirements.
 
 ---
 
 ## Intended Next Step
 
 **Awaiting human direction** on:
-- Commit verification
-- Issue #5 closure
-- Rust coverage decision
-- V0.1 release tagging
+- Tag push to remote
+- V0.2 issue creation
+- V0.2-M1 initiation
 
 ---
 
@@ -161,11 +159,9 @@ None. The implementation follows R5 and R7 decisions. Rate limiting is implement
 If you are a new AI session reading this file:
 
 1. Check [GitHub Issues](https://github.com/sgeos/cordial_cantina/issues) for open tasks
-2. V0.0-M0 Process Definition: Complete
-3. V0.1-M1 Mnesia GenServer: Complete (Issue #2 closed)
-4. V0.1-M2 Secrets Management: Complete (Issue #3 closed)
-5. V0.1-M3 Test Coverage: Complete (Issue #4 closed)
-6. V0.1-M4 Birdeye API: Complete (this prompt)
-7. Primary tracking: GitHub Issues
-8. V0.1 Foundation: All milestones complete
-9. Wait for human prompt before proceeding
+2. V0.0 Process Definition: Complete (tagged v0.0.0)
+3. V0.1 Foundation: Complete (tagged v0.1.0)
+4. V0.2 Market Data: Ready to begin
+5. Primary tracking: GitHub Issues
+6. V0.2 blockers: See report above
+7. Wait for human prompt before proceeding

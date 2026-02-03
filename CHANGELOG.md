@@ -8,16 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- V0.1 Foundation milestone issues created in GitHub
-- `CordialCantina.Mnesia.Server` GenServer for Mnesia initialization (V0.1-M1-P1)
-- Secrets management with `.env.example` and `runtime.exs` configuration (V0.1-M2-P1)
-- Environment variable documentation in README
-- Test coverage with excoveralls (V0.1-M3-P1)
+- Rust test coverage with cargo-tarpaulin in CI
+- V0.2 label and milestone for Market Data phase
+
+---
+
+## [0.1.0] - 2026-02-02
+
+### Added
+- `CordialCantina.Mnesia.Server` GenServer for Mnesia initialization (V0.1-M1)
+- Secrets management with `.env.example` and `runtime.exs` configuration (V0.1-M2)
+- Test coverage with excoveralls (V0.1-M3)
 - HTTP mocking with Bypass for API integration tests
 - Coverage reporting in CI pipeline
-- Birdeye API integration for OHLCV market data (V0.1-M4-P1)
+- Birdeye API integration for OHLCV market data (V0.1-M4)
 - Rate limiter GenServer for API call management
-- 18 new integration tests for Birdeye and rate limiter
+- 36 tests total (14 core + 4 Bypass + 18 integration)
 
 ### Fixed
 - CI pipeline: Use `mix compile --force` to ensure NIF is built fresh
@@ -88,7 +94,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version History
 
 - **0.0.0** - Process Definition (V0.0-M0) complete
-- **0.1.0** - Foundation (V0.1) - planned
+- **0.1.0** - Foundation (V0.1) complete
+- **0.2.0** - Market Data (V0.2) - planned
 
-[Unreleased]: https://github.com/sgeos/cordial_cantina/compare/v0.0.0...HEAD
+[Unreleased]: https://github.com/sgeos/cordial_cantina/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/sgeos/cordial_cantina/compare/v0.0.0...v0.1.0
 [0.0.0]: https://github.com/sgeos/cordial_cantina/releases/tag/v0.0.0
