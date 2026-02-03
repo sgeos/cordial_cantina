@@ -15,8 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Test coverage with excoveralls (V0.1-M3-P1)
 - HTTP mocking with Bypass for API integration tests
 - Coverage reporting in CI pipeline
+- Birdeye API integration for OHLCV market data (V0.1-M4-P1)
+- Rate limiter GenServer for API call management
+- 18 new integration tests for Birdeye and rate limiter
 
 ### Fixed
+- CI pipeline: Use `mix compile --force` to ensure NIF is built fresh
 - CI pipeline: Added `mix compile` step before `mix precommit` (NIF requires compilation)
 - GitHub Issues #2-#5: Fixed broken links (relative to absolute URLs)
 
