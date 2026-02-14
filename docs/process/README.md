@@ -29,7 +29,7 @@ These files maintain state across AI sessions and enable bi-directional communic
 
 | Document | Direction | Purpose |
 |----------|-----------|---------|
-| [MILESTONE.md](./MILESTONE.md) | Shared | Current sprint source of truth |
+| [TASKLOG.md](./TASKLOG.md) | Shared | Current sprint source of truth |
 | [PROMPT.md](./PROMPT.md) | Human → AI | Complex instruction staging |
 | [REVERSE_PROMPT.md](./REVERSE_PROMPT.md) | AI → Human | Questions, concerns, next steps |
 
@@ -38,7 +38,7 @@ These files maintain state across AI sessions and enable bi-directional communic
 ## Quick Start for New Sessions
 
 1. Check [GitHub Issues](https://github.com/sgeos/cordial_cantina/issues) for open tasks
-2. Read [MILESTONE.md](./MILESTONE.md) to understand current sprint state
+2. Read [TASKLOG.md](./TASKLOG.md) to understand current sprint state
 3. Read [REVERSE_PROMPT.md](./REVERSE_PROMPT.md) for last AI communication
 4. Check [PROCESS_STRATEGY.md](./PROCESS_STRATEGY.md) for workflow expectations
 5. Wait for human prompt before proceeding
@@ -49,7 +49,7 @@ These files maintain state across AI sessions and enable bi-directional communic
 
 Development follows **milestone sprints** (not time-based):
 - Tasks tracked via GitHub Issues with labels and milestones
-- Session state maintained in MILESTONE.md
+- Session state maintained in TASKLOG.md
 - Bi-directional communication via PROMPT.md and REVERSE_PROMPT.md
 - Releases documented in [CHANGELOG.md](../../CHANGELOG.md)
 

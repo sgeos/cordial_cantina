@@ -45,14 +45,11 @@ These items are relevant to Phase 1 but do not block implementation. They should
 
 ## Phase 2: Market Data
 
-### B3. Message Queue Selection
+### ~~B3. Message Queue Selection~~
 
-**Questions**:
-1. Is a message queue required for event streaming?
-2. If so, which system: Broadway with RabbitMQ, Kafka, or GenStage only?
-3. What are the durability and ordering requirements?
+**Status**: RESOLVED - See [R10 in RESOLVED.md](./RESOLVED.md#r10-message-queue-selection)
 
-**Why deferred**: Phase 1 does not require event streaming. Decision can be informed by Phase 1 learnings.
+**Decision**: Broadway with GenStage is sufficient for V0.2. No external message broker required.
 
 ---
 

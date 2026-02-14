@@ -8,6 +8,7 @@
 import Config
 
 config :cordial_cantina,
+  ecto_repos: [CordialCantina.Repo],
   generators: [timestamp_type: :utc_datetime]
 
 # Configure the endpoint

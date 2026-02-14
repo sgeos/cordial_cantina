@@ -10,35 +10,62 @@ This file is a staging area for complex human-to-AI instructions. The human pilo
 
 ## Comments
 
-CI verified, passing.
+GitHub CI has been verified as passing.
 
-Please report on V0.2 blockers.
-Determine if there are any obvious recommendations and report in next reverse prompt.
+Rust project has been updated to include functions to provide signals indicating
+market operating cycles to manifold and AI-model layers.
+
+Answers to questions:
+1. I think I pushed the v0.0.0 and v0.1.0 tags to remote.
+2. Please create GitHub issues for the suggested V0.2 milestones.
+3. Please setup and integrate Ecto/PostgreSQL.
 
 ## Objectives
 
-### V0.1-M4: Birdeye API Integration #5
+### Decision : B2 - Message Queue Selection
 
-Mark V0.1-M4 as complete.
-Close GitHub Issue with appropriate message.
+Broadway is sufficient at this time.
+Please update the knowledge graph.
 
-###  Add cargo-tarpaulin
+### Partial Decision : B3 - Historical Data Sources
 
-Add cargo-tarpaulin to the Rust CI job for coverage reporting.
+Please suggest concrete datasources in your next reverse prompt.
+My understanding is that BTC is a proxy signal for the health of everything Crypto.
+I want the following signals, and I want to keep data source dependencies streamlined and minimal:
 
-### Tag Releases
+- BTC price
+- Upstream TradFi signals likely to influence the BTC price
 
-Retroactively tag V0.0 "release".
-Tag V0.1 release.
+Please update the knowledge graph if sensible.
 
-### Prepare for V0.2
+### Accept Recommendations
 
-Create a V0.2 label GitHub issues.
-Do any other GitHub related prep work for V0.2, if any.
+1. Define Mnesia market data schema.
+   Create specific tables for price feeds and order books per R8 iterative approach.
+2. Add PostgreSQL/Ecto for time-series persistence and offload from Mnesia.
+3. Adopt Broadway for high-throughput data ingestion.
+4. Add mint WebSocket client to support Birdeye real-time data.
+5. Will need to see real signal data before we can figure out what is anomalous.
+
+### Rename MILESTONE.md to TASKLOG.md
+
+`MILESTONE.md`'s function appears to have drifted,
+but it makes sense to retain the file.
+Rename `MILESTONE.md` to `TASKLOG.md` and update the knowledge graph.
+
+### Address Updated Rust Project
+
+If the knowledge graph or anything else needs to be updated to
+reflect the changes in the Rust project, please do this.
+
+### Create V0.2 Milestone GitHub Issues
+
+Create GitHub issues for the suggested V0.2 milestones.
 
 ## Context
 
-Wrapping up V0.1.
+Clearing blockers for V0.2.
+Refining process.
 
 ## Constraints
 
@@ -46,10 +73,16 @@ Wrapping up V0.1.
 
 ## Success Criteria
 
-- V0.1-M4 issue #5 closed with appropriate message.
-- cargo-tarpaulin added to the Rust CI job for coverage reporting.
-- CI tested and working locally.
+- B2 decision documented.
+- B3 decision documented if sensible.
+- Initial Mnesia market data schema defined.
+- PostgreSQL/Ecto added and integrated. Schema mirrors Mnesia.
+- Broadway added and integrated.
+- mint WebSocket added and integrated.
+- `MILESTONE.md` renamed to `TASKLOG.md` and knowledge graph updated.
+- Knowledge graph and other relevant files updated to reflect Rust project additions.
+- GitHub V0.2 milestone issues created.
 
 ## Notes
 
-Consider a clean build to test the CI.
+(none)

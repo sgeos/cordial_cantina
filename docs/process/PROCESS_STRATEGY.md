@@ -15,7 +15,7 @@ The process uses three working documents for bi-directional communication:
 | Document | Direction | Purpose |
 |----------|-----------|---------|
 | [PROMPT.md](./PROMPT.md) | Human → AI | Complex instruction staging |
-| [MILESTONE.md](./MILESTONE.md) | Shared | Current sprint source of truth |
+| [TASKLOG.md](./TASKLOG.md) | Shared | Current sprint source of truth |
 | [REVERSE_PROMPT.md](./REVERSE_PROMPT.md) | AI → Human | Questions, concerns, next steps |
 
 ---
@@ -33,7 +33,7 @@ Time-based sprints (e.g., 2-week sprints) create artificial pressure and often r
 
 ### Milestone Structure
 
-Each milestone in [MILESTONE.md](./MILESTONE.md) includes:
+Each milestone in [TASKLOG.md](./TASKLOG.md) includes:
 
 1. **Name**: Descriptive identifier for the milestone
 2. **Status**: In-Progress, Testing, Blocked, or Complete
@@ -85,7 +85,7 @@ After completing prompted instructions, the AI **must** overwrite this file with
 
 When the AI completes a task:
 
-1. **Update MILESTONE.md**: Mark the task as complete
+1. **Update TASKLOG.md**: Mark the task as complete
 2. **Update REVERSE_PROMPT.md**: Include:
    - Verification command used (e.g., `mix test`, `cargo build`)
    - Verification result (pass/fail)
@@ -95,12 +95,12 @@ When the AI completes a task:
 
 ### Verification Requirement
 
-For every task marked "Complete" in MILESTONE.md, the AI must provide in REVERSE_PROMPT.md:
+For every task marked "Complete" in TASKLOG.md, the AI must provide in REVERSE_PROMPT.md:
 
 ```markdown
 ## Verification
 
-**Task**: [Task name from MILESTONE.md]
+**Task**: [Task name from TASKLOG.md]
 **Command**: `mix test test/path/to/test.exs`
 **Result**: PASS (or FAIL with details)
 ```
@@ -144,7 +144,7 @@ All work items use the **Vw-Mx-Py-Tz** coding system for traceability across mil
 
 ### Usage
 
-- **MILESTONE.md**: Tasks use full Vw-Mx-Py-Tz format
+- **TASKLOG.md**: Tasks use full Vw-Mx-Py-Tz format
 - **MILESTONE_HISTORY.md**: Archived prompts include full coding
 - **Git commits**: Reference task codes in commit messages
 - **GitHub Issues**: Issue titles include Vw-Mx-Py or Vw-Mx-Py-Tz codes
@@ -180,7 +180,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│ 1. Human creates/updates MILESTONE.md with sprint scope         │
+│ 1. Human creates/updates TASKLOG.md with sprint scope           │
 └─────────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -198,7 +198,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 │ 4. AI executes task                                             │
 │    - Implements changes                                         │
 │    - Runs verification                                          │
-│    - Updates MILESTONE.md task status                           │
+│    - Updates TASKLOG.md task status                             │
 └─────────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -237,7 +237,7 @@ When the AI encounters a blocker:
    - What is blocked
    - Why it is blocked
    - What information or decision is needed
-3. **Update MILESTONE.md status** to "Blocked" if milestone-level
+3. **Update TASKLOG.md status** to "Blocked" if milestone-level
 4. **Commit current state**
 5. **Stop and wait** for human response
 
@@ -247,11 +247,11 @@ When the AI encounters a blocker:
 
 These files maintain state across sessions:
 
-- **MILESTONE.md**: Shows current sprint state for any new session
+- **TASKLOG.md**: Shows current sprint state for any new session
 - **REVERSE_PROMPT.md**: Shows last AI communication for context
 - **PROMPT.md**: Preserves complex prompts for re-execution if needed
 
-A new AI session should read MILESTONE.md first to understand current state.
+A new AI session should read TASKLOG.md first to understand current state.
 
 ---
 
@@ -300,7 +300,7 @@ gh issue close N --reason completed
 
 ### Session Documents
 
-MILESTONE.md, PROMPT.md, and REVERSE_PROMPT.md are retained for AI session continuity. These working documents enable bi-directional communication within a session but are not the primary tracking mechanism.
+TASKLOG.md, PROMPT.md, and REVERSE_PROMPT.md are retained for AI session continuity. These working documents enable bi-directional communication within a session but are not the primary tracking mechanism.
 
 **Primary tracking**: GitHub Issues
 **Release history**: [CHANGELOG.md](../../CHANGELOG.md)

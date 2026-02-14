@@ -8,149 +8,197 @@ This file is the AI-to-human communication channel. It is overwritten after each
 
 ## Last Updated
 
-**Date**: 2026-02-02
-**Task**: V0.1 Release Wrap-up
-**Macro-milestone**: V0.1 Foundation Release
+**Date**: 2026-02-14
+**Task**: V0.2 Preparation Sprint
+**Macro-milestone**: V0.2 Market Data
 
 ---
 
 ## Verification
 
-### V0.1-M4 Closure
-**Command**: `gh issue close 5 --reason completed`
-**Result**: PASS - Issue #5 closed
+### Build
+**Command**: `mix compile --force`
+**Result**: PASS - 28 modules compiled
 
-### Tags Created
-**Command**: `git tag -l`
-**Result**: v0.0.0, v0.1.0
+### Tests
+**Command**: `mix test`
+**Result**: PASS - 59 tests, 0 failures
 
-### V0.2 Preparation
-- Label created: V0.2 (Phase 2: Market Data)
-- Milestone created: V0.2 Market Data
-
-### Clean Build
-**Command**: `rm -rf _build && mix compile --force && mix precommit`
-**Result**: PASS - 36 tests, 0 failures
-
----
-
-## V0.2 Blockers Report
-
-### Overview
-
-V0.2 (Market Data) requires real-time market data ingestion and persistence. Based on analysis of Phase 2 roadmap and backlog decisions:
-
-### Blocking Decisions
-
-| Decision | Topic | Status | Notes |
-|----------|-------|--------|-------|
-| B3 | Message Queue Selection | **Open** | Is Broadway/GenStage sufficient or need RabbitMQ/Kafka? |
-| B4 | Historical Data Sources | **Partially Resolved** | Birdeye implemented; need to evaluate additional sources |
-
-### Technical Prerequisites
-
-| Prerequisite | Status | Notes |
-|--------------|--------|-------|
-| Mnesia tables for market data | Pending | Schema definitions needed |
-| PostgreSQL setup | Pending | For time-series offload |
-| WebSocket support | Pending | For real-time price feeds |
-
-### Recommendations
-
-1. **Define Mnesia market data schema** - Create specific tables for price feeds and order books per R8 iterative approach.
-
-2. **Add PostgreSQL/Ecto** - Required for time-series persistence and offload from Mnesia.
-
-3. **Evaluate GenStage vs Broadway** - For high-throughput data ingestion. GenStage is likely sufficient for initial implementation.
-
-4. **Add WebSocket client** - Birdeye supports WebSocket for real-time data. Consider adding gun or mint_web_socket.
-
-5. **Define signal validation rules** - What constitutes anomalous data? Needs specification.
-
-### Suggested V0.2 Milestones
-
-| Milestone | Description |
-|-----------|-------------|
-| V0.2-M1 | PostgreSQL/Ecto setup |
-| V0.2-M2 | Mnesia market data tables |
-| V0.2-M3 | Real-time price feed ingestion |
-| V0.2-M4 | Order book snapshots |
-| V0.2-M5 | Signal validation |
-| V0.2-M6 | Mnesia to PostgreSQL offload |
+### V0.2 Issues Created
+- Issue #9: V0.2-M1 PostgreSQL/Ecto Setup (CLOSED)
+- Issue #10: V0.2-M2 Mnesia Market Data Tables (CLOSED)
+- Issue #11: V0.2-M3 Real-time Price Feed Ingestion
+- Issue #12: V0.2-M4 Order Book Snapshots
+- Issue #13: V0.2-M5 Signal Validation
+- Issue #14: V0.2-M6 Mnesia to PostgreSQL Offload
 
 ---
 
-## Implementation Summary
+## Completed Tasks
 
-### CI Updates
+### 1. Renamed MILESTONE.md to TASKLOG.md
+- File renamed via git mv
+- Updated all knowledge graph references in:
+  - PROCESS_STRATEGY.md
+  - DOCUMENTATION_STRATEGY.md
+  - process/README.md
 
-**`.github/workflows/ci.yml`**
-- Added cargo-tarpaulin installation
-- Added Rust coverage reporting
-- Added Codecov upload for Rust coverage
+### 2. Documented B2 Decision (Broadway)
+- Updated BACKLOG.md to mark B3 (Message Queue Selection) as resolved
+- Added R10 to RESOLVED.md documenting Broadway decision
+- Broadway selected over external message brokers (RabbitMQ/Kafka)
 
-### GitHub Prep
+### 3. Updated Knowledge Graph for Rust Project
+- Updated TEMPORAL_CYCLES.md with joltshark cyclic signal functions
+- Updated TECHNOLOGY_STACK.md with joltshark capabilities
+- Documented: cycle_interpolate, event_pulse, in_modular_range, range_map_modular
 
-- **V0.2 label** created with "Phase 2: Market Data" description
-- **V0.2 milestone** created with description
+### 4. Defined Mnesia Market Data Schema
+- Created `CordialCantina.Mnesia.Schema` module
+- Defined `:price_feed` table (OHLCV data)
+- Defined `:order_book` table (order book snapshots)
+- Updated Mnesia.Server to create tables on startup
 
-### Tags
+### 5. Added PostgreSQL/Ecto
+- Added ecto_sql and postgrex dependencies
+- Created `CordialCantina.Repo` module
+- Created `CordialCantina.MarketData.PriceFeed` schema
+- Created `CordialCantina.MarketData.OrderBook` schema
+- Created database migration
+- Conditional startup via POSTGRES_ENABLED config
 
-- **v0.0.0** - V0.0 Process Definition (commit 8f299c1)
-- **v0.1.0** - V0.1 Foundation (commit b30e651)
+### 6. Added Broadway
+- Added broadway dependency
+- Created `CordialCantina.Pipeline.MarketDataPipeline`
+- Pipeline processes market data with back-pressure and batching
+
+### 7. Added mint WebSocket Client
+- Added mint_web_socket dependency
+- Created `CordialCantina.Integration.WebSocketClient`
+- Supports connection management, reconnection, and PubSub broadcasting
+
+### 8. Created V0.2 GitHub Issues
+- Created issues #9-#14 for V0.2 milestones
+- Closed #9 and #10 as completed
 
 ---
 
-## GitHub Status
+## B3 Partial Decision: Historical Data Sources
 
-### Closed Issues (V0.1)
-| Issue | Title | Status |
-|-------|-------|--------|
-| #1 | V0.0-M0: Process Definition | Closed |
-| #2 | V0.1-M1: Mnesia GenServer | Closed |
-| #3 | V0.1-M2: Secrets Management | Closed |
-| #4 | V0.1-M3: Test Coverage | Closed |
-| #5 | V0.1-M4: Birdeye API | Closed |
-| #6 | B3: Add CHANGELOG.md | Closed |
-| #7 | B6: CLAUDE.md strategy | Closed |
+### User Requirements
 
-### Open Issues
-| Issue | Title | Label |
-|-------|-------|-------|
-| #8 | GitHub Projects Integration | type:decision |
+From PROMPT.md:
+- BTC price
+- Upstream TradFi signals likely to influence the BTC price
+- Keep data source dependencies streamlined and minimal
 
-### Milestones
-| Milestone | Status |
-|-----------|--------|
-| V0.1 Foundation | 4/4 issues closed |
-| V0.2 Market Data | 0 issues (new) |
+### Recommended Data Sources
 
----
+#### BTC Price Data
 
-## Questions for Human Pilot
+| Source | Type | Notes |
+|--------|------|-------|
+| **Birdeye** | API | Already integrated for SOL/USDC. Can fetch BTC pairs. |
+| **CoinGecko** | API | Free tier available. Widely used. Rate-limited. |
+| **Binance** | API/WebSocket | High liquidity. Real-time via WebSocket. |
 
-1. **Push tags?** Should I push the v0.0.0 and v0.1.0 tags to remote?
+**Recommendation**: Use Birdeye for BTC price data since the integration already exists. Birdeye supports BTC trading pairs on Solana DEXes.
 
-2. **Create V0.2 issues?** Should I create GitHub issues for the suggested V0.2 milestones?
+#### Upstream TradFi Signals
 
-3. **PostgreSQL setup?** Ready to begin V0.2-M1 with Ecto/PostgreSQL integration?
+| Signal | Source | Rationale |
+|--------|--------|-----------|
+| **S&P 500 Futures (ES)** | Yahoo Finance API | Correlation with crypto risk appetite |
+| **US Dollar Index (DXY)** | FRED API | Inverse correlation with BTC |
+| **10-Year Treasury Yield** | FRED API | Risk-free rate benchmark |
+| **VIX (Fear Index)** | Yahoo Finance API | Market volatility indicator |
+
+**Minimal Dependency Approach**:
+
+1. **Primary**: Birdeye (already integrated)
+   - BTC/USDC price on Solana DEXes
+   - SOL/USDC (current integration)
+
+2. **Secondary**: FRED API (Federal Reserve Economic Data)
+   - DXY (US Dollar Index)
+   - 10-Year Treasury Yield
+   - Free, reliable, rate-limited
+
+3. **Optional**: Yahoo Finance (via yfinance library or direct)
+   - S&P 500 Futures
+   - VIX
+
+### Implementation Suggestion
+
+```
+Phase 1 (V0.2): BTC price via Birdeye
+Phase 2 (V0.3+): Add FRED API for macro signals
+```
+
+### Questions for Human Pilot
+
+1. **BTC via Birdeye**: Is BTC price on Solana DEXes sufficient, or do you need centralized exchange (CEX) BTC/USD prices?
+
+2. **TradFi Signal Priority**: Which TradFi signals are most important?
+   - [ ] DXY (US Dollar Index)
+   - [ ] 10-Year Treasury Yield
+   - [ ] S&P 500 / Equity Index
+   - [ ] VIX
+
+3. **Update Frequency**: What frequency is needed for TradFi signals?
+   - Real-time (every minute)
+   - Hourly
+   - Daily
 
 ---
 
 ## Technical Concerns / Risks
 
-**V0.2 Complexity**: Phase 2 introduces significant new infrastructure (PostgreSQL, real-time feeds, data validation). Consider breaking into smaller milestones.
+### PostgreSQL Conditional Startup
 
-**WebSocket Selection**: Multiple options exist (gun, mint_web_socket, websockex). Need to evaluate based on Birdeye API requirements.
+PostgreSQL is now optional via `POSTGRES_ENABLED` config. In test environment, PostgreSQL is disabled by default to allow tests to run without a database.
+
+**Risk**: Developers may forget to enable PostgreSQL in development.
+
+**Mitigation**: Clear documentation in .env.example.
+
+### WebSocket Client Not Yet Connected
+
+The WebSocket client is implemented but not connected to any real data source. Actual Birdeye WebSocket endpoints need to be confirmed.
 
 ---
 
 ## Intended Next Step
 
 **Awaiting human direction** on:
-- Tag push to remote
-- V0.2 issue creation
-- V0.2-M1 initiation
+- B3 data source selection
+- BTC price source preference
+- TradFi signal priorities
+- V0.2-M3 implementation start
+
+---
+
+## GitHub Status
+
+### Open Issues (V0.2)
+| Issue | Title | Status |
+|-------|-------|--------|
+| #11 | V0.2-M3: Real-time Price Feed Ingestion | Open |
+| #12 | V0.2-M4: Order Book Snapshots | Open |
+| #13 | V0.2-M5: Signal Validation | Open |
+| #14 | V0.2-M6: Mnesia to PostgreSQL Offload | Open |
+
+### Closed Issues (V0.2)
+| Issue | Title | Status |
+|-------|-------|--------|
+| #9 | V0.2-M1: PostgreSQL/Ecto Setup | Closed |
+| #10 | V0.2-M2: Mnesia Market Data Tables | Closed |
+
+### Milestones
+| Milestone | Status |
+|-----------|--------|
+| V0.1 Foundation | Complete (tagged v0.1.0) |
+| V0.2 Market Data | 2/6 issues closed |
 
 ---
 
@@ -161,7 +209,7 @@ If you are a new AI session reading this file:
 1. Check [GitHub Issues](https://github.com/sgeos/cordial_cantina/issues) for open tasks
 2. V0.0 Process Definition: Complete (tagged v0.0.0)
 3. V0.1 Foundation: Complete (tagged v0.1.0)
-4. V0.2 Market Data: Ready to begin
+4. V0.2 Market Data: In progress (M1, M2 complete)
 5. Primary tracking: GitHub Issues
-6. V0.2 blockers: See report above
+6. B3 (Historical Data Sources): Partially resolved, awaiting human input
 7. Wait for human prompt before proceeding

@@ -1,5 +1,16 @@
 import Config
 
+# Configure PostgreSQL for development
+# Per R1: PostgreSQL provides durable cold storage
+config :cordial_cantina, CordialCantina.Repo,
+  username: "postgres",
+  password: "postgres",
+  hostname: "localhost",
+  database: "cordial_cantina_dev",
+  stacktrace: true,
+  show_sensitive_data_on_connection_error: true,
+  pool_size: 10
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #

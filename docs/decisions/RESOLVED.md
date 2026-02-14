@@ -378,6 +378,44 @@ When adding a Mnesia table:
 
 ---
 
+## R10. Message Queue Selection
+
+**Resolved**: 2026-02-14
+**Related**: B3 in BACKLOG.md (now resolved)
+
+### Decision
+
+| Aspect | Decision |
+|--------|----------|
+| Message processing | Broadway with GenStage |
+| External broker | Not required for V0.2 |
+| Data ingestion | Broadway pipelines for high-throughput market data |
+
+### Rationale
+
+- Broadway provides a unified interface for data ingestion with built-in back-pressure
+- GenStage handles producer-consumer patterns within the BEAM
+- External message brokers (RabbitMQ, Kafka) add operational complexity not justified at current scale
+- Broadway integrates natively with OTP supervision trees
+- Broadway supports batching, rate limiting, and graceful shutdown
+- Can migrate to external broker later if throughput or durability requirements change
+
+### Implementation Guidance
+
+1. Define Broadway pipelines for each data source (e.g., Birdeye WebSocket, price feeds)
+2. Use GenStage producers for internal event generation
+3. Implement acknowledger callbacks for reliable processing
+4. Configure batching based on data source characteristics
+5. Monitor pipeline throughput via Telemetry events
+
+### Residual Sub-Questions
+
+- Specific pipeline configurations (emerge during V0.2 implementation)
+- Batching parameters (tuned based on observed throughput)
+- Acknowledger strategy for WebSocket data (implementation detail)
+
+---
+
 ## Revision History
 
 | Date | Author | Changes |
@@ -386,3 +424,4 @@ When adding a Mnesia table:
 | 2026-02-01 | Claude | Added Mnesia configuration (ram_copies, parameterized fragmentation/windows), offload strategy, PostgreSQL configuration (datetime index, deferred partitioning) |
 | 2026-02-02 | Claude | Added R2: Mnesia initialization strategy (GenServer) |
 | 2026-02-02 | Claude | Added R3-R9: Phase 1 blocker decisions (OTP, NIF, RPC, secrets, testing, Mnesia schema, logging) |
+| 2026-02-14 | Claude | Added R10: Message queue selection (Broadway) |

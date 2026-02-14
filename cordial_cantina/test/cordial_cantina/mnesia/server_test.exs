@@ -33,11 +33,13 @@ defmodule CordialCantina.Mnesia.ServerTest do
       assert %DateTime{} = health.initialized_at
     end
 
-    test "tables list is initially empty per iterative schema strategy" do
+    test "tables list contains market data tables" do
       health = Server.health_check()
 
-      # Per R8: Schema is defined iteratively. Initial tables are minimal.
-      assert health.tables == []
+      # Per R8: Schema is defined iteratively.
+      # V0.2 adds price_feed and order_book tables.
+      assert :price_feed in health.tables
+      assert :order_book in health.tables
     end
   end
 

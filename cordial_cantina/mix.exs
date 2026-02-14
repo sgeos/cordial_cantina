@@ -73,6 +73,13 @@ defmodule CordialCantina.MixProject do
       {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
       {:rustler, "~> 0.34"},
+      # PostgreSQL/Ecto for time-series persistence (R1 cold storage)
+      {:ecto_sql, "~> 3.12"},
+      {:postgrex, "~> 0.19"},
+      # Broadway for high-throughput data ingestion (R10 message queue)
+      {:broadway, "~> 1.1"},
+      # Mint WebSocket client for real-time data feeds
+      {:mint_web_socket, "~> 1.0"},
       # Test coverage and mocking
       {:excoveralls, "~> 0.18", only: :test},
       {:bypass, "~> 2.1", only: :test}
@@ -87,7 +94,9 @@ defmodule CordialCantina.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "assets.setup", "assets.build"],
+      setup: ["deps.get", "ecto.setup", "assets.setup", "assets.build"],
+      "ecto.setup": ["ecto.create", "ecto.migrate"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.build": ["compile", "tailwind cordial_cantina", "esbuild cordial_cantina"],
       "assets.deploy": [

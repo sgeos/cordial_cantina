@@ -51,6 +51,13 @@ This document specifies the technology stack for Cordial Cantina.
 
 **Crate**: `joltshark`
 
+**Capabilities**:
+- State vector representation (position, velocity, acceleration, jolt)
+- Grid configuration and command generation
+- Range normalization and mapping (linear and modular)
+- Cyclic signal generation (`cycle_interpolate`, `event_pulse`)
+- Trading session and temporal cycle modulation
+
 **Rationale**:
 - Predictable performance without garbage collection pauses
 - Strong type system for numerical correctness
@@ -58,7 +65,7 @@ This document specifies the technology stack for Cordial Cantina.
 
 ### NIF Binding
 
-**Library**: TBD (Rustler recommended)
+**Library**: Rustler
 
 **Considerations**:
 - Panic safety (NIFs crashing brings down BEAM VM)

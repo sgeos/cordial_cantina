@@ -126,7 +126,7 @@ docs/
 │   ├── README.md
 │   ├── PROCESS_STRATEGY.md
 │   ├── GIT_STRATEGY.md
-│   ├── MILESTONE.md             # Current sprint (session working document)
+│   ├── TASKLOG.md               # Current sprint (session working document)
 │   ├── PROMPT.md                # Human → AI (session working document)
 │   └── REVERSE_PROMPT.md        # AI → Human (session working document)
 │
@@ -177,7 +177,7 @@ This section is a **meta-prompt** for AI agents working with this documentation.
 | Current development phase | `roadmap/README.md` |
 | Unresolved decisions | `decisions/PRIORITY.md` |
 | Resolved decisions | `decisions/RESOLVED.md` |
-| **Current milestone/sprint** | `process/MILESTONE.md` |
+| **Current milestone/sprint** | `process/TASKLOG.md` |
 | **Development process** | `process/PROCESS_STRATEGY.md` |
 | Git workflow | `process/GIT_STRATEGY.md` |
 | Unresolved concerns | [GitHub Issues](https://github.com/sgeos/cordial_cantina/issues) |

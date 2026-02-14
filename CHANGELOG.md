@@ -10,6 +10,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Rust test coverage with cargo-tarpaulin in CI
 - V0.2 label and milestone for Market Data phase
+- PostgreSQL/Ecto integration for cold data storage (V0.2-M1)
+- Mnesia market data schema with price_feed and order_book tables (V0.2-M2)
+- Broadway pipeline for high-throughput market data ingestion
+- mint WebSocket client for real-time data feeds
+- GitHub issues #9-#14 for V0.2 milestones
+
+### Changed
+- Renamed MILESTONE.md to TASKLOG.md
+- Updated knowledge graph for joltshark cyclic signal functions
+
+### Resolved Decisions
+- R10: Message queue selection (Broadway with GenStage)
 
 ---
 

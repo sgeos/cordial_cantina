@@ -1,5 +1,19 @@
 import Config
 
+# Configure PostgreSQL for test
+# Uses a separate database to allow parallel test runs
+# Set POSTGRES_ENABLED=true to enable database tests
+config :cordial_cantina,
+  postgres_enabled: System.get_env("POSTGRES_ENABLED") == "true"
+
+config :cordial_cantina, CordialCantina.Repo,
+  username: "postgres",
+  password: "postgres",
+  hostname: "localhost",
+  database: "cordial_cantina_test#{System.get_env("MIX_TEST_PARTITION")}",
+  pool: Ecto.Adapters.SQL.Sandbox,
+  pool_size: System.schedulers_online() * 2
+
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
 config :cordial_cantina, CordialCantinaWeb.Endpoint,

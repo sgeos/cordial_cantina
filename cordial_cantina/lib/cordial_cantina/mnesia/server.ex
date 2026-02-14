@@ -176,18 +176,17 @@ defmodule CordialCantina.Mnesia.Server do
   end
 
   defp create_tables do
-    # Per R8: Iterative schema definition. Start with no application tables.
-    # Tables will be added as features require them.
-    #
-    # Example table creation (for future reference):
-    # :mnesia.create_table(:market_data, [
-    #   attributes: [:id, :timestamp, :price, :volume],
-    #   type: :ordered_set,
-    #   ram_copies: [node()]
-    # ])
+    alias CordialCantina.Mnesia.Schema
 
-    Logger.info("Mnesia tables created (none defined yet - iterative schema)")
-    :ok
+    case Schema.create_tables() do
+      :ok ->
+        tables = Schema.table_names()
+        Logger.info("Mnesia tables created: #{inspect(tables)}")
+        :ok
+
+      {:error, reason} ->
+        {:error, {:table_creation_failed, reason}}
+    end
   end
 
   defp wait_for_tables do
