@@ -13,9 +13,10 @@ defmodule CordialCantina.Application do
     :ok = CordialCantina.Nif.nop()
     Logger.info("NIF loaded successfully")
 
-    # Base children
-    base_children = [
+    children = [
       CordialCantinaWeb.Telemetry,
+      # Start the Ecto repository
+      CordialCantina.Repo,
       {DNSCluster, query: Application.get_env(:cordial_cantina, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: CordialCantina.PubSub},
       # Start Mnesia before dependent processes
@@ -27,15 +28,6 @@ defmodule CordialCantina.Application do
       # Start to serve requests, typically the last entry
       CordialCantinaWeb.Endpoint
     ]
-
-    # Per R1: PostgreSQL for cold storage
-    # Conditionally start Repo based on configuration
-    children =
-      if postgres_enabled?() do
-        [CordialCantina.Repo | base_children]
-      else
-        base_children
-      end
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
@@ -49,11 +41,5 @@ defmodule CordialCantina.Application do
   def config_change(changed, _new, removed) do
     CordialCantinaWeb.Endpoint.config_change(changed, removed)
     :ok
-  end
-
-  # Check if PostgreSQL is enabled via configuration
-  # Defaults to true unless explicitly set to false
-  defp postgres_enabled? do
-    Application.get_env(:cordial_cantina, :postgres_enabled, true)
   end
 end

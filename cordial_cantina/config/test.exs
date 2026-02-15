@@ -1,11 +1,10 @@
 import Config
 
-# Configure PostgreSQL for test
-# Uses a separate database to allow parallel test runs
-# Set POSTGRES_ENABLED=true to enable database tests
-config :cordial_cantina,
-  postgres_enabled: System.get_env("POSTGRES_ENABLED") == "true"
-
+# Configure your database
+#
+# The MIX_TEST_PARTITION environment variable can be used
+# to provide built-in test partitioning in CI environment.
+# Run `mix help test` for more information.
 config :cordial_cantina, CordialCantina.Repo,
   username: "postgres",
   password: "postgres",
