@@ -9,7 +9,7 @@ This file is the AI-to-human communication channel. It is overwritten after each
 ## Last Updated
 
 **Date**: 2026-02-15
-**Task**: TradFi Signal Research and CI/Database Fixes
+**Task**: Knowledge Graph Update and Setup Instructions
 **Macro-milestone**: V0.2 Market Data
 
 ---
@@ -18,194 +18,174 @@ This file is the AI-to-human communication channel. It is overwritten after each
 
 ### Build
 **Command**: `mix compile --force`
-**Result**: Pending verification after CI changes
+**Result**: Pending verification
 
 ### Tests
 **Command**: `mix test`
-**Result**: Pending verification (database now follows standard Phoenix patterns)
+**Result**: Pending verification (requires local PostgreSQL)
 
-### CI Status
-**Issue**: cargo-tarpaulin installation failure
-**Fix Applied**: Added conditional installation check with `--locked` flag
+### Seeds
+**Command**: `mix run priv/repo/seeds.exs`
+**Result**: New file created, pending verification
 
 ---
 
 ## Completed Tasks
 
-### 1. Fixed Failing CI (cargo-tarpaulin)
+### 1. Updated Knowledge Graph with Blocker Decisions
 
-**Problem**: CI failed on `cargo install cargo-tarpaulin` with "binary already exists" error due to GitHub Actions caching `~/.cargo/bin/`.
+Added two new resolved decisions:
 
-**Solution**: Added conditional installation check in `.github/workflows/ci.yml`:
-```yaml
-- name: Install cargo-tarpaulin
-  run: |
-    if ! command -v cargo-tarpaulin &> /dev/null; then
-      cargo install cargo-tarpaulin --locked
-    fi
-```
+**R11: TradFi Signal and Data Source Strategy**
+- BTC price: Birdeye (current), CEX feed (future for lead-lag)
+- TradFi Priority 1: Nasdaq 100 (NQ=F via yfinance)
+- TradFi Priority 2: DXY (DX-Y.NYB via yfinance)
+- TradFi Priority 3: S&P 500 (ES) as risk-sentiment filter
+- Update frequencies: TradFi 1-min, BTC sub-10-sec
+- Architecture: GenServer polling, ndarray for Rust correlations
 
-### 2. Revised Database Configuration to Follow Phoenix Best Practices
+**R12: PostgreSQL Development Setup**
+- PostgreSQL required for local development
+- Standard Phoenix/Ecto patterns adopted
+- Setup instructions in README.md
 
-**Problem**: Unconventional `POSTGRES_ENABLED` conditional pattern caused PostgreSQL connection error flooding.
+**Updated Backlog Items**:
+- B1 (Development Environment): Partially resolved
+- B4 (Historical Data Sources): Partially resolved
 
-**Changes Made**:
-- Removed `POSTGRES_ENABLED` conditional startup from `application.ex`
-- Reverted to standard Phoenix pattern where `CordialCantina.Repo` is always in supervision tree
-- Added PostgreSQL service container to GitHub Actions CI
-- Standard `Ecto.Adapters.SQL.Sandbox` configuration in `test.exs`
-- Added standard test alias: `test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]`
+### 2. Updated cordial_cantina/README.md
 
-**Rationale**: Standard Phoenix convention is to always include Repo in supervision tree. Tests use sandbox mode for isolation. CI environments should provide the database service.
+Added:
+- Prerequisites section (Elixir, Erlang, Rust, PostgreSQL versions)
+- Database setup instructions with ecto commands
+- Seeds.exs execution command
+- Database variables documentation
 
-### 3. Corroborated/Falsified TradFi Signal Suggestions
+### 3. Created cordial_cantina/priv/repo/seeds.exs
 
-Research completed below.
+Created idempotent seed script that populates:
+- 10 SOL/USDC price feed records
+- 10 BTC/USDC price feed records
+- SOL/USDC order book snapshot
+- BTC/USDC order book snapshot
 
 ---
 
-## Research Findings: TradFi Signal Corroboration
+## V0.2 Blocker Analysis
 
-### Claim 1: BTC-Nasdaq 100 Correlation (~0.62)
+### Open GitHub Issues
 
-**PARTIALLY CORROBORATED with important caveats**
+| Issue | Title | Status | Blockers |
+|-------|-------|--------|----------|
+| #11 | V0.2-M3: Real-time Price Feed Ingestion | Open | None identified |
+| #12 | V0.2-M4: Order Book Snapshots | Open | Depends on #11 |
+| #13 | V0.2-M5: Signal Validation | Open | Depends on #11, #12 |
+| #14 | V0.2-M6: Mnesia to PostgreSQL Offload | Open | Depends on #11, #12 |
 
-| Finding | Source |
-|---------|--------|
-| Long-running correlation is approximately 0.805 | [LongtermTrends](https://www.longtermtrends.com/bitcoin-vs-nasdaq/) |
-| 30-day rolling correlation reached ~0.80 in late 2025 (highest since 2022) | [CoinDesk](https://www.coindesk.com/markets/2025/12/04/bitcoin-s-negative-correlation-with-nasdaq-persists-and-history-suggests-a-bottom-may-be-forming) |
-| Current 20-day correlation is **-0.43** (negative) as of late 2025/early 2026 | [CoinDesk](https://www.coindesk.com/markets/2025/12/04/bitcoin-s-negative-correlation-with-nasdaq-persists-and-history-suggests-a-bottom-may-be-forming) |
+### Critical Path
 
-**Assessment**: The ~0.62 figure is plausible as a historical average, but the current correlation has shifted to **negative territory** (-0.43). This represents the fourth time in five years that Bitcoin and Nasdaq have moved into negative correlation. The divergence began with the October 2025 flash crash when crypto leverage liquidations sent Bitcoin down while Nasdaq remained stable.
+```
+#11 (Price Feed) → #12 (Order Book) → #13 (Signal Validation)
+                                    ↘ #14 (Mnesia Offload)
+```
 
-**Implementation Note**: The correlation is not static. The system should track rolling correlations rather than assume a fixed value.
+**Issue #11 (Real-time Price Feed Ingestion)** is the critical blocker. Once implemented, other issues can proceed in parallel or sequence.
 
-### Claim 2: DXY/BTC Inverse Correlation (~-0.45)
+### Decision Points with No Obvious Choice
 
-**CORROBORATED with nuance**
+#### 1. Birdeye WebSocket vs REST Polling
 
-| Finding | Source |
-|---------|--------|
-| DXY/BTC correlation historically ranges from -0.4 to -0.8 | [BitcoinWorld](https://bitcoinworld.co.in/www-cryptonews-com-dxy-vs-bitcoin-correlation-analysis-2026/) |
-| Traditional inverse relationship remains prevalent in early 2026 | [CoinGlass](https://www.coinglass.com/learn/the-relationship-between-the-us-dollar-index-dxy-and-bitcoin-price-volatility-1) |
-| JPMorgan 2026 analysis notes correlation has **shifted to positive** in some periods | [AInvest](https://www.ainvest.com/news/bitcoin-sensitivity-dollar-liquidity-shifts-implications-2026-2601/) |
+**Context**: V0.2-M3 requires real-time price data ingestion.
 
-**Assessment**: The -0.45 figure falls within the historical range (-0.4 to -0.8) and is corroborated. However, JPMorgan's 2026 analysis indicates Bitcoin now sometimes behaves as a "liquidity-sensitive risk asset" rather than a traditional dollar hedge, meaning the inverse relationship is not as reliable as in previous years.
+| Option | Pros | Cons |
+|--------|------|------|
+| WebSocket | Lower latency, server push | More complex connection management |
+| REST Polling | Simpler implementation | Higher latency, rate limit concerns |
 
-**Implementation Note**: DXY remains a valid signal but should be weighted appropriately given the evolving relationship.
+**Suggestion**: Start with REST polling at sub-10-second intervals. WebSocket can be added later if latency becomes an issue. The existing `CordialCantina.Integration.WebSocketClient` module provides scaffolding for future WebSocket use.
 
-### Claim 3: US Spot ETFs (IBIT/FBTC) and MSTR Drive Price Discovery
+#### 2. Correlation Calculation Location
 
-**CORROBORATED**
+**Context**: Rolling correlations between BTC and TradFi signals are needed.
 
-| Finding | Source |
-|---------|--------|
-| IBIT holds ~$70B AUM (over 50% of spot ETF market) | [Nasdaq](https://www.nasdaq.com/articles/3-best-bitcoin-etf-picks-2026) |
-| FBTC holds ~$18.5B AUM (second largest) | [Gate.io](https://www.gate.com/learn/articles/fbtc-bitcoin-etf-guide-2026/16034) |
-| Combined ETF AUM exceeds $110 billion | [Bitbo](https://bitbo.io/treasuries/us-etfs/) |
-| MSTR holds 673,783-712,647 BTC (~3.4% of total supply, ~$60B) | [Strategy](https://www.strategy.com/purchases), [CoinDesk](https://www.coindesk.com/business/2026/01/31/michael-saylor-s-bitcoin-stack-is-officially-underwater-but-here-s-why-he-likely-won-t-reach-for-the-panic-button) |
+| Option | Pros | Cons |
+|--------|------|------|
+| Rust NIF (ndarray) | High performance, modify-in-place | More complex deployment |
+| Elixir (Nx) | Simpler integration, BEAM ecosystem | May be slower for large windows |
 
-**Assessment**: Fully corroborated. IBIT and FBTC together represent massive institutional capital flows. MSTR's holdings (3%+ of total Bitcoin supply) can influence market sentiment through programmatic accumulation disclosures. The January 2026 MSCI decision not to exclude digital asset treasury companies triggered a 2.5% MSTR surge, demonstrating the stock-crypto feedback loop.
+**Suggestion**: Implement in Rust NIF using ndarray as recommended. The joltshark crate already exists and can be extended. Sub-1-second internal processing requires NIF performance.
 
-**Implementation Note**: A CEX feed to detect ETF-driven price movements before they hit Solana DEXes would provide a lead-lag advantage.
+#### 3. TradFi Data Source: yfinance vs IEX
 
-### Claim 4: 10-Year Treasury Yield is a Lagging Signal
+**Context**: Need 1-minute TradFi data (NQ=F, DX-Y.NYB).
 
-**PARTIALLY CORROBORATED but contested**
+| Option | Pros | Cons |
+|--------|------|------|
+| yfinance | Free, well-documented | Python library (requires Erlang port or HTTP wrapper) |
+| IEX Cloud | Native REST API | Paid service, additional dependency |
+| Yahoo Finance direct | No Python dependency | Undocumented, may change |
 
-| Finding | Source |
-|---------|--------|
-| BTC/10Y correlation hit -53 (14-year low) in June 2024 | [Binance](https://www.binance.com/en/square/post/2024-06-12-bitcoin-and-10-year-treasury-yield-correlation-hits-14-year-low-9372588240281) |
-| Rising Treasury yields punished Bitcoin in late 2025 post-October crash | [YCharts](https://get.ycharts.com/resources/blog/how-treasury-yields-are-influencing-crypto-and-what-advisors-need-to-know/) |
-| Real yields remain significant for 2026 Bitcoin outlook | [Bitcoin Magazine Pro](https://www.bitcoinmagazinepro.com/bitcoin-macro/us-treasury-yields-vs-btc/) |
+**Suggestion**: Use Yahoo Finance via direct HTTP requests (same data as yfinance). The `Req` library is already a dependency. This avoids Python/port complexity while accessing the same data.
 
-**Assessment**: The claim is partially supported. Treasury yields are not "lagging" in the traditional technical analysis sense. Rather, they operate on a different timeframe and affect Bitcoin through real yield competition (opportunity cost of holding non-yielding assets). The relationship exists but is less direct than Nasdaq or DXY correlations for minute-level signals.
+### Remaining Ambiguities
 
-**Implementation Note**: Treasury yields may be more appropriate for daily/weekly regime detection rather than minute-level trading signals.
+1. **Birdeye API rate limits**: What is the exact rate limit for the free tier? This determines polling frequency.
 
-### Claim 5: yfinance Tickers (NQ=F, DX-Y.NYB)
+2. **BTC token pair on Birdeye**: Is `BTC/USDC` available on Solana DEXes via Birdeye, or should we use a wrapped BTC token (e.g., wBTC)?
 
-**CORROBORATED**
-
-| Ticker | Description | Verified |
-|--------|-------------|----------|
-| NQ=F | Nasdaq 100 Futures (Mar 2026 contract) | Yes - [Yahoo Finance](https://finance.yahoo.com/quote/NQ=F/) |
-| DX-Y.NYB | US Dollar Index (ICE Futures) | Yes - [Yahoo Finance](https://finance.yahoo.com/quote/DX-Y.NYB/) |
-
-**Assessment**: Both tickers are valid and actively quoted on Yahoo Finance. DX-Y.NYB closed at 96.88 on February 13, 2026. These can be used with the yfinance Python library.
-
-### Claim 6: TradFi 1-Minute Updates Sufficient
-
-**CORROBORATED with caveats**
-
-TradFi markets (equities, futures) operate at lower volatility than crypto. One-minute granularity is appropriate for signals that provide regime context rather than direct trading triggers. Free-tier API limitations (yfinance, FRED) typically support this frequency.
-
-**Caveat**: During market opens, closes, and high-volatility events (FOMC announcements, jobs reports), sub-minute TradFi data becomes more valuable.
-
-### Claim 7: BTC Sub-10-Second Updates Recommended
-
-**CORROBORATED**
-
-Crypto market microstructure operates at sub-second timescales. For detecting price velocity and momentum shifts, sub-10-second polling is appropriate. The bottleneck is API rate limits (Birdeye free tier), not computation (Rust NIF).
-
-### Claim 8: BTC "Undershooting" Global M2 by ~60%
-
-**PARTIALLY FALSIFIED**
-
-| Finding | Source |
-|---------|--------|
-| BTC has **decoupled** from global M2 since mid-2025 | [BeInCrypto](https://beincrypto.com/bitcoin-decouple-from-global-m2-in-2026/) |
-| BTC shows negative YoY growth while M2 grows 10%+ | [Yahoo Finance](https://finance.yahoo.com/news/bitcoin-continues-decouple-global-m2-134022834.html) |
-| Historical correlation with M2 is weakening as predictive tool | [Sarson Funds](https://sarsonfunds.com/the-correlation-between-bitcoin-and-m2-money-supply-growth-a-deep-dive/) |
-
-**Assessment**: The decoupling is real, but framing it as "undershooting by 60%" is misleading. Bitcoin's relationship with M2 has become less reliable in 2026. Some analysts view this as a potential market top signal; Fidelity Digital Assets remains bullish citing renewed QE cycles.
-
-**Implementation Note**: M2 may be less useful as a real-time signal in 2026 given the structural decoupling.
+3. **Correlation window sizes**: What time windows should be used for rolling correlations? (e.g., 5-min, 15-min, 1-hour)
 
 ---
 
 ## Incidental Findings
 
-### Bitcoin Negative Correlation with Nasdaq (Risk-On Divergence)
+### Correlation Regime Shift (February 2026)
 
-The current -0.43 correlation represents a significant regime shift. Historically, negative Bitcoin-Nasdaq correlations have preceded major Bitcoin turning points. This is potentially actionable information.
+Research revealed significant correlation instability:
+- BTC-Nasdaq correlation flipped from +0.80 to -0.43
+- This is the fourth time in five years correlations have gone negative
+- Historically, negative correlation periods have preceded major BTC turning points
 
-### MSTR as a Bitcoin Proxy Signal
+**Implication**: The system should not assume fixed correlation coefficients. Rolling calculations are essential.
 
-MSTR stock movements may provide a lead indicator for Bitcoin sentiment in traditional finance. The MSCI inclusion/exclusion drama creates predictable volatility windows.
+### MSTR as Sentiment Proxy
 
-### Phoenix Architecture Recommendation
+MicroStrategy (MSTR) holds 3.4% of total BTC supply. MSTR stock movements may provide a leading indicator for BTC sentiment in TradFi. The January 2026 MSCI decision created predictable volatility.
 
-The suggestion to use GenServer for API polling with data passed to NIF as Binary/List aligns with Elixir best practices. The `ndarray` crate recommendation for Rust rolling correlation calculations is sound.
+**Consideration**: MSTR could be added as a fourth TradFi signal (after S&P 500) in future phases.
+
+### 10-Year Treasury Yield Assessment
+
+Research indicates the 10-Year Treasury Yield operates on a different timeframe than Nasdaq/DXY correlations. It is more appropriate for daily/weekly regime detection rather than minute-level signals.
+
+**Recommendation**: Defer 10-Year Treasury integration. Focus on Nasdaq and DXY for V0.3.
 
 ---
 
 ## Technical Concerns / Risks
 
-### Database Configuration
+### PostgreSQL Connection in Development
 
-PostgreSQL now follows standard Phoenix conventions:
-- Repo always in supervision tree
-- Sandbox mode for tests
-- CI provides database service container
+Developers without local PostgreSQL will see connection errors on startup. This is expected Phoenix behavior.
 
-**Risk**: Developers without local PostgreSQL will see connection errors in dev. This is expected Phoenix behavior.
+**Mitigation**: README now documents PostgreSQL as a prerequisite.
 
-**Mitigation**: Document local PostgreSQL setup in README or provide docker-compose.yml.
+### Seeds Script Assumptions
 
-### Correlation Regime Detection
+The seeds script generates random sample data. This is appropriate for development but should not be run in production.
 
-Given the research showing correlation instability (BTC-Nasdaq flipping negative, DXY relationship evolving), the system should implement rolling correlation calculations rather than assuming fixed correlation coefficients.
+**Mitigation**: Seeds script includes warning comments.
 
 ---
 
 ## Intended Next Step
 
 **Awaiting human direction** on:
-- Verification of CI fixes (manual GitHub Actions run)
-- Verification of database changes (local `mix test`)
-- Prioritization of V0.2-M3 implementation given research findings
-- Decision on whether to add CEX feed for ETF price discovery lead-lag
+1. Verification of changes (local `mix test` and `mix run priv/repo/seeds.exs`)
+2. Decision on Birdeye polling vs WebSocket for V0.2-M3
+3. Clarification on Birdeye API rate limits
+4. Confirmation of BTC token pair availability on Birdeye/Solana
+5. Decision on correlation window sizes
 
 ---
 
@@ -225,6 +205,12 @@ Given the research showing correlation instability (BTC-Nasdaq flipping negative
 | #9 | V0.2-M1: PostgreSQL/Ecto Setup | Closed |
 | #10 | V0.2-M2: Mnesia Market Data Tables | Closed |
 
+### Milestones
+| Milestone | Status |
+|-----------|--------|
+| V0.1 Foundation | Complete (tagged v0.1.0) |
+| V0.2 Market Data | 2/6 issues closed |
+
 ---
 
 ## Session Context
@@ -234,9 +220,9 @@ If you are a new AI session reading this file:
 1. Check [GitHub Issues](https://github.com/sgeos/cordial_cantina/issues) for open tasks
 2. V0.0 Process Definition: Complete (tagged v0.0.0)
 3. V0.1 Foundation: Complete (tagged v0.1.0)
-4. V0.2 Market Data: In progress (M1, M2 complete)
+4. V0.2 Market Data: In progress (M1, M2 complete; M3-M6 open)
 5. Primary tracking: GitHub Issues
-6. CI fix applied: cargo-tarpaulin conditional installation
-7. Database: Reverted to standard Phoenix/Ecto patterns
-8. TradFi signal research: Completed (see findings above)
+6. Knowledge graph: Updated with R11 (TradFi signals), R12 (PostgreSQL setup)
+7. CI: Fixed (cargo-tarpaulin, PostgreSQL service)
+8. Database: Standard Phoenix/Ecto patterns
 9. Wait for human prompt before proceeding

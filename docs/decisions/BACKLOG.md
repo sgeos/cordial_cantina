@@ -16,17 +16,17 @@ This document records TBD items that do not require immediate resolution. Items 
 
 These items are relevant to Phase 1 but do not block implementation. They should be addressed during or shortly after Phase 1.
 
-### B1. Development Environment Setup
+### ~~B1. Development Environment Setup~~
 
-**Questions**:
-1. What Elixir/OTP versions are supported?
-2. What Rust toolchain version is required?
-3. Is a local PostgreSQL instance required for development?
-4. How is the development environment documented for new contributors?
+**Status**: PARTIALLY RESOLVED - See [R12 in RESOLVED.md](./RESOLVED.md#r12-postgresql-development-setup)
 
-**Suggested resolution**: Document in README.md or CONTRIBUTING.md
+**Resolved**:
+- PostgreSQL is required for development (standard Phoenix pattern)
+- Setup instructions documented in `cordial_cantina/README.md`
 
-**Why non-blocking**: Developers can proceed with current toolchain versions. Documentation can follow implementation.
+**Remaining questions**:
+1. What Elixir/OTP versions are supported? (Document in README)
+2. What Rust toolchain version is required? (Document in README)
 
 ---
 
@@ -53,15 +53,21 @@ These items are relevant to Phase 1 but do not block implementation. They should
 
 ---
 
-### B4. Historical Data Sources
+### ~~B4. Historical Data Sources~~
 
-**Questions**:
-1. Which third-party APIs provide historical price data?
-2. What is the cost and rate limit structure?
-3. How is data quality validated?
-4. What is the schema for imported historical data?
+**Status**: PARTIALLY RESOLVED - See [R11 in RESOLVED.md](./RESOLVED.md#r11-tradfi-signal-and-data-source-strategy)
 
-**Why deferred**: Phase 1 focuses on real-time data. Historical data needed for backtesting in Phase 3+.
+**Resolved**:
+- BTC price: Birdeye (current), CEX feed (future)
+- TradFi signals: yfinance (NQ=F, DX-Y.NYB)
+- Update frequencies: TradFi 1-min, BTC sub-10-sec
+
+**Remaining questions**:
+1. Cost and rate limit structure for yfinance free tier?
+2. How is data quality validated?
+3. Historical backfill strategy for backtesting?
+
+**Why deferred**: Real-time data prioritized. Historical backfill needed for backtesting in Phase 3+.
 
 ---
 
@@ -188,3 +194,5 @@ These items are relevant to Phase 1 but do not block implementation. They should
 | Date | Author | Changes |
 |------|--------|---------|
 | 2026-02-01 | Claude | Initial draft consolidating deferred items from SPECIFICATION.md |
+| 2026-02-15 | Claude | B1 partially resolved (PostgreSQL setup documented) |
+| 2026-02-15 | Claude | B4 partially resolved (TradFi signal sources selected) |

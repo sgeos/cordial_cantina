@@ -10,20 +10,20 @@ This file is a staging area for complex human-to-AI instructions. The human pilo
 
 ## Comments
 
-Consulted external LLMs to get clarification on requirements.
-The suggestions need to be corroborated or falsified.
+CI is now passing.
 
 ## Objectives
 
-### Corroborate of Falsify Suggested Answers to Reverse Prompt
+### Update Knowledge Graph to Document Blocker Decisions
 
 I consulted with external LLMs to get clarification on requirements.
 My write up of their suggestions and accompanying notes can be found in
 the following two subsections.
-Please do your own research to corroborate or falsify these suggestions.
-Report your findings in the next reverse prompt.
-Also, report any other incidental potentially interesting findings that are
-potentionally relevant to this project.
+Your corroboration/falsification report is in your current reverse prompt.
+Please update the knowledge graph to resolve blockers as best you can
+based on the below suggestions, and your corroboration/falsification report
+and any incidentally discovered relevant information.
+Flag issues in your next revese prompt if anything is unclear or ambiguous.
 
 #### Suggested Answers to Reverse Prompt
 
@@ -80,31 +80,33 @@ potentionally relevant to this project.
     * **BTC:** Birdeye (Current integration).
     * **Macro:** `yfinance` (Ticker: `NQ=F` for Nasdaq Futures, `DX-Y.NYB` for DXY).
 
-### Attempt to Resolve Failing CI
+### Update Knowledge Graph Based on Database Best Practices Research
 
-CI is failing on the `install cargo-tarpaulin` step. See:
-https://github.com/sgeos/cordial_cantina/actions/runs/22025355378/job/63641034742
+If your database research uncovered anything that should be recorded in the knowledge graph,
+then please record it.
 
-### Research and Revise to Adopt Database Best Practices
+### Update cordial_cantina/README.md Setup Instructions
 
-When running `iex -S mix phx.server`,
-the server starts and Liveview functionality works without issue,
-but the following error message floods the console.
+I manually installed Postgresql for local development.
+Please update `cordial_cantina/README.md` with the following setup instructions.
 
+- Make sure Postgresql is installed, and run the following commands.
+
+```sh
+mix deps.get
+mix ecto.create
+mix ecto.migrate
+mix run priv/repo/seeds.exs
 ```
-[error] Postgrex.Protocol (#PID<0.354.0> ("db_conn_1")) failed to connect: ** (DBConnection.ConnectionError) tcp connect (localhost:5432): connection refused - :econnrefused
-```
 
-Combined with your comments on adding "conditional startup via POSTGRES_ENABLED config,"
-I suspect your setup is unconventional and not following best practices.
-I have never been flooded by the mentioned error message when generating a Phoenix project
-that does not exclude `Ecto`,
-and I have never needed a lever to conditionally disable the database.
+#### Add cordial_cantina/priv/repo/seeds.exs
 
-The problem may be as simple as not have a database setup.
-In any case, please research this problem, best practices, and try to implement a solution.
-Also, report any other incidental potentially interesting findings that are
-potentionally relevant to this project.
+Add `cordial_cantina/priv/repo/seeds.exs` with relevant contents.
+
+### Report on Any V0.2 Blockers
+
+Report on any remaining V0.2 blockers in your next reverse prompt.
+Include suggestions and call out decision points with no obvious choice.
 
 ## Context
 
@@ -117,14 +119,12 @@ Refining process.
 
 ## Success Criteria
 
-- Suggested decisions for blocker resolution are corroborated or falsified,
-  and this is reported in the next reverse prompt.
-- Incidentally discovered relevant information is also reported in the next reverse prompt.
-  - Blocker related.
-  - Phoenix/Elixir/Database related.
-- Theoretical CI fix implemented. I will manually verify.
-- Database best practices researched, and database-related console error flooding resolved.
-- Best practices adopted so a conditional database enabling lever is not needed for testing.
+- Knowledge graph updated to document blocker resolutions.
+  - Remaining decision points and ambiguities flagged, if any.
+- Knowledge graph updated based on database best practices research, if appropriate.
+- `cordial_cantina/README.md` updated with setup instructions.
+- `cordial_cantina/priv/repo/seeds.exs` added with relevant contents.
+- Remaining V0.2 blockers with suggestions reported in next reverse prompt.
 
 ## Notes
 

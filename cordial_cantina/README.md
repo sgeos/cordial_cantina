@@ -2,12 +2,34 @@
 
 A concentrated liquidity market maker (CLMM) trading system for Solana.
 
+## Prerequisites
+
+- Elixir 1.15+
+- Erlang/OTP 26+
+- Rust (stable toolchain)
+- PostgreSQL 16+
+
 ## Quick Start
+
+### Database Setup
+
+Ensure PostgreSQL is installed and running, then:
 
 ```sh
 # Install dependencies
 mix deps.get
 
+# Create and migrate database
+mix ecto.create
+mix ecto.migrate
+
+# Seed database with initial data (optional)
+mix run priv/repo/seeds.exs
+```
+
+### Run the Application
+
+```sh
 # Run Phoenix app
 mix phx.server
 
@@ -50,11 +72,13 @@ These will be required for market data integration.
 | `BIRDEYE_API_KEY` | Birdeye API key for market data | V0.1-M4 |
 | `RAYDIUM_API_KEY` | Raydium API key (if required) | V0.2+ |
 
-### Future Variables
+### Database Variables
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `DATABASE_URL` | PostgreSQL connection URL | V0.2+ |
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `DATABASE_URL` | PostgreSQL connection URL (production) | localhost config |
+
+For local development, the database is configured in `config/dev.exs` with default credentials. For production, set `DATABASE_URL` to your PostgreSQL connection string.
 
 ## Development
 

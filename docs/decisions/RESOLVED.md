@@ -416,6 +416,118 @@ When adding a Mnesia table:
 
 ---
 
+## R11. TradFi Signal and Data Source Strategy
+
+**Resolved**: 2026-02-15
+**Related**: B4 in BACKLOG.md (Historical Data Sources)
+
+### Decision
+
+| Aspect | Decision |
+|--------|----------|
+| Primary BTC price source | Birdeye (Solana DEX prices) |
+| Future BTC price source | CEX feed (Coinbase/Binance) for lead-lag detection |
+| TradFi Signal Priority 1 | Nasdaq 100 (NQ=F via yfinance) |
+| TradFi Signal Priority 2 | DXY US Dollar Index (DX-Y.NYB via yfinance) |
+| TradFi Signal Priority 3 | S&P 500 (ES) as risk-sentiment filter |
+| TradFi update frequency | 1-minute (sufficient for lower volatility) |
+| BTC update frequency | Sub-10-second (Birdeye polling) |
+| Internal processing | Sub-1-second capable |
+
+### Correlation Context (February 2026)
+
+Research findings on market correlations:
+
+| Relationship | Historical | Current (Feb 2026) | Notes |
+|--------------|------------|---------------------|-------|
+| BTC-Nasdaq 100 | ~0.62 to 0.80 | **-0.43** (negative) | Regime shift since Oct 2025 crash |
+| BTC-DXY | -0.4 to -0.8 | ~-0.45 | Traditionally inverse, but evolving |
+| BTC-M2 | Historically correlated | **Decoupled** | Less reliable since mid-2025 |
+
+**Critical insight**: Correlations are not static. The system must implement rolling correlation calculations rather than assume fixed coefficients.
+
+### Price Discovery Dynamics
+
+| Entity | AUM/Holdings | Influence |
+|--------|--------------|-----------|
+| IBIT (BlackRock) | ~$70B | Primary ETF, >50% of spot ETF market |
+| FBTC (Fidelity) | ~$18.5B | Second largest spot ETF |
+| MSTR (Strategy) | 673K-712K BTC (~$60B) | 3.4% of total supply, sentiment driver |
+
+US Spot ETFs and MSTR significantly influence BTC price discovery. A CEX feed would detect these movements before they propagate to Solana DEX prices.
+
+### Implementation Guidance
+
+1. **Phase 1 (V0.2)**: Use Birdeye for BTC price data (existing integration)
+2. **Phase 2 (V0.3+)**: Add yfinance integration for TradFi signals
+   - `NQ=F` for Nasdaq 100 Futures
+   - `DX-Y.NYB` for DXY
+3. **Future**: Add CEX WebSocket feed for price discovery lead-lag
+
+### Architecture Recommendations
+
+| Component | Recommendation |
+|-----------|----------------|
+| API polling | GenServer with state management |
+| NIF data passing | Binary or List format |
+| Rolling correlations | Rust `ndarray` crate |
+| Rate limiting | Caching layer for TradFi APIs |
+
+### Rationale
+
+- Birdeye is already integrated and sufficient for Solana execution
+- yfinance provides free TradFi data at 1-minute granularity
+- Sub-10-second BTC updates enable price velocity detection
+- Rolling correlations handle regime shifts dynamically
+- CEX feed deferred to avoid premature complexity
+
+### Residual Sub-Questions
+
+- Specific yfinance polling implementation (V0.3 scope)
+- CEX WebSocket provider selection (deferred)
+- Correlation window sizes (tuned during implementation)
+- 10-Year Treasury Yield utility (less suitable for minute-level signals per research)
+
+---
+
+## R12. PostgreSQL Development Setup
+
+**Resolved**: 2026-02-15
+**Related**: B1 in BACKLOG.md (Development Environment Setup)
+
+### Decision
+
+| Aspect | Decision |
+|--------|----------|
+| Local development | PostgreSQL required |
+| Test environment | PostgreSQL with Ecto.Adapters.SQL.Sandbox |
+| CI environment | PostgreSQL service container |
+| Configuration | Standard Phoenix/Ecto patterns |
+
+### Rationale
+
+- Standard Phoenix convention: Repo always in supervision tree
+- Ecto sandbox provides test isolation without conditional startup logic
+- CI PostgreSQL service container mirrors local development
+- Avoids unconventional POSTGRES_ENABLED conditional patterns
+
+### Implementation
+
+Setup commands documented in `cordial_cantina/README.md`:
+```sh
+mix deps.get
+mix ecto.create
+mix ecto.migrate
+mix run priv/repo/seeds.exs
+```
+
+### Residual Sub-Questions
+
+- Production database configuration (V0.6 scope)
+- Connection pooling parameters (tuned during deployment)
+
+---
+
 ## Revision History
 
 | Date | Author | Changes |
@@ -425,3 +537,5 @@ When adding a Mnesia table:
 | 2026-02-02 | Claude | Added R2: Mnesia initialization strategy (GenServer) |
 | 2026-02-02 | Claude | Added R3-R9: Phase 1 blocker decisions (OTP, NIF, RPC, secrets, testing, Mnesia schema, logging) |
 | 2026-02-14 | Claude | Added R10: Message queue selection (Broadway) |
+| 2026-02-15 | Claude | Added R11: TradFi signal and data source strategy |
+| 2026-02-15 | Claude | Added R12: PostgreSQL development setup |
