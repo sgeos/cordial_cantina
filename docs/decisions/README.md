@@ -41,7 +41,7 @@ Each decision includes:
 
 | Category | Count |
 |----------|-------|
-| Resolved | 12 (R1-R12) |
+| Resolved | 18 (R1-R18) |
 | Priority | 0 (Phase 1 unblocked) |
 | Backlog | 12 (Phases 2-6, B1/B4 partially resolved) |
 

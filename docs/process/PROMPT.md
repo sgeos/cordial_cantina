@@ -11,97 +11,75 @@ This file is a staging area for complex human-to-AI instructions. The human pilo
 ## Comments
 
 CI is now passing.
+Postgresql locally installed.
+
+```sh
+$ mix test
+Running ExUnit with seed: 109638, max_cases: 20
+
+...........................................................
+Finished in 0.8 seconds (0.7s async, 0.1s sync)
+59 tests, 0 failures
+```
+
+The server starts and runs without errors.
+
+```sh
+iex -S mix phx.server
+```
 
 ## Objectives
 
-### Update Knowledge Graph to Document Blocker Decisions
+### Document Decisions in the Knowledge Tree
 
-I consulted with external LLMs to get clarification on requirements.
-My write up of their suggestions and accompanying notes can be found in
-the following two subsections.
-Your corroboration/falsification report is in your current reverse prompt.
-Please update the knowledge graph to resolve blockers as best you can
-based on the below suggestions, and your corroboration/falsification report
-and any incidentally discovered relevant information.
-Flag issues in your next revese prompt if anything is unclear or ambiguous.
+Document the following decisions in the knowledge tree.
 
-#### Suggested Answers to Reverse Prompt
+#### Decision: Birdeye WebSocket-Based Data Source
 
-1. **BTC price on Solana DEXes is sufficient for execution, but incomplete for prediction.**
-   Using Birdeye for BTC price on Solana is perfect for internal logic,
-   so start here for now.
-   My understanding is that 2026 price discovery is heavily driven by
-   **US Spot ETFs (IBIT/FBTC)** and **MSTR**.
-   Therefor, a CEX "Front-Run" feed (e.g., Coinbase or Binance)
-   to detect lead-lag effects before they hit Solana liquidity pools
-   should be added in the future,
-   and you should prepare for this now.
+Use WebSockets to ingest data from Birdeye.
 
-2. **TradFi Signal Priority**:
-   1. **Priority 1: Nasdaq 100 (NQ/QQQ)**.
-      I have heard that as of early 2026,
-      BTC's correlation with the Nasdaq is at its highest point in 24 months (~$0.62$). 
-   2. **Priority 2: DXY (US Dollar Index)**.
-      My understanding is that
-      while the DXY/BTC inverse correlation has structurally moderated to around $-0.45$,
-      it remains the primary indicator for global liquidity drain. 
-   3. **Priority 3: S&P 500 (ES)**.
-      This can be used as a broader risk-sentiment filter. 
-   4. **Note:** *I understand that that in 2026, the 10-Year Yield has become a lagging signal.
-      It is therefore not suitable for minute-level crunching.*
+#### Decision: Rust-Based Rolling Calculation
 
-3. **Hybrid Frequency is Mandatory.**
-   - **TradFi:** 1-minute updates (via `yfinance` or `IEX`)
-     are sufficient because these markets are less volatile.
-   - **BTC Price:** Sub-10-second updates are recommended.
-     Since a Rust NIF is in play, the bottleneck is not computation. It is network I/O.
-     Poll Birdeye as slightly slower than the free tier allows to
-     feed the Rust-driven state-machine with high-resolution "price velocity."
-   - **Internal Machinery:** Internal machinery should be design for sub-1-second updates.
-     When the service supports multiple users, the strategy will be to calculate once,
-     and distribute the results to everyone.
+Implement in Rust NIF using ndarray as recommended.
+The joltshark crate already exists and can be extended.
+Sub-1-second internal processing requires NIF performance.
 
-#### Justification and Notes
+#### Decision: TradFi Data Source
 
-* **The 2026 Context:**
-  Recent data shows BTC "undershooting" global money supply by nearly 60%,
-  behaving more like an AI-growth stock than a currency.
-  The Rust algorithms should treat **Nasdaq volatility** as a primary input for BTC price direction.
-* **Update Frequency**:
-  A caching layer will be essential to avoid hitting API rate limits,
-  particularly for TradFi data sources that may have stricter restrictions on free-tier usage.
-* **Phoenix/Rust Architecture:**
-  In a high-concurrency Elixir app,
-  consider using a **GenServer** to manage the API polling
-  and pass the raw data as a **Binary** or **List** to the NIF.
-  Since efficient modify-in-place algorithms can be used in the NIF,
-  consider using Rust's `ndarray` for lightning-fast rolling correlation calculations.
-* **Minimalist Implementation:**
-    * **BTC:** Birdeye (Current integration).
-    * **Macro:** `yfinance` (Ticker: `NQ=F` for Nasdaq Futures, `DX-Y.NYB` for DXY).
+Use Yahoo Finance via direct HTTP requests.
+This is that same data as yfinance.
+The `Req` library is already a dependency.
+This avoids Python/port complexity while accessing the same data.
+There is no reason for the project to rely on Python.
 
-### Update Knowledge Graph Based on Database Best Practices Research
+#### Decision: Resolve Ambiguities
 
-If your database research uncovered anything that should be recorded in the knowledge graph,
-then please record it.
+1. **Birdeye API rate limits**:
+   I am fairly certain 60 RPS is the rate limit for the free tier.
+   Please independently verify.
 
-### Update cordial_cantina/README.md Setup Instructions
+2. **BTC token pair on Birdeye**: 
+   BTC/USD appears to be listed on Birdeye.
+   The URL follows.
+   https://birdeye.so/solana/token/EtBc6gkCvsB9c6f5wSbwG8wPjRqXMB5euptK6bqG1R4X
 
-I manually installed Postgresql for local development.
-Please update `cordial_cantina/README.md` with the following setup instructions.
+3. **Correlation window sizes**:
+   Correlation window logic should be parametric.
+   Multiple time windows should be utilized for a wholistic analysis.
 
-- Make sure Postgresql is installed, and run the following commands.
+#### Decision: Correlation Coefficients
 
-```sh
-mix deps.get
-mix ecto.create
-mix ecto.migrate
-mix run priv/repo/seeds.exs
-```
+The system should not assume fixed correlation coefficients.
+Rolling calculations are essential.
 
-#### Add cordial_cantina/priv/repo/seeds.exs
+#### Decision: MSTR as Sentiment Proxy
 
-Add `cordial_cantina/priv/repo/seeds.exs` with relevant contents.
+Track MSTR as a leading indicator for BTC sentiment in TradFi.
+
+#### Decision: 10-Year Treasury Yield
+
+Track 10-year treasury yield as a macro-timing signal,
+and not an immediate signal for precise day trading timing.
 
 ### Report on Any V0.2 Blockers
 
@@ -120,10 +98,6 @@ Refining process.
 ## Success Criteria
 
 - Knowledge graph updated to document blocker resolutions.
-  - Remaining decision points and ambiguities flagged, if any.
-- Knowledge graph updated based on database best practices research, if appropriate.
-- `cordial_cantina/README.md` updated with setup instructions.
-- `cordial_cantina/priv/repo/seeds.exs` added with relevant contents.
 - Remaining V0.2 blockers with suggestions reported in next reverse prompt.
 
 ## Notes

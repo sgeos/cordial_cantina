@@ -528,6 +528,260 @@ mix run priv/repo/seeds.exs
 
 ---
 
+## R13. Birdeye WebSocket Data Ingestion
+
+**Resolved**: 2026-02-16
+**Related**: R11 (TradFi Signal Strategy), V0.2-M3 (Real-time Price Feed Ingestion)
+
+### Decision
+
+| Aspect | Decision |
+|--------|----------|
+| Data ingestion method | WebSocket (not REST polling) |
+| Client implementation | `CordialCantina.Integration.WebSocketClient` (existing) |
+| Connection management | GenServer with reconnection logic |
+
+### Rationale
+
+- WebSocket provides lower latency than REST polling
+- Server-push model reduces unnecessary API calls
+- Existing WebSocketClient module provides scaffolding
+- Better suited for sub-10-second update requirements
+- Aligns with Broadway pipeline architecture for data processing
+
+### Implementation Guidance
+
+1. Extend `WebSocketClient` to connect to Birdeye WebSocket endpoints
+2. Implement message parsing for price feed and order book data
+3. Broadcast parsed data via PubSub for downstream consumers
+4. Handle reconnection with exponential backoff
+
+### Residual Sub-Questions
+
+- Specific Birdeye WebSocket endpoint URLs (verify in API docs)
+- Message format for subscription requests
+- Authentication method for WebSocket connections
+
+---
+
+## R14. Rust Rolling Correlation Calculations
+
+**Resolved**: 2026-02-16
+**Related**: R4 (Rust NIF Integration), R11 (TradFi Signal Strategy)
+
+### Decision
+
+| Aspect | Decision |
+|--------|----------|
+| Implementation location | Rust NIF (joltshark crate) |
+| Numerical library | `ndarray` crate |
+| Window configuration | Parametric (multiple window sizes) |
+| Coefficient assumption | Dynamic rolling (not fixed) |
+
+### Rationale
+
+- Sub-1-second internal processing requires NIF performance
+- joltshark crate already exists and can be extended
+- `ndarray` provides efficient array operations with modify-in-place semantics
+- Parametric windows enable holistic analysis across timeframes
+- Rolling calculations essential due to correlation regime shifts (documented in R11)
+
+### Implementation Guidance
+
+1. Add `ndarray` dependency to joltshark Cargo.toml
+2. Implement rolling correlation function accepting:
+   - Two time series as input
+   - Window size parameter
+   - Optional weights for exponential moving average
+3. Return correlation coefficient and statistical confidence
+4. Support multiple concurrent window sizes (e.g., 5-min, 15-min, 1-hour)
+
+### Example API
+
+```rust
+/// Calculate rolling Pearson correlation between two series
+fn rolling_correlation(
+    series_a: &[f64],
+    series_b: &[f64],
+    window_size: usize,
+) -> Result<Vec<f64>, NifError>
+```
+
+### Residual Sub-Questions
+
+- Specific window sizes to implement (tune during V0.3)
+- Whether to include Spearman rank correlation
+- Memory management for large time series
+
+---
+
+## R15. Yahoo Finance Direct HTTP for TradFi Data
+
+**Resolved**: 2026-02-16
+**Related**: R11 (TradFi Signal Strategy)
+
+### Decision
+
+| Aspect | Decision |
+|--------|----------|
+| Data source | Yahoo Finance (direct HTTP) |
+| HTTP client | `Req` library (existing dependency) |
+| Python dependency | None (avoid yfinance library) |
+| Tickers | NQ=F (Nasdaq 100), DX-Y.NYB (DXY), ES=F (S&P 500), MSTR |
+
+### Rationale
+
+- Same underlying data as yfinance Python library
+- `Req` is already a project dependency
+- Avoids Python/Erlang port complexity
+- No external language runtime required
+- Direct HTTP provides full control over request/response handling
+
+### Implementation Guidance
+
+1. Use Yahoo Finance query endpoints (same as yfinance uses internally)
+2. Implement GenServer for polling at 1-minute intervals
+3. Cache responses to respect rate limits
+4. Parse JSON responses into Elixir structs
+5. Broadcast via PubSub for downstream correlation calculations
+
+### Ticker Mapping
+
+| Signal | Ticker | Description |
+|--------|--------|-------------|
+| Nasdaq 100 Futures | NQ=F | Primary BTC correlation signal |
+| DXY | DX-Y.NYB | US Dollar Index (inverse correlation) |
+| S&P 500 Futures | ES=F | Risk sentiment filter |
+| MSTR | MSTR | BTC sentiment proxy |
+
+### Residual Sub-Questions
+
+- Yahoo Finance endpoint stability (undocumented API)
+- Rate limiting behavior for direct HTTP requests
+- Fallback data source if Yahoo Finance becomes unavailable
+
+---
+
+## R16. Birdeye API Configuration
+
+**Resolved**: 2026-02-16
+**Related**: R13 (Birdeye WebSocket), V0.2-M3
+
+### Decision
+
+| Aspect | Decision |
+|--------|----------|
+| Free tier rate limit | **1 RPS** (not 60 RPS) |
+| Compute units (free) | 30,000 |
+| BTC token (Solana) | Wrapped BTC (Portal): `3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh` |
+| Alternative BTC token | Wrapped Bitcoin (Sollet): `9n4nbM75f5Ui33ZbPYXn59EwSgE8CGsHtAeTH5YFeJ9E` |
+
+### Rate Limit Tiers (Verified)
+
+| Tier | Rate Limit | Price |
+|------|-----------|-------|
+| Standard (Free) | 1 rps | Free |
+| Lite | 15 rps | $39/mo |
+| Starter | 15 rps | $99/mo |
+| Premium | 50 rps | $199/mo |
+| Business | 100 rps | $499+/mo |
+
+**Critical correction**: The free tier is 1 RPS, significantly more restrictive than initially assumed. This affects polling frequency design.
+
+### Rationale
+
+- Official Birdeye documentation confirms 1 RPS for Standard tier
+- WebSocket preferred over REST to minimize API calls within rate limit
+- Portal wBTC has higher liquidity on Solana DEXes
+- Multiple wrapped BTC options provide redundancy
+
+### Implementation Guidance
+
+1. Prioritize WebSocket connections to stay within rate limits
+2. Use REST API sparingly for initial data fetch or reconnection
+3. Implement request queuing to avoid rate limit violations
+4. Monitor compute unit consumption
+5. Consider paid tier if 1 RPS insufficient for V0.2 requirements
+
+### Residual Sub-Questions
+
+- WebSocket connections counted against rate limit?
+- Compute unit cost per WebSocket message vs REST call
+
+---
+
+## R17. MSTR as Sentiment Proxy Signal
+
+**Resolved**: 2026-02-16
+**Related**: R11 (TradFi Signal Strategy), R15 (Yahoo Finance)
+
+### Decision
+
+| Aspect | Decision |
+|--------|----------|
+| Signal role | Leading indicator for BTC sentiment in TradFi |
+| Priority | Priority 4 (after Nasdaq, DXY, S&P 500) |
+| Ticker | MSTR (via Yahoo Finance) |
+| Update frequency | 1-minute (same as other TradFi signals) |
+
+### Rationale
+
+- MSTR holds 3.4% of total BTC supply (~673K-712K BTC)
+- MSTR stock movements reflect institutional BTC sentiment
+- MSCI inclusion/exclusion decisions create predictable volatility windows
+- Stock-crypto feedback loop documented in January 2026 MSCI decision
+
+### Implementation Guidance
+
+1. Include MSTR in Yahoo Finance polling (alongside NQ=F, DX-Y.NYB, ES=F)
+2. Track MSTR price relative to implied BTC NAV
+3. Monitor premium/discount to NAV as sentiment indicator
+4. Consider MSTR volatility as regime change signal
+
+### Residual Sub-Questions
+
+- Specific premium/discount thresholds for signal generation
+- Integration with correlation calculations (correlate MSTR with BTC?)
+
+---
+
+## R18. 10-Year Treasury Yield as Macro Signal
+
+**Resolved**: 2026-02-16
+**Related**: R11 (TradFi Signal Strategy)
+
+### Decision
+
+| Aspect | Decision |
+|--------|----------|
+| Signal role | Macro-timing signal (not day trading) |
+| Update frequency | Daily (not minute-level) |
+| Ticker | ^TNX (via Yahoo Finance) |
+| Usage | Regime detection, not precise timing |
+
+### Rationale
+
+- Research indicates 10-Year Treasury operates on different timeframe than Nasdaq/DXY
+- BTC/10Y correlation hit -53 (14-year low) indicating structural relationship
+- Real yields affect BTC through opportunity cost mechanism
+- More appropriate for daily/weekly regime detection
+
+### Implementation Guidance
+
+1. Poll daily (not minute-level) to reduce API calls
+2. Use for macro regime classification:
+   - Rising yields → Risk-off environment → Bearish BTC bias
+   - Falling yields → Risk-on environment → Bullish BTC bias
+3. Combine with other signals for regime confirmation
+4. Do not use for minute-level trading decisions
+
+### Residual Sub-Questions
+
+- Threshold values for regime classification
+- Integration with daily strategy adjustments (V0.4+ scope)
+
+---
+
 ## Revision History
 
 | Date | Author | Changes |
@@ -539,3 +793,9 @@ mix run priv/repo/seeds.exs
 | 2026-02-14 | Claude | Added R10: Message queue selection (Broadway) |
 | 2026-02-15 | Claude | Added R11: TradFi signal and data source strategy |
 | 2026-02-15 | Claude | Added R12: PostgreSQL development setup |
+| 2026-02-16 | Claude | Added R13: Birdeye WebSocket data ingestion |
+| 2026-02-16 | Claude | Added R14: Rust rolling correlation calculations |
+| 2026-02-16 | Claude | Added R15: Yahoo Finance direct HTTP for TradFi |
+| 2026-02-16 | Claude | Added R16: Birdeye API configuration (rate limits, tokens) |
+| 2026-02-16 | Claude | Added R17: MSTR as sentiment proxy signal |
+| 2026-02-16 | Claude | Added R18: 10-Year Treasury Yield as macro signal |
