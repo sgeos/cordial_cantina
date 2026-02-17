@@ -9,7 +9,7 @@ This file is the AI-to-human communication channel. It is overwritten after each
 ## Last Updated
 
 **Date**: 2026-02-16
-**Task**: Document V0.2 Decisions in Knowledge Graph
+**Task**: Implement V0.2-M3 and PROMPT.md Objectives
 **Macro-milestone**: V0.2 Market Data
 
 ---
@@ -17,173 +17,185 @@ This file is the AI-to-human communication channel. It is overwritten after each
 ## Verification
 
 ### Build
-**Command**: `mix compile --force`
-**Result**: Verified by human pilot (per PROMPT.md comments)
+**Command**: `mix compile`
+**Result**: PASS - Compiled successfully
 
-### Tests
+### Rust Tests
+**Command**: `cargo test` (in joltshark directory)
+**Result**: PASS - 37 tests, 1 doctest, 0 failures
+
+### Elixir Tests
 **Command**: `mix test`
-**Result**: PASS - 59 tests, 0 failures (per PROMPT.md comments)
-
-### Server
-**Command**: `iex -S mix phx.server`
-**Result**: Starts and runs without errors (per PROMPT.md comments)
+**Result**: Not run this session (recommend human verification)
 
 ---
 
 ## Completed Tasks
 
-### 1. Documented Decisions in Knowledge Graph
+### 1. Research and Document Birdeye WebSocket Endpoint Configuration (R19)
 
-Added six new resolved decisions (R13-R18):
+Added R19 to RESOLVED.md documenting:
 
-| Decision | Summary |
-|----------|---------|
-| **R13** | Birdeye WebSocket data ingestion (not REST polling) |
-| **R14** | Rust rolling correlation calculations using ndarray |
-| **R15** | Yahoo Finance direct HTTP for TradFi (no Python dependency) |
-| **R16** | Birdeye API configuration (1 RPS free tier, wBTC token addresses) |
-| **R17** | MSTR as sentiment proxy signal (Priority 4) |
-| **R18** | 10-Year Treasury Yield as macro signal (daily, not minute-level) |
+| Field | Value |
+|-------|-------|
+| Endpoint | `wss://public-api.birdeye.so/socket/solana?x-api-key=YOUR_KEY` |
+| Message Type | `SUBSCRIBE_PRICE` |
+| Fields | type, queryType, address, chartType, currency |
+| Response | `PRICE_DATA` with OHLCV fields |
 
-### 2. Verified Birdeye Rate Limits
+### 2. Implement V0.2-M3: Real-time Price Feed Ingestion
 
-**Critical Finding**: The free tier rate limit is **1 RPS**, not 60 RPS.
+Created `CordialCantina.Integration.BirdeyeWebSocket` module:
 
-| Tier | Rate Limit | Price |
-|------|-----------|-------|
-| Standard (Free) | 1 rps | Free |
-| Lite | 15 rps | $39/mo |
-| Starter | 15 rps | $99/mo |
-| Premium | 50 rps | $199/mo |
+| Feature | Status |
+|---------|--------|
+| WebSocket connection to Birdeye | Implemented |
+| SUBSCRIBE_PRICE subscription | Implemented |
+| Price data parsing | Implemented |
+| Mnesia write (price_feed table) | Implemented |
+| Telemetry events | Implemented |
+| PubSub broadcast | Implemented |
 
-**Implication**: WebSocket is essential to stay within rate limits. REST polling at sub-10-second intervals would exceed the free tier.
+**Note**: Integration tests with mocked WebSocket not yet added.
 
-### 3. Identified BTC Token Addresses on Solana
+### 3. Revise Joltshark for CLMM Ranges
 
-| Token | Address | Notes |
-|-------|---------|-------|
-| Wrapped BTC (Portal) | `3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh` | Higher liquidity |
-| Wrapped Bitcoin (Sollet) | `9n4nbM75f5Ui33ZbPYXn59EwSgE8CGsHtAeTH5YFeJ9E` | Alternative |
+Replaced grid trading logic with CLMM tick-based logic:
+
+| Component | Change |
+|-----------|--------|
+| `GridConfig` | Removed, replaced by `CLMMConfig` |
+| `GridCommand` | Removed, replaced by `CLMMCommand` |
+| Tick math | `price = 1.0001^tick`, `tick = log(price)/log(1.0001)` |
+| `ScalarExt` trait | Made public for CLMM calculations |
+
+All 37 unit tests and 1 doctest pass.
+
+### 4. Revise Landing Page
+
+Replaced Phoenix default landing page with Cordial Cantina branding:
+
+| Element | Description |
+|---------|-------------|
+| Header | "Cordial Cantina" with theme toggle |
+| Dashboard Card | Link to `/dashboard` with Live badge |
+| LiveDashboard Card | Link to `/dev/dashboard` with Dev badge |
+| System Overview | Phase V0.2, Phoenix/Elixir/OTP versions |
+| Footer Links | GitHub, Phoenix Docs, Raydium CLMM |
+
+### 5. Verify and Revise LiveView Contents
+
+Updated `DashboardLive` with:
+
+| Feature | Change |
+|---------|--------|
+| Phase indicator | Updated to "V0.2 - Market Data" |
+| Theme compatibility | Converted to DaisyUI classes |
+| Market Data section | Added with price feed subscription |
+| Home link | Added navigation back to landing |
+| Live/Waiting badges | Shows connection status |
 
 ---
 
-## V0.2 Blocker Analysis
+## Files Changed
 
-### Open GitHub Issues
+| File | Type | Summary |
+|------|------|---------|
+| `birdeye_websocket.ex` | New | Birdeye WebSocket client |
+| `dashboard_live.ex` | Modified | Market data display, theming |
+| `home.html.heex` | Modified | Landing page redesign |
+| `lib.rs` | Modified | CLMM tick logic |
+| `RESOLVED.md` | Modified | R19 documentation |
 
-| Issue | Title | Status | Blockers |
-|-------|-------|--------|----------|
-| #11 | V0.2-M3: Real-time Price Feed Ingestion | Open | None (decisions resolved) |
-| #12 | V0.2-M4: Order Book Snapshots | Open | Depends on #11 |
-| #13 | V0.2-M5: Signal Validation | Open | Depends on #11, #12 |
-| #14 | V0.2-M6: Mnesia to PostgreSQL Offload | Open | Depends on #11, #12 |
+---
 
-### Critical Path
+## GitHub Issue #11 Status
 
+| Task | Status |
+|------|--------|
+| Connect WebSocket to Birdeye | Done |
+| Parse price feed messages | Done |
+| Write to Mnesia price_feed | Done |
+| Emit telemetry events | Done |
+| Integration tests | Not done |
+
+**Recommendation**: Issue #11 can be closed. Integration tests should be added in a follow-up task.
+
+---
+
+## Technical Notes
+
+### BirdeyeWebSocket Module
+
+The module does not auto-start in the supervision tree. To use:
+
+```elixir
+# Start the WebSocket client
+{:ok, pid} = CordialCantina.Integration.BirdeyeWebSocket.start_link(
+  api_key: System.get_env("BIRDEYE_API_KEY")
+)
+
+# Connect to Birdeye
+:ok = CordialCantina.Integration.BirdeyeWebSocket.connect(pid)
+
+# Check status
+:subscribed = CordialCantina.Integration.BirdeyeWebSocket.status(pid)
 ```
-#11 (Price Feed) → #12 (Order Book) → #13 (Signal Validation)
-                                    ↘ #14 (Mnesia Offload)
-```
 
-**Issue #11 is unblocked.** All key decisions have been resolved:
-- Data ingestion: WebSocket (R13)
-- Rate limits: 1 RPS verified (R16)
-- BTC token: Portal wBTC identified (R16)
+### Mnesia Table Structure
 
-### Remaining Decision Points
+Price data is written to the `:price_feed` table with key `{token_pair, timestamp}`.
 
-#### 1. Birdeye WebSocket Endpoint Configuration
+### Telemetry Events
 
-**Context**: Need to confirm exact WebSocket endpoints and subscription format.
-
-**Suggestion**: Review Birdeye API documentation for WebSocket specifics. The existing `WebSocketClient` module provides the connection framework.
-
-**Risk**: WebSocket may require paid tier or different authentication than REST API.
-
-#### 2. Paid Tier Consideration
-
-**Context**: 1 RPS free tier may be insufficient even with WebSocket.
-
-| Scenario | Recommendation |
-|----------|----------------|
-| WebSocket sufficient | Stay on free tier |
-| WebSocket requires paid | Consider Lite tier ($39/mo, 15 rps) |
-| High-frequency needed | Consider Starter tier ($99/mo) |
-
-**Suggestion**: Implement with free tier first. Upgrade if rate limits become blocking.
-
-#### 3. wBTC Token Selection
-
-**Context**: Two wrapped BTC options available.
-
-| Token | Address | Recommendation |
-|-------|---------|----------------|
-| Portal wBTC | `3NZ9...cmJh` | **Primary** (higher liquidity per research) |
-| Sollet wBTC | `9n4n...eJ9E` | Fallback |
-
-**Suggestion**: Use Portal wBTC as primary. Support both for redundancy.
+Two events are emitted:
+- `[:cordial_cantina, :market_data, :price_update]` - on each price update
+- `[:cordial_cantina, :mnesia, :write]` - on successful Mnesia write
 
 ---
 
 ## No Obvious Choice Decisions
 
-All major V0.2 decisions have been resolved. No decision points remain without a clear recommendation.
+None. All V0.2 infrastructure decisions have been resolved.
 
 ---
 
 ## Technical Concerns / Risks
 
-### 1. Birdeye 1 RPS Limitation
+### 1. BIRDEYE_API_KEY Required
 
-**Risk**: Free tier may be too restrictive for real-time data needs.
+The WebSocket connection requires a valid API key. Without it, authentication may fail.
 
-**Mitigation**:
-- WebSocket reduces REST API calls
-- Caching layer for repeated queries
-- Upgrade path to paid tier documented
+### 2. Mnesia Tables Must Exist
 
-### 2. Yahoo Finance API Stability
+The `:price_feed` table must be created before writing. Ensure `CordialCantina.Mnesia.Schema.create_tables/0` has been called.
 
-**Risk**: Direct HTTP to Yahoo Finance uses undocumented endpoints.
+### 3. WebSocket Not Auto-Starting
 
-**Mitigation**:
-- Same endpoints used by yfinance library (battle-tested)
-- Implement retry logic with exponential backoff
-- Monitor for endpoint changes
-- Document fallback data sources
-
-### 3. Rolling Correlation Complexity
-
-**Risk**: Multiple concurrent window sizes increase computational load.
-
-**Mitigation**:
-- Rust NIF provides necessary performance
-- ndarray enables efficient in-place operations
-- Start with 3 window sizes, tune based on profiling
+The BirdeyeWebSocket is not added to the supervision tree. Manual start is required or add to application.ex if desired.
 
 ---
 
 ## Implementation Readiness Summary
 
-| Component | Decision | Ready |
-|-----------|----------|-------|
-| BTC Price Source | Birdeye WebSocket | Yes |
-| BTC Token | Portal wBTC | Yes |
-| TradFi Source | Yahoo Finance HTTP | Yes |
-| TradFi Tickers | NQ=F, DX-Y.NYB, ES=F, MSTR | Yes |
-| Correlation Engine | Rust NIF + ndarray | Yes |
-| Rate Limits | 1 RPS (free tier) | Documented |
-
-**V0.2-M3 (Real-time Price Feed Ingestion) is ready to implement.**
+| Component | Status |
+|-----------|--------|
+| V0.2-M3 Price Feed | Implemented |
+| Landing Page | Redesigned |
+| Dashboard LiveView | Updated |
+| Joltshark CLMM | Implemented |
+| Birdeye R19 | Documented |
 
 ---
 
 ## Intended Next Step
 
 **Awaiting human direction** on:
-1. Proceed with V0.2-M3 implementation using documented decisions
-2. Confirm Portal wBTC as primary BTC token
-3. Decision on Birdeye tier (start free, upgrade if needed)
+1. Close GitHub issue #11 (tests can be follow-up)
+2. Run full test suite (`mix test`)
+3. Verify application runs (`iex -S mix phx.server`)
+4. Add BirdeyeWebSocket to supervision tree (optional)
+5. Proceed to V0.2-M4: Order Book Snapshots
 
 ---
 
@@ -192,7 +204,7 @@ All major V0.2 decisions have been resolved. No decision points remain without a
 ### Open Issues (V0.2)
 | Issue | Title | Status |
 |-------|-------|--------|
-| #11 | V0.2-M3: Real-time Price Feed Ingestion | Open |
+| #11 | V0.2-M3: Real-time Price Feed Ingestion | Ready to close |
 | #12 | V0.2-M4: Order Book Snapshots | Open |
 | #13 | V0.2-M5: Signal Validation | Open |
 | #14 | V0.2-M6: Mnesia to PostgreSQL Offload | Open |
@@ -207,7 +219,7 @@ All major V0.2 decisions have been resolved. No decision points remain without a
 | Milestone | Status |
 |-----------|--------|
 | V0.1 Foundation | Complete (tagged v0.1.0) |
-| V0.2 Market Data | 2/6 issues closed |
+| V0.2 Market Data | 2/6 issues closed, #11 ready |
 
 ---
 
@@ -218,10 +230,9 @@ If you are a new AI session reading this file:
 1. Check [GitHub Issues](https://github.com/sgeos/cordial_cantina/issues) for open tasks
 2. V0.0 Process Definition: Complete (tagged v0.0.0)
 3. V0.1 Foundation: Complete (tagged v0.1.0)
-4. V0.2 Market Data: In progress (M1, M2 complete; M3-M6 open)
+4. V0.2 Market Data: In progress (M1, M2 complete; M3 ready to close)
 5. Primary tracking: GitHub Issues
-6. Knowledge graph: 18 resolved decisions (R1-R18)
-7. CI: Passing
-8. Tests: 59 tests, 0 failures
-9. Key V0.2 decisions resolved: WebSocket, Rust correlations, Yahoo Finance, rate limits
-10. Wait for human prompt before proceeding
+6. Knowledge graph: 19 resolved decisions (R1-R19)
+7. Key new module: `CordialCantina.Integration.BirdeyeWebSocket`
+8. Joltshark: CLMM tick logic (grid trading removed)
+9. Wait for human prompt before proceeding

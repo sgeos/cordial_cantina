@@ -43,8 +43,6 @@ impl<T: Float + num_traits::FromPrimitive> FloatMath for T {
     }
 }
 
-// TODO: Implement FloatMath for fixed-point types
-
 // Library Scalar trait.
 pub trait Scalar:
     Add<Output = Self>
@@ -85,6 +83,8 @@ impl<T> Scalar for T where
 {
 }
 
+/// State vector for tracking position and derivatives.
+/// Used for price momentum and jolt-based signal detection.
 pub struct StateVector<T: Scalar, const D: usize>(pub [T; D]);
 
 impl<T: Scalar, const D: usize> StateVector<T, D> {
@@ -129,49 +129,163 @@ impl<T: Scalar, const D: usize> Sub for StateVector<T, D> {
     }
 }
 
-pub struct GridConfig<T: Scalar> {
+// =============================================================================
+// CLMM (Concentrated Liquidity Market Maker) Types
+// =============================================================================
+
+/// Configuration for a CLMM liquidity range.
+///
+/// In concentrated liquidity AMMs like Raydium CLMM, liquidity is provided
+/// within specific price ranges defined by ticks. This replaces the traditional
+/// grid trading approach with DeFi-native tick-based positioning.
+///
+/// ## Tick Math
+///
+/// Price at tick i: `price = 1.0001^i`
+/// Tick at price p: `tick = log(price) / log(1.0001)`
+///
+/// ## Example
+///
+/// ```
+/// use joltshark::CLMMConfig;
+/// let config: CLMMConfig<f64> = CLMMConfig {
+///     tick_lower: -1000,  // Lower bound tick
+///     tick_upper: 1000,   // Upper bound tick
+///     tick_spacing: 10,   // Minimum tick increment
+///     current_tick: 0,    // Current price tick
+///     base_price: 1.0,    // Base price at tick 0
+/// };
+/// ```
+pub struct CLMMConfig<T: Scalar> {
+    /// Lower tick boundary of the liquidity range
+    pub tick_lower: i32,
+    /// Upper tick boundary of the liquidity range
+    pub tick_upper: i32,
+    /// Tick spacing (determines valid tick values)
+    pub tick_spacing: i32,
+    /// Current price tick
+    pub current_tick: i32,
+    /// Base price for tick 0 (optional reference)
     pub base_price: T,
-    pub range_upper: T,
-    pub range_lower: T,
-    pub spacing: T,
 }
 
-impl<T: Scalar> GridConfig<T> {
-    pub fn index_at_price(&self, price: T) -> T {
-        (price - self.base_price) / self.spacing
+impl<T: Scalar> CLMMConfig<T> {
+    /// Returns true if the current tick is within the liquidity range.
+    pub fn is_in_range(&self) -> bool {
+        self.current_tick >= self.tick_lower && self.current_tick < self.tick_upper
     }
 
-    pub fn price_at_index(&self, index: T) -> T {
-        self.base_price + (index * self.spacing)
+    /// Rounds a tick to the nearest valid tick based on tick_spacing.
+    pub fn round_tick(&self, tick: i32) -> i32 {
+        let spacing = self.tick_spacing;
+        ((tick as f64 / spacing as f64).round() as i32) * spacing
     }
 }
 
-pub enum GridCommand<T: Scalar> {
-    Buy { price: T },
-    Sell { price: T },
+impl<T: ScalarExt> CLMMConfig<T> {
+    /// Returns the tick at a given price.
+    ///
+    /// Uses the formula: tick = log(price / base_price) / log(1.0001)
+    pub fn tick_at_price(&self, price: T) -> i32 {
+        // log(price / base_price) / log(1.0001)
+        let ratio = price / self.base_price;
+        let log_ratio = ratio.ln();
+        let log_base = T::from_f64(Float::ln(1.0001_f64)).unwrap();
+        let tick = log_ratio / log_base;
+        tick.to_i32().unwrap_or(0)
+    }
+
+    /// Returns the price at a given tick.
+    ///
+    /// Uses the formula: price = base_price * 1.0001^tick
+    pub fn price_at_tick(&self, tick: i32) -> T {
+        let base = T::from_f64(1.0001).unwrap();
+        let tick_scalar = T::from_i32(tick).unwrap();
+        self.base_price * base.powf(tick_scalar)
+    }
+
+    /// Returns the position within the range as a normalized value [0, 1].
+    pub fn range_position(&self) -> T {
+        if !self.is_in_range() {
+            if self.current_tick < self.tick_lower {
+                return T::zero();
+            } else {
+                return T::one();
+            }
+        }
+        let current = T::from_i32(self.current_tick).unwrap();
+        let lower = T::from_i32(self.tick_lower).unwrap();
+        let upper = T::from_i32(self.tick_upper).unwrap();
+        (current - lower) / (upper - lower)
+    }
+}
+
+/// Commands for CLMM position management.
+///
+/// These commands represent actions that can be taken on a concentrated
+/// liquidity position based on market conditions and signal analysis.
+pub enum CLMMCommand<T: Scalar> {
+    /// Add liquidity at the specified tick range
+    AddLiquidity {
+        tick_lower: i32,
+        tick_upper: i32,
+        amount: T,
+    },
+    /// Remove liquidity from the current position
+    RemoveLiquidity { amount: T },
+    /// Rebalance position to a new tick range
+    Rebalance {
+        new_tick_lower: i32,
+        new_tick_upper: i32,
+    },
+    /// Collect accumulated fees
+    CollectFees,
+    /// Hold current position (no action)
     Hold,
+    /// Wait for better conditions
     Wait,
+    /// Exit position entirely (emergency)
     Exit,
 }
 
-pub fn update_grid<T: Scalar, const D: usize>(
+/// Evaluates the current state and returns a CLMM command.
+///
+/// Uses jolt (4th derivative of price) as a volatility indicator.
+/// High jolt values suggest rapid momentum changes that may require
+/// position adjustment or exit.
+pub fn evaluate_clmm_position<T: Scalar, const D: usize>(
     state: &StateVector<T, D>,
-    config: &GridConfig<T>,
+    config: &CLMMConfig<T>,
     jolt_limit: T,
-) -> GridCommand<T> {
-    if let Some(j) = state.jolt()
-        && jolt_limit < j.abs()
-    {
-        return GridCommand::Exit;
+) -> CLMMCommand<T> {
+    // Check for extreme volatility via jolt
+    if let Some(j) = state.jolt() {
+        if jolt_limit < j.abs() {
+            return CLMMCommand::Exit;
+        }
     }
 
-    if let Some(pos) = state.position() {
-        let _current_index = config.index_at_price(pos);
-        GridCommand::Hold
-    } else {
-        GridCommand::Wait
+    // Check if price is in range
+    if !config.is_in_range() {
+        // Price has moved out of range, consider rebalancing
+        let new_center = config.current_tick;
+        let half_range = (config.tick_upper - config.tick_lower) / 2;
+        let new_lower = config.round_tick(new_center - half_range);
+        let new_upper = config.round_tick(new_center + half_range);
+
+        return CLMMCommand::Rebalance {
+            new_tick_lower: new_lower,
+            new_tick_upper: new_upper,
+        };
     }
+
+    // Position is in range, hold
+    CLMMCommand::Hold
 }
+
+// =============================================================================
+// Range Utility Functions
+// =============================================================================
 
 pub fn range_clamp<T: Scalar>(position: T, range_start: T, range_end: T) -> T {
     range_start.max(position).min(range_end)
@@ -208,7 +322,7 @@ pub fn range_map_clamped<T: Scalar>(
     range_clamp(mapped_position, blend_start, blend_end)
 }
 
-/// ...
+/// Maps a position within a modular (wrapped) range.
 ///
 /// Assumes `position` is between `range_start` and `range_end` in modular space.
 /// Result will overflow past `blend_end` if this is not the case.
@@ -230,11 +344,15 @@ fn range_map_modular<T: Scalar>(
     blend_start + offset / length * (blend_end - blend_start)
 }
 
+// =============================================================================
+// Cyclic Signal Functions
+// =============================================================================
+
 /// Cyclic interpolation between two signals.
 ///
-/// `phase` is expected to be in [0, τ), representing a full cycle.
-/// Produces a smooth blend: +primary → +alternative → -primary → -alternative.
-/// For an orthogonal spherical linear interpolation, restrict `phase` to [0, π/2].
+/// `phase` is expected to be in [0, tau), representing a full cycle.
+/// Produces a smooth blend: +primary -> +alternative -> -primary -> -alternative.
+/// For an orthogonal spherical linear interpolation, restrict `phase` to [0, pi/2].
 pub fn cycle_interpolate<T: Scalar>(phase: T, primary_signal: T, alternative_signal: T) -> T {
     let (s, c) = phase.sin_cos();
     primary_signal * c + alternative_signal * s
@@ -251,10 +369,11 @@ fn in_modular_range<T: Scalar>(value: T, start: T, end: T) -> bool {
     }
 }
 
-/// ...
+/// Generates a smooth pulse signal for event-based blending.
 ///
-/// `phase` is expected to be in [0, τ), representing a full cycle.
-/// `event_start` and `event_end` are expected to be in [0, τ).
+/// `phase` is expected to be in [0, tau), representing a full cycle.
+/// `event_start` and `event_end` are expected to be in [0, tau).
+/// Returns (x, y) coordinates on a unit circle representing the blend state.
 pub fn event_pulse<T: Scalar>(
     phase: T,
     event_start: T,
@@ -304,10 +423,100 @@ pub fn event_pulse<T: Scalar>(
     (ec, es)
 }
 
+// =============================================================================
+// Trait Extensions for Scalar Conversions
+// =============================================================================
+
+/// Extension trait for converting between scalar types and integers.
+pub trait ScalarExt: Scalar {
+    fn from_i32(n: i32) -> Option<Self>;
+    fn from_f64(n: f64) -> Option<Self>;
+    fn to_i32(self) -> Option<i32>;
+    fn ln(self) -> Self;
+    fn powf(self, n: Self) -> Self;
+}
+
+impl<T: Scalar + num_traits::FromPrimitive + num_traits::ToPrimitive + Float> ScalarExt for T {
+    fn from_i32(n: i32) -> Option<Self> {
+        <T as num_traits::FromPrimitive>::from_i32(n)
+    }
+
+    fn from_f64(n: f64) -> Option<Self> {
+        <T as num_traits::FromPrimitive>::from_f64(n)
+    }
+
+    fn to_i32(self) -> Option<i32> {
+        <T as num_traits::ToPrimitive>::to_i32(&self)
+    }
+
+    fn ln(self) -> Self {
+        Float::ln(self)
+    }
+
+    fn powf(self, n: Self) -> Self {
+        Float::powf(self, n)
+    }
+}
+
+// =============================================================================
+// Tests
+// =============================================================================
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use rstest::*;
+
+    #[test]
+    fn test_clmm_config_in_range() {
+        let config = CLMMConfig {
+            tick_lower: -1000,
+            tick_upper: 1000,
+            tick_spacing: 10,
+            current_tick: 0,
+            base_price: 1.0_f64,
+        };
+        assert!(config.is_in_range());
+    }
+
+    #[test]
+    fn test_clmm_config_out_of_range() {
+        let config = CLMMConfig {
+            tick_lower: -1000,
+            tick_upper: 1000,
+            tick_spacing: 10,
+            current_tick: 1500,
+            base_price: 1.0_f64,
+        };
+        assert!(!config.is_in_range());
+    }
+
+    #[test]
+    fn test_clmm_range_position() {
+        let config = CLMMConfig {
+            tick_lower: 0,
+            tick_upper: 100,
+            tick_spacing: 10,
+            current_tick: 50,
+            base_price: 1.0_f64,
+        };
+        let position = config.range_position();
+        assert!((position - 0.5).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_clmm_round_tick() {
+        let config = CLMMConfig {
+            tick_lower: 0,
+            tick_upper: 100,
+            tick_spacing: 10,
+            current_tick: 0,
+            base_price: 1.0_f64,
+        };
+        assert_eq!(config.round_tick(15), 20);
+        assert_eq!(config.round_tick(14), 10);
+        assert_eq!(config.round_tick(25), 30);
+    }
 
     #[rstest]
     #[case::midday_early(0.25, 11.0, 10.0, 14.0)]
@@ -412,7 +621,6 @@ mod tests {
         let blend_outer = range_map(blend_outer, 0.0, 24.0, 0.0, tau);
         let blend_inner = range_map(blend_inner, 0.0, 24.0, 0.0, tau);
         let (x, y) = event_pulse(phase, event_start, event_end, blend_outer, blend_inner);
-        //assert_eq!((expected_x, expected_y), (x, y), "(x, y)");
         assert!(
             (expected_x - x).abs() < acceptable_error,
             "x is not expected value"

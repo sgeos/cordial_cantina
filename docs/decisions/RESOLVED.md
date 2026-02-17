@@ -782,6 +782,108 @@ fn rolling_correlation(
 
 ---
 
+## R19. Birdeye WebSocket Endpoint Configuration
+
+**Resolved**: 2026-02-16
+**Related**: R13 (Birdeye WebSocket Data Ingestion), R16 (Birdeye API Configuration)
+
+### Decision
+
+| Aspect | Decision |
+|--------|----------|
+| Endpoint URL | `wss://public-api.birdeye.so/socket/solana?x-api-key=<API_KEY>` |
+| Authentication | API key via query parameter |
+| Protocol | `echo-protocol` (required header) |
+| Max tokens per connection | 100 |
+
+### Subscription Message Format
+
+**Simple Query (Single Token):**
+```json
+{
+  "type": "SUBSCRIBE_PRICE",
+  "data": {
+    "queryType": "simple",
+    "chartType": "1m",
+    "address": "<TOKEN_ADDRESS>",
+    "currency": "usd"
+  }
+}
+```
+
+**Complex Query (Multiple Tokens, Max 100):**
+```json
+{
+  "type": "SUBSCRIBE_PRICE",
+  "data": {
+    "queryType": "complex",
+    "query": "(address = ADDR1 AND chartType = 1m AND currency = usd) OR (...)"
+  }
+}
+```
+
+### Field Definitions
+
+| Field | Required | Values |
+|-------|----------|--------|
+| `type` | Yes | `SUBSCRIBE_PRICE`, `SUBSCRIBE_TXS`, `SUBSCRIBE_WALLET_TXS`, `SUBSCRIBE_TOKEN_NEW_LISTING` |
+| `queryType` | Yes | `simple` or `complex` |
+| `address` | Yes | Token or pair contract address |
+| `chartType` | Yes | `1m`, `3m`, `5m`, `15m`, `30m`, `1H`, `2H`, `4H`, `6H`, `8H`, `12H`, `1D`, `3D`, `1W`, `1M` |
+| `currency` | Yes | `usd` (token price) or `pair` (market pair) |
+
+### Response Format
+
+Responses arrive as `PRICE_DATA` events:
+```json
+{
+  "type": "PRICE_DATA",
+  "data": {
+    "o": 123.45,
+    "h": 124.00,
+    "l": 123.00,
+    "c": 123.80,
+    "v": 1000000,
+    "unixTime": 1708099200,
+    "address": "<TOKEN_ADDRESS>",
+    "symbol": "SOL"
+  }
+}
+```
+
+### Connection Requirements
+
+| Requirement | Value |
+|-------------|-------|
+| Origin header | `ws://public-api.birdeye.so` |
+| Sec-WebSocket-Protocol | `echo-protocol` |
+| Ping-pong | Required for connection stability |
+| Reconnection | Implement exponential backoff |
+
+### Token Addresses for Subscription
+
+| Token | Address |
+|-------|---------|
+| SOL | `So11111111111111111111111111111111111111112` |
+| Portal wBTC | `3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh` |
+| Sollet wBTC | `9n4nbM75f5Ui33ZbPYXn59EwSgE8CGsHtAeTH5YFeJ9E` |
+
+### Access Requirements
+
+WebSocket access requires Business Package or higher subscription for production use. Free tier may have limited WebSocket access.
+
+### Implementation Reference
+
+GitHub example: https://github.com/birdeye-so/tradingview-example-js-api/blob/main/websocket_example.js
+
+### Residual Sub-Questions
+
+- WebSocket availability on free tier (verify during implementation)
+- Ping interval requirements
+- Rate limit behavior for WebSocket vs REST
+
+---
+
 ## Revision History
 
 | Date | Author | Changes |
@@ -799,3 +901,4 @@ fn rolling_correlation(
 | 2026-02-16 | Claude | Added R16: Birdeye API configuration (rate limits, tokens) |
 | 2026-02-16 | Claude | Added R17: MSTR as sentiment proxy signal |
 | 2026-02-16 | Claude | Added R18: 10-Year Treasury Yield as macro signal |
+| 2026-02-16 | Claude | Added R19: Birdeye WebSocket endpoint configuration |
