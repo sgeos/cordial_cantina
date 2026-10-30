@@ -4,6 +4,12 @@ defmodule CordialCantina.Pipeline.MarketDataPipelineTest do
   alias CordialCantina.Pipeline.MarketDataPipeline
 
   describe "pipeline configuration" do
+    setup do
+      # Ensure module is loaded before checking exports
+      {:module, _} = Code.ensure_loaded(MarketDataPipeline)
+      :ok
+    end
+
     test "module uses Broadway" do
       assert {:module, MarketDataPipeline} = Code.ensure_loaded(MarketDataPipeline)
 

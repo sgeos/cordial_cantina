@@ -259,10 +259,10 @@ pub fn evaluate_clmm_position<T: Scalar, const D: usize>(
     jolt_limit: T,
 ) -> CLMMCommand<T> {
     // Check for extreme volatility via jolt
-    if let Some(j) = state.jolt() {
-        if jolt_limit < j.abs() {
-            return CLMMCommand::Exit;
-        }
+    if let Some(j) = state.jolt()
+        && jolt_limit < j.abs()
+    {
+        return CLMMCommand::Exit;
     }
 
     // Check if price is in range
